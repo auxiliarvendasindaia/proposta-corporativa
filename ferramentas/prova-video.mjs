@@ -68,7 +68,10 @@ console.log('   baixado:', arquivos.join(', ') || '(nada)');
 ok(arquivos.length === 1, `saiu um arquivo (${arquivos.length})`);
 const nome = arquivos[0] || '';
 ok(/^convite-/.test(nome), `o nome diz o que é: ${nome}`);
-ok(/bruno/i.test(nome), 'e leva o nome do cliente');
+/* o arquivo leva o nome de QUEM está na proposta, seja ele quem for */
+const slugCliente = await p.evaluate(() => CLIENTE_NOME.toLowerCase()
+  .normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''));
+ok(nome.includes(slugCliente), `e leva o nome do cliente (${slugCliente})`);
 ok(/\.(mp4|webm)$/.test(nome), `formato de vídeo (${nome.split('.').pop()})`);
 if (/\.webm$/.test(nome)) console.log('   ~  este navegador não grava MP4; no Chrome novo sai .mp4, que toca no WhatsApp');
 const tam = fs.statSync(path.join(SAIDA, nome)).size;

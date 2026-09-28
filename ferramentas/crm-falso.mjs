@@ -85,6 +85,9 @@ const orcamento = {
   id: '91b0c5c1-c1a2-4982-a21d-60bd51e5c175', numero: MULTI ? 'ORC-2026-02412-D2' : 'ORC-2026-02412',
   tipo_orcamento: MULTI ? 'multi_dia' : 'corporativo',
   cliente_nome: 'SEBRAE',
+  /* logo da empresa: no CRM real virá de companies.logo_url (hoje vazio em
+     todas as 32 empresas). Aqui aponta para um arquivo local de teste. */
+  empresa: { nome: 'SEBRAE', logo_url: 'assets/clientes/sebrae.svg' },
   nome_evento: 'Cerimônia Nacional de Entrega da Bandeira Azul',
   cliente_email: null, cliente_telefone: null,
   data_evento: '2026-11-06', dia_semana: 'sexta', num_convidados: conv,

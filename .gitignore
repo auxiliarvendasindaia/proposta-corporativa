@@ -8,3 +8,6 @@ video-prova/
 
 # simulações locais (geradas por ferramentas/gerar-*.mjs)
 _simulacao-*
+
+# logo de cliente é material dele: não vai para o repositório
+assets/clientes/

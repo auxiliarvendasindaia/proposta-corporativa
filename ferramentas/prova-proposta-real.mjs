@@ -55,7 +55,7 @@ ok(r.itens.length === 10 && r.serv.length === 6, `10 linhas e 6 serviços do or�
 ok(!/Coffee Superior|DJ - Essencial|Crédito - Audiovisual|Sousplat/.test(r.itens.join('|')), 'nenhum item da demo sobrando');
 ok(!/desconto|cupom/i.test(r.corpo), 'nenhuma menção a desconto ou cupom');
 ok(/sujeito a confirmação/i.test(r.aviso || ''), 'aviso de confirmação presente');
-ok(r.conv === 300 && /Bruno/.test(r.titulo), 'cliente e convidados do orçamento');
+ok(r.conv === 300 && /SEBRAE/i.test(r.titulo), `cliente e convidados do orçamento (${r.titulo})`);
 /* cliente mexe: sobe convidados e tira o open bar */
 await p.evaluate(() => mudarConvidados(350)); await espera(400);
 const r2 = await estado(p);

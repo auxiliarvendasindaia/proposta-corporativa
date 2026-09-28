@@ -118,8 +118,13 @@ html.sem-io .reveal{opacity:1;transform:none;}
   border-bottom:1px solid transparent;transition:border-color .3s,box-shadow .3s,background .3s;}
 .topbar.is-stuck{border-color:var(--line-soft);box-shadow:var(--sh-1);background:rgba(247,248,249,.92);}
 .topbar__inner{display:flex;align-items:center;justify-content:space-between;gap:20px;height:64px;}
-/* assinatura do cliente: a logo dele no lugar do nome, na mesma altura ótica */
-.brand__logo{display:block;height:30px;width:auto;max-width:210px;object-fit:contain;}
+/* assinatura do cliente: a logo dele no lugar do nome, na mesma altura ótica.
+   A cor da marca dele entra SÓ aqui — o resto da página é do Indaiá. */
+.brand__logo{display:block;height:38px;width:auto;max-width:240px;object-fit:contain;}
+@media (max-width:760px){ .brand__logo{height:30px;max-width:170px;} }
+.tem-marca-cliente .topbar{border-bottom:2px solid var(--marca-cliente);}
+.tem-marca-cliente .brand__mono{color:var(--marca-cliente);}
+.tem-marca-cliente .footer .brand__mono{color:var(--cream);}
 .footer .brand__logo{height:26px;filter:brightness(0) invert(1);opacity:.92;}
 .brand__logo+.brand__mono{display:none;}
 .brand__mono{font-family:var(--serif);font-weight:700;font-size:1.3rem;letter-spacing:.34em;color:var(--brown-deep);
@@ -1203,7 +1208,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta ORC-2026-01837 · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer — é só pedir na nossa conversa.
-      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-11</span></p>
+      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-12</span></p>
   </div>
 </footer>
 
@@ -2315,6 +2320,20 @@ let LOGO_CLIENTE = '';               /* URL da logo (PNG/SVG com fundo livre) */
 let COR_CLIENTE = '';                /* cor da marca, usada só nessa assinatura */
 let EVENTO_NOME = '';                /* "Convenção Nacional 2026" */
 let LOGO_TELAO = null;               /* a logo já carregada, para o canvas do LED */
+let LOGO_OPACA = false;              /* a logo tem fundo sólido? (ganha cartão claro) */
+/* os cantos da logo entregam o segredo: se os quatro forem opacos, o arquivo
+   tem fundo — nesse caso ela não pode ir solta sobre o painel escuro */
+function logoTemFundo(img){
+  try{
+    const L = 32, cv = document.createElement('canvas');
+    cv.width = L; cv.height = L;
+    const c = cv.getContext('2d', {willReadFrequently:true});
+    c.drawImage(img, 0, 0, L, L);
+    const px = c.getImageData(0, 0, L, L).data;
+    const alpha = (x,y)=>px[(y*L + x)*4 + 3];
+    return [[1,1],[L-2,1],[1,L-2],[L-2,L-2]].every(([x,y])=>alpha(x,y) > 200);
+  }catch(e){ return false; }
+}
 
 /* ---- validade efetiva (V do hash > padrão impresso) ---- */
 const VALIDADE_PADRAO = '2026-08-25';
@@ -4310,14 +4329,30 @@ function telaoMaterial(TH){
        com o tipo de evento embaixo. Sem logo (ou se ela falhar), volta o nome
        desenhado em Cormorant, como sempre foi. */
     if(LOGO_CLIENTE && LOGO_TELAO){
-      const cx = 512, maxL = 700, maxA = 260;
+      const cx = 512, maxL = 660, maxA = 230;
       const esc = Math.min(maxL/LOGO_TELAO.width, maxA/LOGO_TELAO.height);
       const l = LOGO_TELAO.width*esc, a = LOGO_TELAO.height*esc;
-      ctx.drawImage(LOGO_TELAO, cx - l/2, 300 - a/2, l, a);
-      if('letterSpacing' in ctx) ctx.letterSpacing = '10px';
-      ctx.font = 'italic 400 54px "Cormorant Garamond", Georgia, serif';
+      /* logo com fundo sólido (a maioria dos arquivos que o cliente manda)
+         ganha um cartão claro arredondado: vira letreiro no painel escuro,
+         em vez de um retângulo branco colado no meio do LED */
+      if(LOGO_OPACA){
+        const m = 34, rx = cx - l/2 - m, ry = 290 - a/2 - m, rw = l + m*2, rh = a + m*2, r = 22;
+        ctx.fillStyle = '#F7F8F9';
+        ctx.beginPath();
+        ctx.moveTo(rx+r, ry); ctx.arcTo(rx+rw, ry, rx+rw, ry+rh, r);
+        ctx.arcTo(rx+rw, ry+rh, rx, ry+rh, r); ctx.arcTo(rx, ry+rh, rx, ry, r);
+        ctx.arcTo(rx, ry, rx+rw, ry, r); ctx.closePath(); ctx.fill();
+      }
+      ctx.drawImage(LOGO_TELAO, cx - l/2, 290 - a/2, l, a);
+      /* o nome do evento embaixo, diminuindo até caber no painel */
+      if('letterSpacing' in ctx) ctx.letterSpacing = '8px';
+      let fs = 54;
+      ctx.font = `italic 400 ${fs}px "Cormorant Garamond", Georgia, serif`;
+      while(fs > 24 && ctx.measureText(TELAO_SUB).width > 900){
+        fs -= 3; ctx.font = `italic 400 ${fs}px "Cormorant Garamond", Georgia, serif`;
+      }
       ctx.fillStyle = 'rgba(201,171,120,.85)';
-      ctx.fillText(TELAO_SUB, 512+5, 470);
+      ctx.fillText(TELAO_SUB, 512+5, 300 + a/2 + (LOGO_OPACA ? 92 : 74));
       tx.needsUpdate = true;
       return;
     }
@@ -4344,7 +4379,7 @@ function telaoMaterial(TH){
   if(LOGO_CLIENTE && !LOGO_TELAO){
     const im = new Image();
     im.crossOrigin = 'anonymous';
-    im.onload = ()=>{ LOGO_TELAO = im; desenhar(); };
+    im.onload = ()=>{ LOGO_TELAO = im; LOGO_OPACA = logoTemFundo(im); desenhar(); };
     im.onerror = ()=>{ LOGO_TELAO = null; };        /* fica o nome escrito */
     im.src = LOGO_CLIENTE;
   }
@@ -5995,10 +6030,47 @@ function vestirMarcaCliente(){
     const img = document.createElement('img');
     img.className = 'brand__logo'; img.src = LOGO_CLIENTE;
     img.alt = CLIENTE_NOME; img.decoding = 'async';
+    img.crossOrigin = 'anonymous';           /* para conseguir ler a cor dela */
     img.onerror = ()=>img.remove();          /* volta a aparecer o nome */
+    img.onload = ()=>{ if(!COR_CLIENTE) corDaLogo(img); };
     el.before(img);
   });
-  if(COR_CLIENTE) document.documentElement.style.setProperty('--marca-cliente', COR_CLIENTE);
+  if(COR_CLIENTE) aplicarCorCliente(COR_CLIENTE);
+}
+/* A COR SAI DA PRÓPRIA LOGO (v18.09-12) — o CRM não guarda a cor da marca do
+   cliente, e pedir isso à atendente é mais um campo para preencher errado.
+   A página lê a logo, pega a cor mais presente entre as fortes (ignorando
+   branco, preto e cinza) e usa SÓ na assinatura do alto e do rodapé. */
+function corDaLogo(img){
+  try{
+    const L = 64, cv = document.createElement('canvas');
+    cv.width = L; cv.height = L;
+    const c = cv.getContext('2d', {willReadFrequently:true});
+    c.drawImage(img, 0, 0, L, L);
+    const px = c.getImageData(0, 0, L, L).data;
+    const baldes = new Map();
+    for(let i=0;i<px.length;i+=4){
+      const r=px[i], g=px[i+1], b=px[i+2], a=px[i+3];
+      if(a < 200) continue;                                  /* transparente */
+      const max = Math.max(r,g,b), min = Math.min(r,g,b);
+      if(max < 40 || min > 215) continue;                    /* quase preto/branco */
+      if(max - min < 28) continue;                           /* cinza */
+      const chave = `${r>>5},${g>>5},${b>>5}`;
+      const v = baldes.get(chave) || {n:0, r:0, g:0, b:0};
+      v.n++; v.r+=r; v.g+=g; v.b+=b;
+      baldes.set(chave, v);
+    }
+    let melhor = null;
+    for(const v of baldes.values()) if(!melhor || v.n > melhor.n) melhor = v;
+    if(!melhor || melhor.n < 12) return;                     /* logo sem cor forte */
+    const hex = n => Math.round(n/melhor.n).toString(16).padStart(2,'0');
+    aplicarCorCliente(`#${hex(melhor.r)}${hex(melhor.g)}${hex(melhor.b)}`);
+  }catch(e){ /* logo de outro domínio sem permissão: fica sem a cor */ }
+}
+function aplicarCorCliente(cor){
+  COR_CLIENTE = cor;
+  document.documentElement.style.setProperty('--marca-cliente', cor);
+  document.documentElement.classList.add('tem-marca-cliente');
 }
 /* fim da validade: a hora exata que o CRM gravou no link; sem ela, o fim do
    dia da validade. O começo da contagem é o primeiro acesso do cliente a ESTE
@@ -6208,6 +6280,14 @@ async function vestirPropostaCRM(){
       document.querySelector('meta[name="description"]')
         .setAttribute('content', `Proposta interativa corporativa — ${nomeCli} · ${DATA_EVENTO_BR} · ${AMB.nome}, ${AMB.cidadeLonga||''}`);
       document.querySelectorAll('.brand__mono').forEach(el=>el.textContent = nomeCli);
+      /* LOGO DO CLIENTE (v18.09-12) — a página aceita a logo por vários
+         caminhos, porque o CRM ainda não tem um só: a empresa do orçamento
+         (`companies.logo_url`), um campo no próprio orçamento ou algo que a
+         atendente grave no link. Sem nenhum deles, fica o nome escrito. */
+      LOGO_CLIENTE = String(
+        (o.empresa && o.empresa.logo_url) || (o.company && o.company.logo_url)
+        || o.cliente_logo_url || o.logo_url || raiz.logo_url || '').trim();
+      COR_CLIENTE = String((o.empresa && o.empresa.cor) || o.cliente_cor || raiz.cor_cliente || '').trim();
       vestirMarcaCliente();
       /* CAPA COM O NOME DO EVENTO (v18.09-6) — quando o CRM manda o nome do
          evento, a capa fala dele ("Convenção Nacional 2026 · proposta para a
