@@ -1,0 +1,10 @@
+# capturas e vídeos que as baterias geram quando rodam sem PROVA_OUT
+espaco-*.jpg
+vis-*.png
+prova-*.png
+video-prova/
+*.webm
+*.mp4
+
+# simulações locais (geradas por ferramentas/gerar-*.mjs)
+_simulacao-*

@@ -2,10 +2,10 @@
 // Solar e no Salão (1 piso: seletor oculto, botões, arrasto, serialização) e,
 // se o ambiente tiver pisos, troca de piso + arrasto no piso superior.
 import { createRequire } from 'module';
-const require = createRequire('c:/Users/usuário/Desktop/Projetos/crm-backend/package.json');
+const require = createRequire(process.env.PUPPETEER_EM || 'c:/Users/usuário/Desktop/Projetos/crm-backend/package.json');
 const puppeteer = require('puppeteer');
 
-const BASE = process.argv[2] || 'file:///C:/Users/usu%C3%A1rio/Desktop/Projetos/proposta-corporativa/index.html';
+const BASE = process.argv[2] || process.env.PROPOSTA_URL || 'file:///C:/Users/usu%C3%A1rio/Desktop/Projetos/proposta-corporativa/index.html';
 const AMBS = (process.argv[3] || 'salao_eventos,solar').split(',');
 const browser = await puppeteer.launch({ headless: 'new', executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe', args: ['--window-size=1400,1320'] });
 let falhas = 0;
@@ -85,7 +85,7 @@ for (const amb of AMBS) {
       const dd = await page.evaluate(() => ({ terreo: PROPOSTA.mesas.filter(m => !m.p).length, sup: PROPOSTA.mesas.filter(m => m.p).length }));
       ok(dd.terreo > 0, `distribuir no térreo não apaga o mezanino: térreo ${dd.terreo} · superior ${dd.sup}`);
     }
-    await page.screenshot({ path: `C:/Users/USURIO~1/AppData/Local/Temp/claude/c--Users-usu-rio-Desktop-Projetos/b42bf2eb-7914-4252-bbe8-6e2b90755015/scratchpad/mezanino/smoke-${amb}-pisos.jpg`, type: 'jpeg', quality: 70 });
+    await page.screenshot({ path: `${process.env.PROVA_OUT || '.'}/smoke-${amb}-pisos.jpg`, type: 'jpeg', quality: 70 });
   }
   ok(erros.length === 0, `erros de JS: ${erros.length ? erros.join(' | ') : 'nenhum'}`);
   await page.close();

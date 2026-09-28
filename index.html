@@ -81,6 +81,13 @@ a{color:inherit;text-decoration:none;}
 .escuro .sec__title em{color:var(--gold-soft);}
 .sec__intro{font-size:1.02rem;color:var(--brown);max-width:56ch;margin:0;}
 .escuro .sec__intro{color:rgba(247,248,249,.82);}
+/* a linha do que só o Indaiá entrega, embaixo da chamada de cada seção */
+.sec__dif{display:flex;gap:.6em;align-items:flex-start;margin:.8rem 0 0;max-width:56ch;
+  font-size:.86rem;line-height:1.6;color:var(--taupe);}
+.sec__dif::before{content:"";flex:none;width:6px;height:6px;margin-top:.55em;border-radius:50%;
+  background:var(--gold);}
+.escuro .sec__dif{color:rgba(247,248,249,.62);}
+.sec__dif:empty{display:none;}
 
 /* ---------- reveals (IO; fallback: tudo visível) ---------- */
 .reveal{opacity:0;transform:translateY(26px);transition:opacity .9s var(--ease-lux),transform .9s var(--ease-lux);}
@@ -111,6 +118,10 @@ html.sem-io .reveal{opacity:1;transform:none;}
   border-bottom:1px solid transparent;transition:border-color .3s,box-shadow .3s,background .3s;}
 .topbar.is-stuck{border-color:var(--line-soft);box-shadow:var(--sh-1);background:rgba(247,248,249,.92);}
 .topbar__inner{display:flex;align-items:center;justify-content:space-between;gap:20px;height:64px;}
+/* assinatura do cliente: a logo dele no lugar do nome, na mesma altura ótica */
+.brand__logo{display:block;height:30px;width:auto;max-width:210px;object-fit:contain;}
+.footer .brand__logo{height:26px;filter:brightness(0) invert(1);opacity:.92;}
+.brand__logo+.brand__mono{display:none;}
 .brand__mono{font-family:var(--serif);font-weight:700;font-size:1.3rem;letter-spacing:.34em;color:var(--brown-deep);
   padding-left:.34em; /* compensa o tracking da última letra */}
 .topbar__by{font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:var(--taupe);}
@@ -120,11 +131,28 @@ html.sem-io .reveal{opacity:1;transform:none;}
 .hero{position:relative;padding-block:clamp(72px,12vh,140px) clamp(56px,9vh,110px);
   background:linear-gradient(180deg,var(--cream) 0%,var(--cream-2) 100%);overflow:hidden;}
 .hero::after{content:"";position:absolute;inset:auto 0 0 0;height:1px;background:var(--line-soft);}
-.hero__inner{max-width:820px;}
+.hero__inner{max-width:820px;position:relative;z-index:1;}
+/* imagem do espaço no topo (v18.09-2): entra só quando carrega (.is-loaded),
+   então nada pisca nem empurra o texto */
+.hero__fundo{position:absolute;inset:0;overflow:hidden;opacity:0;transition:opacity .9s ease;}
+.hero__fundo.is-loaded{opacity:1;}
+.hero__fundo img{width:100%;height:100%;object-fit:cover;object-position:center 60%;}
+.hero__fundo::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(100deg,var(--cream) 0%,rgba(247,248,249,.94) 42%,rgba(247,248,249,.62) 66%,rgba(247,248,249,.38) 100%);}
+@media (max-width:760px){
+  .hero__fundo::after{background:linear-gradient(180deg,rgba(247,248,249,.90) 0%,rgba(247,248,249,.93) 55%,rgba(247,248,249,.99) 100%);}
+  .hero__fundo img{object-position:center 45%;}
+}
 .hero__title{font-family:var(--serif);font-weight:600;font-size:clamp(2.6rem,7.6vw,5.2rem);line-height:1.02;
   letter-spacing:-.015em;color:var(--brown-deep);margin:.2rem 0 1.2rem;}
 .hero__title em{font-style:italic;color:var(--gold-deep);}
-.hero__sub{font-size:1.06rem;color:var(--brown);max-width:52ch;margin:0 0 2rem;}
+.hero__sub{font-size:1.06rem;color:var(--brown);max-width:52ch;margin:0 0 .9rem;}
+/* a frase da casa: um pouco maior, em serifa, com o fio dourado do lado */
+.hero__frase{font-family:var(--serif);font-size:clamp(1.12rem,1.9vw,1.38rem);line-height:1.5;
+  color:var(--brown-deep);max-width:46ch;margin:0 0 1rem;padding-left:16px;
+  border-left:2px solid var(--gold);font-weight:500;}
+.hero__frase:empty{display:none;}
+.hero__ajuste{font-size:.92rem;color:var(--taupe);max-width:50ch;margin:0 0 2rem;}
 .hero__actions{display:flex;flex-wrap:wrap;gap:14px;align-items:center;}
 .hero__validade{display:inline-flex;align-items:center;gap:.6em;margin-top:2rem;font-size:.7rem;
   letter-spacing:.16em;text-transform:uppercase;color:var(--taupe);
@@ -245,6 +273,26 @@ html.sem-io .reveal{opacity:1;transform:none;}
 .qtd__btn:disabled{opacity:.3;cursor:not-allowed;}
 .qtd__val{font-family:var(--serif);font-weight:600;font-size:1.15rem;color:var(--brown-deep);
   min-width:2.6ch;text-align:center;font-variant-numeric:tabular-nums;}
+/* ---- evento de mais de um dia: barra de dias acima da lista de itens ---- */
+.dias{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 1rem;}
+.dias__pill{display:flex;flex-direction:column;align-items:flex-start;gap:1px;text-align:left;
+  padding:.65em 1.15em;line-height:1.35;border-radius:14px;scroll-margin-top:96px;}
+.dias__pill b{font-weight:600;}
+.dias__meta{font-size:.72rem;}
+.dias__pill[aria-selected="true"]{background:var(--brown-deep);border-color:var(--brown-deep);color:var(--cream);box-shadow:var(--sh-1);}
+.dias__pill[aria-selected="true"] .dias__espaco{color:var(--cream);opacity:.78;}
+.dias__espaco{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--taupe);}
+/* a mesma barra dentro do bloco escuro dos cardápios */
+#diasBarraCard{margin:1.4rem 0 -.6rem;}
+.escuro .dias__pill{background:rgba(247,248,249,.06);border-color:rgba(247,248,249,.26);color:rgba(247,248,249,.88);}
+.escuro .dias__pill .dias__espaco{color:rgba(247,248,249,.6);}
+.escuro .dias__pill[aria-selected="true"]{background:var(--cream);border-color:var(--cream);color:var(--brown-deep);}
+.escuro .dias__pill[aria-selected="true"] .dias__espaco{color:var(--taupe);opacity:1;}
+.dias__nota{font-size:.8rem;color:var(--taupe);margin:-.4rem 0 1rem;line-height:1.6;}
+.dias__nota b{font-weight:500;color:var(--brown-deep);}
+.dias__nota a{color:var(--gold-deep);text-underline-offset:3px;}
+.item--subdia{background:var(--cream-2);grid-template-columns:minmax(0,1fr) auto;}
+.item--subdia .item__nome{font-size:1rem;}
 .extras__micro{margin-top:1.4rem;padding:1rem 1.3rem;border-left:2px solid var(--gold);background:var(--cream-2);
   border-radius:0 var(--radius) var(--radius) 0;font-size:.9rem;color:var(--brown);max-width:64ch;line-height:1.6;}
 .extras__micro b{font-weight:500;color:var(--brown-deep);}
@@ -268,6 +316,12 @@ html.sem-io .reveal{opacity:1;transform:none;}
   border:1px solid var(--line-soft);background:#fff;}
 /* maquete 3D: o canvas ocupa o quadro; touch-action none (o gesto é da órbita) */
 .visao__frame--tres{background:#ECEDEF;}
+/* ESPERA DA MAQUETE (v18.09-2) — a maquete tem 20 MB; enquanto baixa, o quadro
+   ficava vazio. Agora o render do salão entra desfocado no fundo, com o aviso
+   "Montando o salão…" por cima, e sai quando o 3D aparece. */
+.tres__canvasbox.esperando{background-size:cover;background-position:center;}
+.tres__canvasbox.esperando::after{content:"";position:absolute;inset:0;
+  backdrop-filter:blur(7px) saturate(.9);background:rgba(247,248,249,.35);}
 .tres__canvasbox{position:absolute;inset:0;touch-action:none;cursor:grab;}
 .tres__canvasbox:active{cursor:grabbing;}
 .tres__canvasbox canvas{display:block;width:100%;height:100%;touch-action:none;}
@@ -395,6 +449,28 @@ html.sem-io .reveal{opacity:1;transform:none;}
 .inv__total span{font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:var(--taupe);font-weight:500;}
 .inv__total strong{font-family:var(--serif);font-weight:700;font-size:clamp(2rem,5vw,2.9rem);line-height:1;
   color:var(--brown-deep);font-variant-numeric:tabular-nums;letter-spacing:-.01em;}
+/* DINHEIRO COM ALGARISMO DE CAIXA-ALTA (v18.09-2) — o Cormorant usa
+   algarismos antigos por padrão (o zero sai menor, "R$ 19.782,oo"); em
+   valores isso lia mal e não alinhava. `lnum` + `tnum` deixam todos os
+   dígitos da mesma altura e da mesma largura, então o total para de
+   "dançar" quando o cliente ajusta a proposta. */
+.inv__linha b,.inv__total strong,.inv__inclusos li b,.item__total,.item__preco,
+.tierbar__total,#totalGeral,.rcard__val,.nivel__preco,.qtd__val,.trava b{
+  font-variant-numeric:lining-nums tabular-nums;
+  font-feature-settings:'lnum' 1,'tnum' 1;}
+/* EFEITO DO AJUSTE (v18.09-2) — quando o cliente muda algo, o total pulsa e
+   aparece por alguns segundos o quanto mudou. Ele entende na hora o preço da
+   escolha, sem precisar guardar o número anterior de cabeça. */
+.inv__total strong{transition:color .35s;}
+.inv__total strong.mudou{animation:total-pulso .55s ease;}
+@keyframes total-pulso{0%{transform:scale(1)}35%{transform:scale(1.045)}100%{transform:scale(1)}}
+.inv__delta{display:inline-flex;align-items:center;gap:.4em;margin-left:.7em;padding:.3em .75em;border-radius:999px;
+  font-family:var(--sans);font-size:.72rem;font-weight:600;letter-spacing:.04em;white-space:nowrap;
+  font-variant-numeric:lining-nums tabular-nums;opacity:0;transform:translateY(4px);
+  transition:opacity .3s,transform .3s;}
+.inv__delta.on{opacity:1;transform:none;}
+.inv__delta--sobe{background:#FBEDED;color:#9F2F2F;border:1px solid rgba(198,40,40,.25);}
+.inv__delta--desce{background:#EAF4EC;color:#2E6B3E;border:1px solid rgba(46,107,62,.25);}
 .inv__nota{font-size:.78rem;color:var(--taupe);margin:1rem 0 0;line-height:1.6;}
 .inv__reset{margin-top:1rem;background:none;border:0;padding:0;font-size:.74rem;letter-spacing:.04em;
   color:var(--taupe);text-decoration:underline;text-underline-offset:3px;}
@@ -426,6 +502,10 @@ html.sem-io .reveal{opacity:1;transform:none;}
 .cta__title em{font-style:italic;color:var(--gold-soft);}
 .cta__lede{font-size:1.02rem;color:rgba(255,255,255,.88);max-width:46ch;margin:0 0 2rem;}
 .cta__fine{margin-top:1.2rem;font-size:.74rem;letter-spacing:.06em;color:rgba(255,255,255,.66);}
+/* os dois caminhos do fim: confirmar e passar para quem decide junto */
+.cta__acoes{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;}
+.btn--claro{color:var(--cream);border-color:rgba(247,248,249,.38);}
+.btn--claro:hover{border-color:var(--cream);background:rgba(247,248,249,.08);}
 
 /* ---------- rodapé ---------- */
 .footer{background:var(--brown-deep);color:var(--cream);padding-block:38px;}
@@ -509,6 +589,16 @@ html.sem-io .reveal{opacity:1;transform:none;}
 .modal__panel{position:relative;z-index:2;width:min(560px,100%);max-height:92svh;overflow-y:auto;
   background:var(--cream);border-radius:12px;box-shadow:var(--sh-3);padding:clamp(24px,4vw,40px);}
 .modal__titulo{font-family:var(--serif);font-weight:600;font-size:1.8rem;color:var(--brown-deep);margin:0 0 1rem;line-height:1.1;}
+/* FOCO VISÍVEL (v18.09-2) — quem navega por teclado (e o leitor de tela)
+   precisa ver onde está; os botões não tinham contorno nenhum. */
+.btn:focus-visible,.pill:focus-visible,.nivel:focus-visible,.qtd__btn:focus-visible,
+.gfoto:focus-visible,.inv__reset:focus-visible,.brand:focus-visible,
+.modal__fechar:focus-visible,.expirada__falar:focus-visible{
+  outline:2px solid var(--gold-deep);outline-offset:3px;border-radius:var(--radius);}
+/* lista do "recebemos": o que o cliente pediu, para ele levar à conversa */
+.modal__ajustes{list-style:none;margin:.9rem 0 0;padding:0;display:flex;flex-direction:column;gap:.45rem;text-align:left;}
+.modal__ajustes li{position:relative;padding-left:1.1em;font-size:.88rem;color:var(--brown-deep);}
+.modal__ajustes li::before{content:"•";position:absolute;left:0;color:var(--gold-deep);}
 .modal__lista{list-style:none;margin:0 0 1.1rem;padding:0;}
 .modal__lista li{display:flex;justify-content:space-between;gap:14px;padding:.5rem 0;
   border-bottom:1px solid var(--line-soft);font-size:.9rem;color:var(--brown);}
@@ -536,10 +626,46 @@ html.sem-io .reveal{opacity:1;transform:none;}
   max-width:92vw;text-align:center;}
 .toast.on{opacity:1;transform:translate(-50%,0);visibility:visible;}
 
-/* ---------- aviso de proposta expirada (validade V do hash já passou) ---------- */
-.expirada{margin:0;padding:10px clamp(16px,4vw,40px);text-align:center;font-size:.8rem;
-  letter-spacing:.03em;line-height:1.5;background:var(--brown-deep);color:rgba(247,248,249,.85);}
+/* ---------- quem já fez aqui (prova social escolhida a dedo) ---------- */
+.prova__selo{display:inline-flex;align-items:center;gap:14px;margin:0 0 1.8rem;padding:.7em 1.2em;
+  background:var(--cream);border:1px solid var(--line-soft);border-radius:999px;box-shadow:var(--sh-1);}
+.prova__nota{font-family:var(--serif);font-weight:700;font-size:1.5rem;line-height:1;color:var(--brown-deep);
+  font-variant-numeric:lining-nums tabular-nums;}
+.prova__estrelas{color:var(--gold-deep);letter-spacing:.12em;font-size:.95rem;}
+.prova__quantas{font-size:.76rem;letter-spacing:.06em;color:var(--taupe);}
+.prova__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;}
+.prova__card{padding:1.4rem 1.5rem;background:var(--cream);border:1px solid var(--line-soft);
+  border-radius:var(--radius);box-shadow:var(--sh-1);display:flex;flex-direction:column;gap:12px;}
+.prova__txt{margin:0;font-size:.95rem;line-height:1.7;color:var(--brown);flex:1;}
+.prova__meia{opacity:.42;}
+.prova__quem{margin:0;font-size:.76rem;letter-spacing:.06em;color:var(--taupe);}
+.prova__quem b{display:block;font-size:.88rem;letter-spacing:.02em;color:var(--brown-deep);font-weight:600;}
+.prova__aspas{font-family:var(--serif);font-size:2.4rem;line-height:.6;color:var(--gold);height:.6em;}
+@media (max-width:760px){ .prova__selo{width:100%;justify-content:center;} }
+
+/* ---------- VALIDADE DA PROPOSTA (v18.09-6) — faixa fixa logo abaixo do topo,
+   com a conta regressiva e a barra que vai fechando. Quando vence, a faixa
+   fica e o link continua abrindo: o que muda é o convite a falar com a
+   equipe. Desenho aprovado na simulação de 16/09. ---------- */
+.expirada{position:sticky;top:65px;z-index:89;margin:0;padding:0;text-align:center;font-size:.8rem;
+  letter-spacing:.03em;line-height:1.5;background:var(--brown-deep);color:rgba(247,248,249,.85);
+  box-shadow:0 6px 18px rgba(0,0,0,.18);
+  /* a faixa acompanha a rolagem, mas não pode roubar o dedo de quem está
+     arrastando uma mesa logo abaixo dela — só o link dentro dela recebe toque */
+  pointer-events:none;}
+.expirada__falar,.expirada a{pointer-events:auto;}
 .expirada b{color:var(--gold-soft);font-weight:600;}
+.expirada__txt{margin:0;padding:10px clamp(16px,4vw,40px);}
+.expirada__restam{color:var(--gold-soft);font-variant-numeric:tabular-nums;white-space:nowrap;}
+.expirada__trilho{height:4px;background:rgba(255,255,255,.12);overflow:hidden;}
+.expirada__barra{height:100%;background:var(--gold-soft);transform-origin:left center;
+  transition:transform 1s linear,background-color .6s;}
+.expirada.is-final .expirada__barra{background:#E53935;}
+.expirada.is-final .expirada__restam{color:#EF9A9A;}
+.expirada.is-vencida .expirada__trilho{display:none;}
+.expirada__falar{margin-left:.4em;padding:0;border:0;background:none;font:inherit;color:var(--gold-soft);
+  font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
+@media (max-width:760px){ .expirada{top:59px;} .expirada__txt{padding:9px 16px;} }
 
 /* ---------- modo equipe: card "Preparar proposta para envio" ---------- */
 .equipe-card{width:100%;margin-top:14px;padding:16px 18px;display:flex;flex-wrap:wrap;
@@ -601,6 +727,26 @@ html.sem-io .reveal{opacity:1;transform:none;}
   .item{grid-template-columns:minmax(0,1fr) auto;}
   .item__info{grid-column:1/-1;}
   .item__total{text-align:right;}
+  /* linha de item no celular (v18.09-2): a pílula de quantidade quebrava em
+     duas linhas e empurrava o preço. Agora ela é só o número, e a explicação
+     vira uma linha de apoio embaixo do nome. */
+  .trava{background:none;border:0;padding:0;gap:.4em;font-size:.72rem;white-space:nowrap;}
+  .trava .ic{display:none;}
+  .trava b{font-size:.95rem;}
+  .trava b::after{content:' ×';color:var(--taupe);font-weight:400;}
+  .trava__nota{display:none;}      /* a explicação se repetia em toda linha */
+  .item__total{font-size:1.16rem;}
+  /* TOQUE E LEITURA NO CELULAR (v18.09-2) — medidos 17 alvos abaixo de 40 px e
+     75 textos abaixo de 12 px. Botões e pílulas passam a ter 44 px de altura
+     (recomendação da Apple e do Google) e os textos de apoio sobem para 12 px. */
+  .btn,.pill,.nivel,.inv__reset,.brand{min-height:44px;}
+  .btn,.pill{display:inline-flex;align-items:center;}
+  .dias__pill{display:flex;align-items:flex-start;}   /* chip do dia: 3 linhas à esquerda */
+  .inv__reset{display:inline-flex;align-items:center;padding:.4em 0;}
+  .eyebrow,.js-validade,.rcard__lbl,.rcard__aviso,.gbloco__hint,.vitrine__sel,
+  .nivel__inclui,.nivel__res,.tour3d__nota,.cta__fine,.modal__lista li,
+  .planta__nota,.inv__nota,.ph__selo,.gfoto__badge{font-size:.75rem;}
+  .inv__inclusos>p,.sec__num{font-size:.7rem;}
   .qtd__btn{width:44px;height:44px;}           /* alvo de toque confortável */
   .tierbar__meta{max-width:100%;font-size:.62rem;}
   .tierbar__in{padding-block:8px;gap:6px 14px;}
@@ -669,14 +815,24 @@ html.so-layout body{padding-bottom:0;}
 
 <!-- ===== HERO ===== -->
 <section class="hero" id="topo">
+  <!-- v18.09-2: o topo mostra o ESPAÇO do cliente atrás do texto. A imagem sai
+       da galeria do ambiente (render ou foto real), no tamanho da tela, e um véu
+       garante a leitura. Sem galeria, o topo continua exatamente como era. -->
+  <div class="hero__fundo" aria-hidden="true"><img id="heroImg" alt="" decoding="async"></div>
   <div class="wrap hero__inner">
     <p class="eyebrow reveal">Proposta corporativa · DIMY · Setembro 2026</p>
     <h1 class="hero__title reveal" data-d="1">Uma noite à altura<br>da sua <em>equipe</em>.</h1>
-    <p class="hero__sub reveal" data-d="2"><span class="js-espaco-rotulo">Salão de Eventos · Itapema/SC</span> — 24 de setembro de 2026.
-      Ajuste a proposta do seu jeito: o investimento recalcula na hora.</p>
+    <p class="hero__sub reveal" data-d="2"><span class="js-espaco-rotulo">Salão de Eventos · Itapema/SC</span> — 24 de setembro de 2026.</p>
+    <!-- a frase da casa: o que só acontece neste espaço, escrita pela página
+         conforme o ambiente e o tipo de evento (ver FRASES no script) -->
+    <p class="hero__frase reveal" data-d="2" id="heroFrase"></p>
+    <p class="hero__ajuste reveal" data-d="2">Ajuste a proposta do seu jeito: o investimento recalcula na hora.</p>
+    <!-- dois caminhos no topo: o passeio pela proposta (que é o que encanta)
+         e o atalho de quem quer ver o investimento primeiro -->
     <div class="hero__actions reveal" data-d="3">
       <a class="btn btn--solid btn--lg" href="#resumo">Ver a proposta
         <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14m0 0 6-6m-6 6-6-6"/></svg></a>
+      <a class="btn btn--ghost btn--lg" href="#investimento">Ir para o investimento</a>
     </div>
     <p class="hero__validade reveal" data-d="3">
       <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
@@ -896,10 +1052,11 @@ html.so-layout body{padding-bottom:0;}
             <p class="visao__legenda" id="tresLegenda">Maquete do seu layout · gire com o dedo</p>
             <div class="tour3d__acoes">
               <button type="button" class="btn btn--ghost" id="btnTour">▶ Gerar tour com o layout atual</button>
-              <button type="button" class="btn btn--ghost" id="btnGravarTour">⬇ Gravar tour (vídeo)</button>
+              <button type="button" class="btn btn--ghost" id="btnVideoCurto">⬇ Vídeo curto para enviar</button>
+              <button type="button" class="btn btn--ghost" id="btnGravarTour">⬇ Gravar tour completo</button>
               <button type="button" class="btn btn--ghost" id="btn3dEditar">Ajustar as mesas em 2D</button>
             </div>
-            <p class="tour3d__nota" id="tourNota">O vídeo sai com o seu layout atual.</p>
+            <p class="tour3d__nota" id="tourNota">O vídeo sai com o seu layout atual — o curto tem cerca de 25 segundos, com a marca do cliente no telão.</p>
           </div>
         </div>
 
@@ -949,11 +1106,27 @@ html.so-layout body{padding-bottom:0;}
   </div>
 </section>
 
-<!-- ===== 06 · INVESTIMENTO ===== -->
+<!-- ===== 06 · QUEM JÁ FEZ AQUI (prova social) =====
+     As avaliações são FIXAS e escolhidas a dedo (ver PROVA_SOCIAL no script):
+     nada de feed automático, que um dia traz um comentário ruim no meio da
+     negociação. A seção some sozinha se o espaço não tiver material. -->
+<section class="sec" id="prova" hidden>
+  <div class="wrap">
+    <div class="sec__head reveal">
+      <div class="sec__meta"><span class="sec__num">06</span><p class="eyebrow">Quem já fez aqui</p></div>
+      <h2 class="sec__title">A casa que <em>entrega</em>, evento após evento.</h2>
+      <p class="sec__intro" id="provaIntro"></p>
+    </div>
+    <div class="prova__selo reveal" id="provaSelo"></div>
+    <div class="prova__grid reveal" data-d="1" id="provaGrid"></div>
+  </div>
+</section>
+
+<!-- ===== 07 · INVESTIMENTO ===== -->
 <section class="sec" id="investimento" style="background:var(--cream-2);">
   <div class="wrap">
     <div class="sec__head reveal" style="margin-inline:auto;text-align:center;max-width:680px;">
-      <div class="sec__meta" style="justify-content:center;"><span class="sec__num">06</span><p class="eyebrow" style="margin-bottom:0;">Investimento</p></div>
+      <div class="sec__meta" style="justify-content:center;"><span class="sec__num">07</span><p class="eyebrow" style="margin-bottom:0;">Investimento</p></div>
       <h2 class="sec__title">Transparente do começo ao <em>brinde</em>.</h2>
     </div>
     <div class="inv reveal" id="invCard">
@@ -974,11 +1147,11 @@ html.so-layout body{padding-bottom:0;}
   </div>
 </section>
 
-<!-- ===== 07 · COMO FUNCIONA ===== -->
+<!-- ===== 08 · COMO FUNCIONA ===== -->
 <section class="sec" id="como-funciona">
   <div class="wrap">
     <div class="sec__head reveal">
-      <div class="sec__meta"><span class="sec__num">07</span><p class="eyebrow">Como funciona</p></div>
+      <div class="sec__meta"><span class="sec__num">08</span><p class="eyebrow">Como funciona</p></div>
       <h2 class="sec__title">Do ajuste ao <em>contrato</em>, sem complicação.</h2>
     </div>
     <ol class="passos">
@@ -1011,7 +1184,12 @@ html.so-layout body{padding-bottom:0;}
     <p class="eyebrow reveal">DIMY · 24 de setembro de 2026</p>
     <h2 class="cta__title reveal" data-d="1">Vamos confirmar a <em>data</em> do seu evento?</h2>
     <p class="cta__lede reveal" data-d="2">A sua proposta já está pronta do seu jeito. Falta só a agenda.</p>
-    <button type="button" class="btn btn--gold btn--lg reveal" data-d="3" id="btnCtaFinal">Confirmar os ajustes da proposta</button>
+    <div class="cta__acoes reveal" data-d="3">
+      <button type="button" class="btn btn--gold btn--lg" id="btnCtaFinal">Confirmar os ajustes da proposta</button>
+      <!-- compartilhar em vez de baixar: o arquivo salvo circula depois de
+           vencido, o link leva sempre a validade junto -->
+      <button type="button" class="btn btn--ghost btn--lg btn--claro" id="btnCompartilhar">Compartilhar com um colega</button>
+    </div>
     <p class="cta__fine reveal" data-d="3">O resumo dos seus ajustes segue junto para a nossa equipe.</p>
   </div>
 </section>
@@ -1023,7 +1201,9 @@ html.so-layout body{padding-bottom:0;}
   <div class="wrap footer__inner">
     <span class="brand__mono">DIMY</span>
     <p class="footer__fine">Proposta ORC-2026-01837 · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
-      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-1</span></p>
+      Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
+      com prazer — é só pedir na nossa conversa.
+      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-11</span></p>
   </div>
 </footer>
 
@@ -1292,6 +1472,7 @@ function percentualReajuste(){
   return FAIXAS_REAJUSTE[degrau];
 }
 function calcularServicos(s, baseTaxaCent, baseReajusteCent){
+  if(typeof ORC_REAL !== 'undefined' && ORC_REAL) return servicosReais(s, baseTaxaCent);
   const grupos = Math.min(Math.ceil(s.convidados/100), 10);
   const reajuste = Math.round(baseReajusteCent * percentualReajuste()/100);
   const lista = [
@@ -2126,6 +2307,14 @@ let ORC_NUMERO = 'ORC-2026-01837';
 let DATA_EVENTO_BR = '24/09/2026';
 let TELAO_TITULO = 'DIMY';           /* texto desenhado no telão de LED do 3D */
 let TELAO_SUB = 'Convenção 2026';
+/* MARCA DO CLIENTE (v18.09-6) — quando o CRM manda a logo, ela entra em dois
+   lugares e SÓ neles: a assinatura do alto da página e o telão de LED da
+   maquete. O resto da proposta continua com a tipografia, as cores e o jeito
+   do Indaiá: é a nossa proposta, feita para a marca do cliente. */
+let LOGO_CLIENTE = '';               /* URL da logo (PNG/SVG com fundo livre) */
+let COR_CLIENTE = '';                /* cor da marca, usada só nessa assinatura */
+let EVENTO_NOME = '';                /* "Convenção Nacional 2026" */
+let LOGO_TELAO = null;               /* a logo já carregada, para o canvas do LED */
 
 /* ---- validade efetiva (V do hash > padrão impresso) ---- */
 const VALIDADE_PADRAO = '2026-08-25';
@@ -2192,6 +2381,7 @@ function lerDescontoDaURL(){
 let DESCONTO_GERENTE = lerDescontoDaURL();   /* {tipo:'percentual'|'valor', valor} | null */
 /* desconto em CENTAVOS sobre o bruto (regra 'total' do cuponsService) */
 function descontoGerenteCent(brutoCent){
+  if(typeof ORC_REAL !== 'undefined' && ORC_REAL) return 0;   /* modo real: o total do CRM manda; desconto nunca aparece */
   const d = DESCONTO_GERENTE;
   if(!d) return 0;
   const cent = d.tipo==='percentual' ? Math.round(brutoCent * d.valor/100) : d.valor*100;
@@ -2246,7 +2436,16 @@ function carregar(){
     };
   }catch(e){ return JSON.parse(JSON.stringify(PADRAO)); }
 }
-function salvar(){ try{ localStorage.setItem(CHAVE, JSON.stringify(PROPOSTA)); }catch(e){} }
+function salvar(){
+  try{ localStorage.setItem(CHAVE, JSON.stringify(PROPOSTA)); }catch(e){}
+  /* modo real: os ajustes do cliente ficam num registro próprio do link —
+     o `carregar()` do protótipo não sabe guardar "sem cardápio" (null) */
+  if(typeof ORC_REAL !== 'undefined' && ORC_REAL){
+    try{ localStorage.setItem(CHAVE+'_real', JSON.stringify({convidados:PROPOSTA.convidados,
+      menu:PROPOSTA.menu, coquetel:PROPOSTA.coquetel, openbar:PROPOSTA.openbar,
+      dias: PROPOSTA.dias || null})); }catch(e){}   /* cardápio de cada dia */
+  }
+}
 /* salvar de MESAS: persiste E avança a versão do layout (PROPOSTA.rev).
    É esta versão que aparece na legenda da maquete ("versão N") e no nome
    do vídeo gravado (tour-dimy-vN) — deixa visível que o tour acompanha
@@ -2261,7 +2460,414 @@ const porId = (lista,id)=>lista.find(x=>x.id===id)||lista[0];
 
 /* os "orcamento_itens" do protótipo: escolhas + travados + extras, cada um
    com as flags de VMC (VMC_PRODUTOS) penduradas em .f */
+/* =================================================================
+   MODO REAL (v18.09-2) — COM TOKEN a página exibe EXATAMENTE o
+   orçamento do CRM: as linhas de `orcamento.itens[]` com o valor de lá,
+   os serviços de `orcamento.servicos[]` e o total `valor_total`. Bloco
+   que o orçamento não tem simplesmente não aparece (nada de coquetel,
+   DJ ou crédito de A/V "de brinde"). SEM token nada muda: a demo DIMY
+   continua sendo o showroom completo.
+   · Desconto NUNCA aparece: quando a soma das linhas passa do total
+     (cupom/desconto do gerente), as linhas saem RATEADAS e o total é o
+     do CRM — nunca "de X por Y".
+   · O cliente pode trocar/tirar cardápio (sempre sobrando ao menos uma
+     alimentação) e mudar o nº de convidados: itens por pessoa e as
+     taxas por grupo acompanham, na mesma proporção que o orçamento
+     mostrou, e o valor passa a ser "estimado, sujeito a confirmação".
+   ================================================================= */
+let ORC_REAL = null;
+const normNome = s => String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().trim();
+/* casa o item do CRM com os cardápios da página: nome igual, ou um contido
+   no outro ("Coquetel Pacote 1" no CRM = "Pacote 1" aqui) */
+function casarCardapio(nome){
+  const n = normNome(nome);
+  const catalogo = [...MENUS.map(m=>({...m, tipo:'menu'})), ...COQUETEIS.map(c=>({...c, tipo:'coquetel'})), ...OPENBARS.map(b=>({...b, tipo:'openbar'}))];
+  return catalogo.find(c=>normNome(c.nome)===n)
+    || catalogo.find(c=>{ const cn = normNome(c.nome); return cn.length>3 && (n===`coquetel ${cn}` || n===`menu ${cn}` || n.endsWith(` ${cn}`)); })
+    || null;
+}
+function lerOrcamentoReal(o){
+  if(!o || !Array.isArray(o.itens)) return null;
+  const cent = v=>Math.round(Number(v||0)*100);
+  const conv = limita(parseInt(o.num_convidados,10) || PROPOSTA.convidados, 30, 500);
+  const R = {conv, total:cent(o.valor_total), sel:{}, linhas:[], servicos:[]};
+  /* EVENTO DE MAIS DE UM DIA — o orçamento multi_dia traz `dias[]` (data, dia
+     da semana, convidados, espaço e layout de cada um) e cada item carrega o
+     `dia_id`. Os dias são lidos ANTES dos itens porque cada um tem o seu
+     cardápio: o item de alimentação/bebida de um dia vira a seleção DAQUELE
+     dia, e não uma linha fixa. */
+  R.dias = (Array.isArray(o.dias) ? o.dias : []).map(d=>({
+    id: d.id, numero: d.numero || 0,
+    dataBR: /^(\d{4})-(\d{2})-(\d{2})/.test(String(d.data_evento||''))
+      ? String(d.data_evento).slice(0,10).split('-').reverse().join('/') : '',
+    diaSemana: String(d.dia_semana||'').replace('sabado','sábado'),
+    conv: parseInt(d.num_convidados,10) || conv,
+    espaco: (d.espaco && d.espaco.nome) || '', layout: (d.layout && d.layout.nome) || '',
+    sel: {},
+  })).sort((a,b)=>a.numero-b.numero);
+  R.multiDia = R.dias.length > 1;
+  if(R.multiDia) R.diaAtivo = R.dias[0].id;
+  const diaPorId = id=>R.dias.find(d=>d.id===id) || null;
+  for(const it of o.itens){
+    const nome = (it.produto && it.produto.nome) || it.nome || '—';
+    const qtd = Number(it.quantidade) || 1;
+    const unit = cent(it.valor_unitario!=null ? it.valor_unitario : (Number(it.valor_total||0)/(qtd||1)));
+    const hit = casarCardapio(nome);
+    /* cardápio que a página conhece vira SELEÇÃO trocável: do dia, quando o
+       item tem dia_id; do evento, quando é um dia só. Item de alimentação
+       sem dia num evento de vários dias continua linha fixa (vale para todos). */
+    if(hit){
+      const dono = it.dia_id ? diaPorId(it.dia_id) : (R.multiDia ? null : R);
+      if(dono && !dono.sel[hit.tipo]){ dono.sel[hit.tipo] = {id:hit.id, unit}; continue; }
+    }
+    const bloco = ['alimentacao','bebidas','estrutura'].includes(String(it.bloco)) ? it.bloco
+      : (/open bar|vinho|espumante|cerveja|drink|refrigerante/i.test(nome) ? 'bebidas'
+        : (/coquetel|menu|coffee|jantar|buffet|sobremesa/i.test(nome) ? 'alimentacao' : 'estrutura'));
+    /* quem acompanha o número de convidados é o produto que o CRM marca como
+       `vinculado_convidados` (mesma regra do editor de orçamento); link antigo
+       sem esse campo continua no palpite pela quantidade */
+    const vinc = it.produto && it.produto.vinculado_convidados;
+    const convDoItem = it.dia_id ? ((o.dias||[]).find(d=>d.id===it.dia_id)||{}).num_convidados || conv : conv;
+    R.linhas.push({nome, qtd, unit, bloco, dia: it.dia_id || null,
+      porPessoa: vinc != null ? !!vinc : (qtd===Number(convDoItem))});
+  }
+  for(const sv of (Array.isArray(o.servicos) ? o.servicos : [])){
+    if(sv.ativo === false) continue;
+    const nome = (sv.servico && sv.servico.nome) || sv.nome || 'Serviço';
+    /* COMO O CRM CALCULA (servicos_template.tipo_calculo) — a página usa a
+       MESMA fórmula quando o cliente mexe em alguma coisa:
+         percentual_produtos    % sobre os itens com taxa de serviço
+         por_convidados         valor por pessoa × convidados
+         por_grupo_convidados   valor por grupo × grupos de 100
+         valor_fixo / valor_fixo_ambiente / valor_minimo_ambiente[_dia]  não mudam
+         reajuste_temporal      depende da data, que o cliente não altera
+       Os PARÂMETROS (o percentual, o valor do grupo) não vêm no link público,
+       então são deduzidos do próprio orçamento — o que dá o mesmo número que o
+       CRM para o orçamento enviado e acompanha certo quando o cliente muda. */
+    R.servicos.push({nome, tipo: (sv.servico && sv.servico.tipo_calculo) || '',
+      valor: cent(sv.valor_calculado!=null ? sv.valor_calculado : sv.valor_base)});
+  }
+  const selDosDias = R.dias.reduce((a,d)=>a + Object.keys(d.sel).length, 0);
+  if(!R.linhas.length && !Object.keys(R.sel).length && !selDosDias) return null;
+  /* base do orçamento, para o rateio do desconto e para as taxas que variam.
+     No multi-dia o cardápio de cada dia conta pelos convidados DAQUELE dia. */
+  /* no multi-dia, a linha por pessoa vale pelos convidados DO DIA dela */
+  const convDaLinha = x => x.dia ? ((R.dias.find(d=>d.id===x.dia)||{}).conv || conv) : conv;
+  const valorLinha = x => x.unit*(x.porPessoa ? convDaLinha(x) : x.qtd);
+  const valorSel = (sel, n) => Object.values(sel).reduce((a,x)=>a + x.unit*n, 0);
+  R.brutoItens = R.linhas.reduce((a,x)=>a + valorLinha(x), 0)
+    + valorSel(R.sel, conv)
+    + R.dias.reduce((a,d)=>a + valorSel(d.sel, d.conv), 0);
+  /* EQUIPE (corrigido em 28/09/2026) — no CRM é `percentual_produtos`: um
+     percentual sobre os itens com TAXA DE SERVIÇO, que na prática é comida e
+     bebida. Guardar o percentual sobre o orçamento inteiro fazia a equipe
+     encolher assim que o cliente mexia (medido: 15% viravam 7,6% com 500).
+     O link público não manda quais produtos têm taxa nem o percentual, então
+     a base é deduzida: fica com a que dá o percentual "de tabela" (múltiplo
+     de 0,5%) — no ORC-2026-02412 é comida+bebida, 91.233,00 → 15,00%. */
+  const daTaxa = b => b==='alimentacao' || b==='bebidas';
+  const baseComidaBebida = R.linhas.filter(x=>daTaxa(x.bloco)).reduce((a,x)=>a + valorLinha(x), 0)
+    + valorSel(R.sel, conv)
+    + R.dias.reduce((a,d)=>a + valorSel(d.sel, d.conv), 0);
+  const equipe = R.servicos.find(sv=>tipoDoServico(sv)==='percentual_produtos');
+  const redondo = p => Math.abs(p*200 - Math.round(p*200)) < 0.01;   /* múltiplo de 0,5% */
+  if(equipe){
+    const pctComida = baseComidaBebida>0 ? equipe.valor/baseComidaBebida : 0;
+    const pctTudo = R.brutoItens>0 ? equipe.valor/R.brutoItens : 0;
+    const usaTudo = !redondo(pctComida) && redondo(pctTudo);
+    R.baseTaxaTudo = usaTudo;
+    R.baseTaxa0 = usaTudo ? R.brutoItens : baseComidaBebida;
+    R.equipePct = R.baseTaxa0>0 ? equipe.valor/R.baseTaxa0 : 0.15;
+  }else{
+    R.baseTaxa0 = baseComidaBebida;
+    R.equipePct = 0.15;
+  }
+  R.grupos0 = Math.min(Math.ceil(conv/100), 10);
+  R.bruto = R.brutoItens + R.servicos.reduce((a,sv)=>a+sv.valor, 0);
+  R.fator = (R.total>0 && R.bruto>0) ? Math.min(1, R.total/R.bruto) : 1;
+  return R;
+}
+const TIPOS_CARD = ['coquetel','menu','openbar'];
+/* CARDÁPIO POR DIA (v18.09-4) — num evento de vários dias, coquetel, menu e
+   open bar são de CADA dia. O que o orçamento trouxe fica em `dias[i].sel`; o
+   que o cliente escolhe agora fica em `PROPOSTA.dias[diaId]`. O `PROPOSTA[tipo]`
+   continua existindo como ESPELHO do dia que está aberto, para que os cards, a
+   vitrine e o cardápio completo sigam funcionando sem saber de dias. */
+const diaCorrente = ()=> (ORC_REAL && ORC_REAL.multiDia) ? ORC_REAL.diaAtivo : null;
+function selDoOrcamento(tipo, diaId){
+  if(!ORC_REAL) return null;
+  if(!ORC_REAL.multiDia) return ORC_REAL.sel[tipo] || null;
+  const d = diaDoOrcamento(diaId || diaCorrente());
+  return (d && d.sel[tipo]) || null;
+}
+function escolhaDoCliente(tipo, diaId){
+  if(!ORC_REAL || !ORC_REAL.multiDia) return PROPOSTA[tipo];
+  const e = PROPOSTA.dias && PROPOSTA.dias[diaId || diaCorrente()];
+  return e ? (e[tipo] || null) : null;
+}
+/* o que o cliente escolheu agora (null = tirou) */
+function selecaoReal(tipo, diaId){
+  const id = escolhaDoCliente(tipo, diaId); if(!id) return null;
+  const lista = tipo==='menu' ? MENUS : (tipo==='coquetel' ? COQUETEIS : OPENBARS);
+  const op = lista.find(x=>x.id===id); if(!op) return null;
+  const orc = selDoOrcamento(tipo, diaId);
+  const doOrc = !!(orc && orc.id===id);
+  return {id:op.id, nome:op.nome, curto:op.curto||op.nome, unit: doOrc ? orc.unit : op.preco,
+    bloco: tipo==='openbar' ? 'bebidas' : 'alimentacao', doOrc};
+}
+const mexeuNoOrcamento = ()=>{
+  if(!ORC_REAL) return false;
+  if(PROPOSTA.convidados !== ORC_REAL.conv) return true;
+  if(ORC_REAL.multiDia) return ORC_REAL.dias.some(d=>TIPOS_CARD
+    .some(t=>(d.sel[t] ? d.sel[t].id : null) !== escolhaDoCliente(t, d.id)));
+  return TIPOS_CARD.some(t=>(ORC_REAL.sel[t] ? ORC_REAL.sel[t].id : null) !== PROPOSTA[t]);
+};
+/* regra do dia: nenhum dia fica sem comida (menu ou coquetel) */
+const temAlimentacao = diaId => ['menu','coquetel'].some(t=>!!escolhaDoCliente(t, diaId));
+function itensReais(s){
+  const l = [];
+  if(ORC_REAL.multiDia){
+    for(const d of ORC_REAL.dias) for(const tipo of TIPOS_CARD){
+      const sel = selecaoReal(tipo, d.id); if(!sel) continue;
+      l.push({id:`${sel.id}·${d.id}`, nome:sel.nome, qtd:d.conv, unit:sel.unit, total:sel.unit*d.conv,
+        f:{bloco:sel.bloco, taxa:true}, doOrc:sel.doOrc, dia:d.id, pp:true, card:tipo});
+    }
+  }else for(const tipo of TIPOS_CARD){
+    const sel = selecaoReal(tipo); if(!sel) continue;
+    l.push({id:sel.id, nome:sel.nome, qtd:s.convidados, unit:sel.unit, total:sel.unit*s.convidados,
+      f:{bloco:sel.bloco, taxa:true}, doOrc:sel.doOrc, pp:true, card:tipo});
+  }
+  for(const x of ORC_REAL.linhas){
+    /* multi-dia: a quantidade das linhas de estrutura é a que o consultor
+       enviou; num dia só, os itens por pessoa acompanham o ajuste */
+    const qtd = (ORC_REAL.multiDia || !x.porPessoa) ? x.qtd : s.convidados;
+    /* comida e bebida entram na base da equipe, como no CRM */
+    const taxa = x.bloco==='alimentacao' || x.bloco==='bebidas';
+    l.push({id:`${x.nome}·${x.dia||'0'}`, nome:x.nome, qtd, unit:x.unit, total:x.unit*qtd,
+      f:{bloco:x.bloco, taxa}, doOrc:true, dia:x.dia, pp:x.porPessoa});
+  }
+  return l;
+}
+/* quais linhas aparecem na tela: no multi-dia, as do dia escolhido (mais as
+   que valem para o evento inteiro, sem dia) */
+function itensNaTela(){
+  const l = itensReais(PROPOSTA);
+  if(!ORC_REAL.multiDia) return l;
+  return l.filter(i=>!i.dia || i.dia===ORC_REAL.diaAtivo);
+}
+function diaDoOrcamento(id){ return (ORC_REAL.dias||[]).find(d=>d.id===id) || null; }
+/* EVENTO DE MAIS DE UM DIA (v18.09-3) — o orçamento vem com `dias[]` e cada
+   item carrega o `dia_id`. A barra escolhe o dia: a lista mostra as linhas dele
+   (e as que valem para o evento inteiro), com subtotal próprio; o total do card
+   continua sendo o do evento completo, igual ao do CRM. Convidados e cardápio
+   são por dia, definidos pelo consultor — aqui viram leitura. */
+function barraDeDias(id, inserir){
+  let barra = document.getElementById(id);
+  if(!barra){
+    barra = document.createElement('div');
+    barra.className = 'dias'; barra.id = id;
+    barra.setAttribute('role','tablist'); barra.setAttribute('aria-label','Dias do evento');
+    inserir(barra);
+    barra.addEventListener('click', ev=>{
+      const b = ev.target.closest('[data-dia]'); if(b) abrirDia(b.dataset.dia);
+    });
+  }
+  barra.innerHTML = ORC_REAL.dias.map(d=>{
+    const ativo = d.id===ORC_REAL.diaAtivo;
+    return `<button type="button" class="pill dias__pill" role="tab" data-dia="${esc(d.id)}" aria-selected="${ativo}">
+      <b>Dia ${d.numero}</b>
+      <span class="dias__meta">${esc(d.dataBR)}${d.diaSemana?` · ${esc(d.diaSemana)}`:''} · ${d.conv} convidados</span>
+      ${d.espaco?`<span class="dias__espaco">${esc(d.espaco)}</span>`:''}</button>`;
+  }).join('');
+  return barra;
+}
+/* trocar de dia: o dia aberto vira o espelho de PROPOSTA (cards, vitrine e
+   cardápio completo continuam lendo de lá), e a página inteira se repinta */
+function abrirDia(id){
+  if(!ORC_REAL || !ORC_REAL.multiDia || id===ORC_REAL.diaAtivo) return;
+  ORC_REAL.diaAtivo = id;
+  for(const t of TIPOS_CARD) PROPOSTA[t] = escolhaDoCliente(t, id);
+  TIPOS_CARD.forEach(pintarSelecao);
+  atualizarTotais();          /* remonta a lista do dia e as barras */
+}
+function montarDias(){
+  if(!ORC_REAL || !ORC_REAL.multiDia) return;
+  const ul = $('#listaItens'); if(!ul) return;
+  const barra = barraDeDias('diasBarra', el=>ul.before(el));
+  /* a mesma barra na seção dos cardápios: é lá que o cliente troca comida e
+     bebida, e precisa saber (e escolher) de que dia é o cardápio */
+  const cab = document.querySelector('#cardapios .sec__head');
+  if(cab) barraDeDias('diasBarraCard', el=>cab.after(el));
+  /* planta do dia: se o espaço daquele dia não é o que a página abriu, leva
+     para a planta certa mantendo o mesmo link da proposta */
+  const d = diaDoOrcamento(ORC_REAL.diaAtivo);
+  const alvo = d && espacoPorNome(d.espaco);
+  let aviso = document.getElementById('diasPlanta');
+  if(!aviso){
+    aviso = document.createElement('p'); aviso.className = 'dias__nota'; aviso.id = 'diasPlanta';
+    barra.after(aviso);
+  }
+  if(d && alvo && alvo !== ESPACO){
+    const qs = new URLSearchParams(location.search); qs.set('espaco', alvo);
+    aviso.innerHTML = `O dia ${d.numero} acontece no <b>${esc(d.espaco)}</b>${d.layout?` · ${esc(d.layout)}`:''} — `
+      + `<a href="?${qs.toString()}#planta">ver a planta deste dia</a>.`;
+  }else if(d && alvo){
+    aviso.innerHTML = `Dia ${d.numero} no <b>${esc(d.espaco)}</b>${d.layout?` · ${esc(d.layout)}`:''} — a planta e a maquete abaixo são deste dia.`;
+  }else if(d && d.espaco){
+    /* espaço que esta página não desenha: dizemos a verdade em vez de
+       mostrar a planta de outro salão como se fosse a dele */
+    aviso.innerHTML = `Dia ${d.numero} no <b>${esc(d.espaco)}</b>${d.layout?` · ${esc(d.layout)}`:''} — `
+      + `a planta deste espaço não está aberta aqui; peça na conversa que a gente envia.`;
+  }else aviso.innerHTML = '';
+  cardConvidadosDoDia(d);
+}
+/* no multi-dia cada dia tem o seu número de convidados, então o passo a passo
+   do card vira leitura: mudar convidados de um dia é conversa com o consultor */
+function cardConvidadosDoDia(d){
+  const st = document.querySelector('.stepper'); if(!st) return;
+  let leitura = document.getElementById('convDoDia');
+  if(!leitura){
+    leitura = document.createElement('p'); leitura.className = 'rcard__val'; leitura.id = 'convDoDia';
+    st.after(leitura);
+  }
+  st.hidden = true; leitura.hidden = false;
+  leitura.textContent = d ? `${d.conv}` : `${ORC_REAL.conv}`;
+  const sub = st.parentElement.querySelector('.rcard__sub');
+  if(sub) sub.textContent = d ? `no dia ${d.numero} · ${ORC_REAL.dias.length} dias de evento` : `${ORC_REAL.dias.length} dias de evento`;
+}
+/* evento de mais de um dia: o card da data, o subtítulo do topo e o rótulo do
+   total passam a falar do evento inteiro (as datas não são editáveis) */
+function vestirMultiDia(){
+  const ds = ORC_REAL.dias;
+  const curto = t=>String(t||'').slice(0,5);           /* 06/11 */
+  const ano = (ds[ds.length-1].dataBR||'').slice(6);
+  const lista = ds.length===2
+    ? `${curto(ds[0].dataBR)} e ${curto(ds[1].dataBR)}`
+    : `${curto(ds[0].dataBR)} a ${curto(ds[ds.length-1].dataBR)}`;
+  const texto = ano ? `${lista}/${ano}` : lista;
+  const cardData = document.querySelector('#cardData .rcard__val');
+  if(cardData) cardData.textContent = texto;
+  const subData = document.querySelector('#cardData .rcard__sub');
+  if(subData) subData.textContent = `${ds.length} dias de evento · ${ds.map(d=>d.diaSemana).filter(Boolean).join(' e ')}`;
+  const heroSub = document.querySelector('.hero__sub');
+  if(heroSub) heroSub.innerHTML = `<span class="js-espaco-rotulo">${esc(AMB.rotulo)}</span> — ${esc(texto)}, ${ds.length} dias.`;
+  const intro1 = document.querySelector('#resumo .sec__intro');
+  if(intro1) intro1.textContent = `São ${ds.length} dias de evento — escolha o dia na lista de itens para ver o que está em cada um.`;
+  const intro2 = document.querySelector('#cardapios .sec__intro');
+  if(intro2) intro2.textContent = 'Cada dia tem o seu cardápio: escolha o dia e troque o coquetel, o jantar e o bar dele à vontade — o total responde na hora.';
+  const rotTotal = document.querySelector('.inv__total span');
+  if(rotTotal) rotTotal.textContent = `Total do investimento · ${ds.length} dias`;
+  const nota = document.querySelector('#invCard .inv__nota');
+  /* #invConvidados continua no markup (atualizarTotais escreve nele) — só
+     não aparece, porque no multi-dia cada dia tem o seu número */
+  if(nota) nota.innerHTML = `Valores do evento completo — ${ds.map(d=>`dia ${d.numero} com ${d.conv} convidados`).join(', ')}.`
+    + `<b id="invConvidados" hidden></b>`;
+}
+/* casa o nome do espaço do CRM com um ambiente que a página conhece */
+function espacoPorNome(nome){
+  const n = normNome(nome);
+  if(!n) return null;
+  const achado = Object.keys(AMBIENTES).find(k=>{
+    const a = AMBIENTES[k];
+    return normNome(a.nome)===n || n.includes(normNome(a.nome)) || normNome(a.nome).includes(n);
+  });
+  return achado || null;
+}
+/* serviços: enquanto nada muda, valem os valores do orçamento. Mexeu, os que
+   dependem do evento acompanham (Equipe no percentual do próprio orçamento;
+   Segurança e Limpeza por grupo de 100 convidados) */
+/* mesmo arredondamento do CRM: cada serviço fecha em centavos */
+function servicosReais(s, baseTaxaCent){
+  const parado = !mexeuNoOrcamento();
+  const grupos = Math.min(Math.ceil(s.convidados/GRUPO_CONVIDADOS), 10);
+  const lista = ORC_REAL.servicos.map(sv=>{
+    if(parado) return [sv.nome, sv.valor];
+    switch(tipoDoServico(sv)){
+      case 'percentual_produtos':
+        return [sv.nome, Math.round(baseTaxaCent*ORC_REAL.equipePct)];
+      case 'por_grupo_convidados':
+        return [sv.nome, Math.round(sv.valor*grupos/Math.max(ORC_REAL.grupos0,1))];
+      case 'por_convidados':
+        return [sv.nome, Math.round(sv.valor*s.convidados/Math.max(ORC_REAL.conv,1))];
+      default:                      /* valor fixo, locação do espaço, reajuste */
+        return [sv.nome, sv.valor];
+    }
+  });
+  return {lista, total: lista.reduce((a,x)=>a+x[1],0)};
+}
+const GRUPO_CONVIDADOS = 100;      /* `convidados_por_grupo` padrão do CRM */
+/* o tipo vem do CRM; link antigo (sem tipo_calculo) cai no nome, como antes */
+function tipoDoServico(sv){
+  if(sv.tipo) return sv.tipo;
+  const n = normNome(sv.nome);
+  if(n==='equipe') return 'percentual_produtos';
+  if(/taxa de (seguranca|limpeza)/.test(n)) return 'por_grupo_convidados';
+  return 'valor_fixo';
+}
+function montarItensReais(){
+  const ul = $('#listaItens'); if(!ul) return;
+  montarDias();
+  const itens = itensNaTela(), f = ORC_REAL.fator;
+  ul.innerHTML = itens.map(i=>{
+    const porPessoa = i.pp != null ? i.pp : (i.qtd===PROPOSTA.convidados);
+    /* o total da linha é o unitário JÁ arredondado × quantidade: quem
+       multiplicar na calculadora chega no mesmo número */
+    const unit = Math.round(i.unit*f), total = unit*i.qtd, incluso = total===0;
+    /* linha de cardápio no multi-dia: dá para trocar, e a nota diz onde */
+    const nota = (i.card && ORC_REAL.multiDia) ? 'cardápio deste dia · troque na Gastronomia'
+      : (porPessoa ? 'acompanha o nº de convidados' : 'quantidade do orçamento');
+    return `<li class="item" data-real="${esc(String(i.id))}">
+      <div class="item__info"><p class="item__nome">${esc(i.nome)}</p>
+        <p class="item__preco">${incluso ? 'incluso na proposta' : `${fmt(unit)}${porPessoa ? ' por pessoa' : ' a unidade'}`}${i.doOrc ? '' : ' · sujeito a confirmação'}</p></div>
+      <span class="trava"><b class="trava__qtd">${i.qtd}</b><span class="trava__nota">&nbsp;· ${nota}</span></span>
+      <p class="item__total">${incluso ? 'incluso' : fmt(total)}</p></li>`;
+  }).join('');
+  /* multi-dia: fecha a lista com o subtotal do dia que está na tela (os
+     serviços do evento ficam no card de investimento, que é do evento todo) */
+  if(ORC_REAL.multiDia){
+    const d = diaDoOrcamento(ORC_REAL.diaAtivo);
+    const sub = itens.reduce((a,i)=>a + Math.round(i.unit*f)*i.qtd, 0);   /* soma o que está na tela */
+    const li = document.createElement('li');
+    li.className = 'item item--subdia'; li.id = 'subtotalDia';
+    li.innerHTML = `<div class="item__info"><p class="item__nome">Subtotal do dia ${d ? d.numero : ''}</p>
+      <p class="item__preco">itens deste dia · os serviços do evento entram no total</p></div>
+      <p class="item__total">${fmt(sub)}</p>`;
+    ul.appendChild(li);
+  }
+}
+
+/* nota fixa sob o card de investimento: enquanto nada muda, diz que são os
+   valores do orçamento; mexeu, vira "valor estimado". Sempre sujeito a
+   confirmação, porque a proposta tem validade. */
+function avisoReal(){
+  let av = document.getElementById('avisoReal');
+  if(!av){
+    av = document.createElement('p'); av.className = 'inv__nota'; av.id = 'avisoReal';
+    const base = document.querySelector('.inv__nota');
+    if(base) base.after(av); else ($('#listaItens')||document.body).after(av);
+  }
+  av.innerHTML = mexeuNoOrcamento()
+    ? `<b>Valor estimado dos seus ajustes</b> — sujeito a confirmação do consultor. O orçamento enviado é de ${fmt(ORC_REAL.total)} para ${ORC_REAL.conv} convidados.`
+    : `Valores do seu orçamento ${esc(ORC_NUMERO)} — sujeito a confirmação do consultor: a proposta tem validade, e depois dela os valores podem mudar.`;
+}
+/* link com token que o CRM não entrega (expirado, removido, fora do ar):
+   a página NUNCA cai na demo DIMY — material de um cliente jamais aparece
+   na proposta de outro (regra congelada de 09/09). */
+function propostaIndisponivel(){
+  document.title = 'Proposta indisponível · Indaiá Eventos';
+  document.querySelectorAll('.brand__mono').forEach(el=>el.textContent = 'INDAIÁ');
+  document.querySelectorAll('.eyebrow').forEach(el=>{ if(/DIMY/i.test(el.textContent)) el.textContent = 'Proposta corporativa · Indaiá Eventos'; });
+  const heroSub = document.querySelector('.hero__sub');
+  if(heroSub) heroSub.textContent = 'Esta proposta não está mais disponível.';
+  ['investimento','extras','resumo'].forEach(id=>{ const s = document.getElementById(id); if(s) s.hidden = true; });
+  const tb = document.getElementById('tierbar'); if(tb) tb.style.display = 'none';
+  let av = document.querySelector('.expirada');
+  if(!av){ av = document.createElement('div'); av.className = 'expirada'; av.setAttribute('role','status'); $('#conteudo').prepend(av); }
+  av.innerHTML = '<p class="expirada__txt">Este link de proposta não está mais disponível — <b>fale com a gente na conversa</b> para receber um link novo.</p>';
+}
+
 function itensDoOrcamento(s){
+  if(ORC_REAL) return itensReais(s);
   const C = s.convidados;
   const l = [porId(COQUETEIS,s.coquetel), porId(MENUS,s.menu), porId(OPENBARS,s.openbar)]
     .map(op=>({id:op.id, nome:op.nome, qtd:C, unit:op.preco}));
@@ -2373,6 +2979,23 @@ const fmt0 = c=>fmtBRL0.format(Math.round(c/100));
 /* =================================================================
    RENDER — cards de seleção, itens, totais, tierbar, WhatsApp
    ================================================================= */
+/* REDE DA FOTO (28/09/2026) — as fotos vêm pelo redimensionador do Supabase
+   (/render/image/public/…?width=), que é o que derrubou o peso da página de
+   22,9 MB para 3,0 MB. Medido em 28/09: o redimensionador respondeu 544
+   (DatabaseTimeout) em TODAS as fotos enquanto o arquivo original respondia
+   200 — e, como o erro vem em JSON, o navegador bloqueia a resposta
+   (ERR_BLOCKED_BY_ORB) e a proposta abriria SEM NENHUMA FOTO. Aqui cada foto
+   que falhar volta sozinha para o arquivo original: pesa mais, mas aparece. */
+document.addEventListener('error', ev=>{
+  const img = ev.target;
+  if(!img || img.tagName !== 'IMG' || img.dataset.semTransform) return;
+  const u = img.currentSrc || img.src || '';
+  if(!/\/storage\/v1\/render\/image\/public\//.test(u)) return;
+  img.dataset.semTransform = '1';
+  ev.stopPropagation();                 /* segura o onerror da própria foto */
+  img.removeAttribute('srcset');
+  img.src = u.replace('/storage/v1/render/image/public/', '/storage/v1/object/public/').split('?')[0];
+}, true);
 const $ = s=>document.querySelector(s);
 const esc = t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const SINGULAR = {entradas:'entrada', principais:'principal', massas:'massa', 'guarnições':'guarnição', saladas:'salada'};
@@ -2453,10 +3076,33 @@ function pintarVitrine(tipo){
 }
 
 function selecionar(tipo, id){
-  if(PROPOSTA[tipo]===id) return;
-  PROPOSTA[tipo]=id; salvar();
+  /* modo real: clicar no item já escolhido TIRA ele da proposta, desde que
+     sobre ao menos uma alimentação (menu ou coquetel). No evento de vários
+     dias a escolha é DO DIA aberto — e a regra da alimentação vale por dia. */
+  const dia = diaCorrente();
+  const atual = ORC_REAL ? escolhaDoCliente(tipo, dia) : PROPOSTA[tipo];
+  let tirando = false;
+  if(ORC_REAL && atual===id){
+    if(tipo==='menu' || tipo==='coquetel'){
+      const outro = tipo==='menu' ? 'coquetel' : 'menu';
+      if(!escolhaDoCliente(outro, dia)){
+        const d = dia && diaDoOrcamento(dia);
+        mostrarToast(`${d ? `O dia ${d.numero}` : 'O evento'} precisa de ao menos uma alimentação — escolha a outra opção antes de tirar esta.`);
+        return;
+      }
+    }
+    tirando = true;
+  }
+  if(!tirando && atual===id) return;
+  const novo = tirando ? null : id;
+  if(dia){
+    PROPOSTA.dias = PROPOSTA.dias || {};
+    PROPOSTA.dias[dia] = {...(PROPOSTA.dias[dia]||{}), [tipo]: novo};
+  }
+  PROPOSTA[tipo] = novo;     /* espelho do dia aberto */
+  salvar();
   const g = GRUPOS[tipo];
-  $(g.alvo).querySelectorAll('.nivel').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.id===id)));
+  $(g.alvo).querySelectorAll('.nivel').forEach(b=>b.setAttribute('aria-pressed', String(!tirando && b.dataset.id===id)));
   /* fade de 160ms na troca (mesmo gesto do cardápio publicado); as miniaturas
      do cartão-vitrine trocam no meio do fade, junto com os totais */
   const alvos=[$('#invCard'), $(g.botao)];
@@ -2466,13 +3112,14 @@ function selecionar(tipo, id){
 
 /* ---- lista de extras e estrutura ---- */
 function montarItens(){
+  if(ORC_REAL) return montarItensReais();
   const ul = $('#listaItens'); ul.innerHTML='';
   ITENS_TRAVADOS.forEach(it=>{
     const li = document.createElement('li'); li.className='item'; li.dataset.trava=it.id;
     li.innerHTML = `<div class="item__info"><p class="item__nome">${esc(it.nome)}</p>
         <p class="item__preco">${fmt(it.preco)} por pessoa</p></div>
       <span class="trava"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
-        <b class="trava__qtd">—</b>&nbsp;· acompanha o nº de convidados</span>
+        <b class="trava__qtd">—</b><span class="trava__nota">&nbsp;· acompanha o nº de convidados</span></span>
       <p class="item__total">—</p>`;
     ul.appendChild(li);
   });
@@ -2485,7 +3132,7 @@ function montarItens(){
       li.innerHTML = `<div class="item__info"><p class="item__nome">${esc(it.nome)}</p>
           <p class="item__preco">${fmt(it.preco)} a unidade</p></div>
         <span class="trava"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
-          <b class="trava__qtd">—</b>&nbsp;· definido pela consultoria</span>
+          <b class="trava__qtd">—</b><span class="trava__nota">&nbsp;· definido pela consultoria</span></span>
         <p class="item__total">—</p>`;
       ul.appendChild(li);
       return;
@@ -2512,9 +3159,38 @@ function montarItens(){
    Segurança/Limpeza por grupo de convidados, Locação do dia). Com desconto
    do gerente ativo, o fator de rateio deixa a lista consistente com o
    total do cliente — o desconto em si nunca aparece aqui. */
-function montarServicos(r, fator){
-  $('#listaServicos').innerHTML = r.servLista.map(([n,v])=>
-    `<li><span>${esc(n)}</span><b>${fmt(v*fator)}</b></li>`).join('');
+function montarServicos(r, fator, prontos){
+  const lista = prontos || r.servLista.map(([n,v])=>[n, Math.round(v*fator)]);
+  $('#listaServicos').innerHTML = lista.map(([n,v])=>
+    `<li><span>${esc(n)}</span><b>${fmt(v)}</b></li>`).join('');
+}
+/* modo real: fecha os três blocos do card a partir das MESMAS linhas que
+   estão na tela (unitário arredondado × quantidade), e leva a sobra de
+   centavos para a maior linha de serviço — assim o total continua sendo,
+   ao centavo, o do orçamento do CRM. */
+function blocosRateados(r, fator){
+  const L = itensReais(PROPOSTA).map(i=>{
+    const unit = Math.round(i.unit*fator);
+    return {bloco:i.f.bloco, valor: unit*i.qtd};
+  });
+  const soma = b => L.filter(i=>i.bloco===b).reduce((a,i)=>a+i.valor, 0);
+  const gastro = soma('alimentacao') + soma('bebidas');
+  const estrutura = soma('estrutura');
+  const total = Math.round(r.total*fator);
+  const servicos = total - gastro - estrutura;
+  const sv = r.servLista.map(([n,v])=>[n, Math.round(v*fator)]);
+  const sobra = servicos - sv.reduce((a,x)=>a+x[1], 0);
+  if(sv.length && sobra){
+    /* a sobra entra numa linha que JÁ varia com o evento (a do percentual);
+       assim Locação e taxas fixas não ficam dançando centavos na tela */
+    const variavel = ORC_REAL.servicos
+      .map((s,i)=>({i, muda: tipoDoServico(s)==='percentual_produtos'}))
+      .filter(s=>s.muda && sv[s.i]);
+    let alvo = variavel.length ? variavel[0].i : 0;
+    if(!variavel.length) sv.forEach((x,i)=>{ if(x[1] > sv[alvo][1]) alvo = i; });
+    sv[alvo] = [sv[alvo][0], sv[alvo][1] + sobra];
+  }
+  return {gastro, estrutura, servicos, sv};
 }
 
 /* ---- indicadores financeiros do painel (espelho dos Indicadores do
@@ -2565,26 +3241,66 @@ function pintarPills(){
 }
 
 /* ---- totais + tierbar + WhatsApp (o coração do recálculo) ---- */
+/* escreve o total e, quando ele muda por um ajuste do cliente, mostra o quanto
+   mudou (o valor em si é escrito na hora — nada de contador que atrapalha
+   leitor de tela ou prova automatizada) */
+let totalAnterior = null, deltaTimer = 0;
+function pintarTotal(cent){
+  const el = $('#totalGeral');
+  if(!el) return;
+  el.textContent = fmt(cent);
+  const dif = totalAnterior===null ? 0 : cent - totalAnterior;
+  totalAnterior = cent;
+  if(!dif) return;
+  let badge = document.getElementById('invDelta');
+  if(!badge){
+    badge = document.createElement('span');
+    badge.className = 'inv__delta'; badge.id = 'invDelta';
+    badge.setAttribute('role','status');
+    el.after(badge);
+  }
+  badge.className = `inv__delta ${dif>0 ? 'inv__delta--sobe' : 'inv__delta--desce'}`;
+  badge.textContent = `${dif>0 ? '+' : '−'}${fmt(Math.abs(dif))}`;
+  el.classList.remove('mudou'); void el.offsetWidth; el.classList.add('mudou');
+  requestAnimationFrame(()=>badge.classList.add('on'));
+  clearTimeout(deltaTimer);
+  deltaTimer = setTimeout(()=>badge.classList.remove('on'), 4000);
+}
 function atualizarTotais(){
   const r = calcular(PROPOSTA);
   const C = PROPOSTA.convidados;
-  /* fator de rateio do desconto do gerente: o cliente vê as sublinhas já
-     líquidas e o total final — nunca "de X por Y" */
-  const fator = r.bruto>0 ? r.total/r.bruto : 1;
-  $('#subGastro').textContent = fmt(r.gastro*fator);
-  $('#invPP').textContent = `· ${fmt(r.gastro*fator/C)} por pessoa`;
-  $('#subEstrutura').textContent = fmt(r.estrutura*fator);
-  $('#subServicos').textContent = fmt(r.servicos*fator);
-  $('#totalGeral').textContent = fmt(r.total);
+  /* fator de rateio do desconto: o cliente vê as sublinhas já líquidas e o
+     total final — nunca "de X por Y". No modo real o fator é o do próprio
+     orçamento (cupom/desconto), e o total fecha com o do CRM. */
+  const fator = ORC_REAL ? ORC_REAL.fator : (r.bruto>0 ? r.total/r.bruto : 1);
+  /* modo real: a lista de itens é a do orçamento e muda com o cardápio e com
+     o dia aberto — remonta aqui, para não ficar velha depois de uma troca */
+  if(ORC_REAL) montarItensReais();
+  /* CONTA QUE BATE NA CALCULADORA (28/09/2026) — o desconto do orçamento é
+     rateado no PREÇO UNITÁRIO, e o valor da linha é unitário × quantidade.
+     Antes cada um era arredondado por conta própria e quem multiplicasse na
+     mão achava até R$ 1,80 de diferença. A sobra de centavos do rateio entra
+     na maior linha de serviço (valor agregado, sem quantidade na tela). */
+  const blocos = ORC_REAL ? blocosRateados(r, fator) : null;
+  const gastro = blocos ? blocos.gastro : r.gastro*fator;
+  $('#subGastro').textContent = fmt(gastro);
+  /* "por pessoa" só faz sentido com um número de convidados; no multi-dia
+     cada dia tem o seu, então a linha sai */
+  $('#invPP').textContent = (ORC_REAL && ORC_REAL.multiDia) ? '' : `· ${fmt(gastro/C)} por pessoa`;
+  $('#subEstrutura').textContent = fmt(blocos ? blocos.estrutura : r.estrutura*fator);
+  $('#subServicos').textContent = fmt(blocos ? blocos.servicos : r.servicos*fator);
+  pintarTotal(ORC_REAL ? Math.round(r.total*fator) : r.total);
+  if(ORC_REAL) avisoReal();
   $('#invConvidados').textContent = C;
   $('#convVal').value = C;
-  /* itens travados acompanham os convidados */
-  ITENS_TRAVADOS.forEach(it=>{
+  /* itens travados acompanham os convidados (no modo real a lista é a do
+     orçamento: montarItensReais já escreveu quantidade e total de cada linha) */
+  if(!ORC_REAL) ITENS_TRAVADOS.forEach(it=>{
     const li = document.querySelector(`[data-trava="${it.id}"]`);
     li.querySelector('.trava__qtd').textContent = C;
     li.querySelector('.item__total').textContent = fmt(it.preco*C);
   });
-  ITENS_EDITAVEIS.forEach(it=>{
+  if(!ORC_REAL) ITENS_EDITAVEIS.forEach(it=>{
     const q = PROPOSTA.extras[it.id];
     if(it.equipeOnly){  /* crédito: linha travada, só qtd × total */
       const li = document.querySelector(`[data-trava="${it.id}"]`);
@@ -2599,12 +3315,16 @@ function atualizarTotais(){
     li.querySelector('[data-passo="1"]').disabled  = q>=it.max;
   });
   /* bloco "Já incluso": serviços dinâmicos acompanham convidados/menu/dia */
-  montarServicos(r, fator);
+  montarServicos(r, fator, blocos && blocos.sv);
   /* painel da equipe: indicadores financeiros ao vivo (VMC muda com o dia) */
   if(MODO_EQUIPE) renderFinanceiro(r);
   /* tierbar */
-  $('#tbResumo').textContent = `${C} convidados · ${r.coq.curto} + ${r.menu.nome} + ${r.bar.nome}`;
-  $('#tbTotal').textContent = fmt0(r.total);
+  $('#tbResumo').textContent = (ORC_REAL && ORC_REAL.multiDia)
+    ? `${ORC_REAL.dias.length} dias · ${ORC_REAL.dias.map(d=>d.conv).join(' + ')} convidados`
+    : ORC_REAL
+    ? `${C} convidados · ${['coquetel','menu','openbar'].map(t=>{ const x = selecaoReal(t); return x && x.curto; }).filter(Boolean).join(' + ') || 'sem cardápio'}`
+    : `${C} convidados · ${r.coq.curto} + ${r.menu.nome} + ${r.bar.nome}`;
+  $('#tbTotal').textContent = fmt0(ORC_REAL ? Math.round(r.total*fator) : r.total);
   /* WhatsApp com resumo pré-preenchido (a pergunta é sempre a última linha).
      v18.08-15: sem consumidores .js-wa na página (os CTAs saíram — a conversa
      com o cliente já existe no WhatsApp); o builder fica, inofensivo com
@@ -2700,6 +3420,40 @@ $('#ovlFechar').addEventListener('click', fecharCardapio);
 const modal = $('#modal'), panel = $('#modalPanel');
 let focoModal = null;
 
+/* o que mudou em relação ao que o consultor enviou (modo real) — é isso que
+   vai na mensagem da conversa e na tela de "recebemos" */
+function ajustesDoCliente(){
+  if(!ORC_REAL) return [];
+  const l = [];
+  if(PROPOSTA.convidados !== ORC_REAL.conv)
+    l.push(`Convidados: de ${ORC_REAL.conv} para ${PROPOSTA.convidados}`);
+  /* cardápio: num dia só, uma linha por tipo; no multi-dia, uma linha por dia
+     que mudou, para a consultora saber exatamente de que dia é a troca */
+  const alvos = ORC_REAL.multiDia ? ORC_REAL.dias.map(d=>({d, sel:d.sel})) : [{d:null, sel:ORC_REAL.sel}];
+  for(const {d, sel} of alvos) for(const [tipo, rotulo] of [['coquetel','Coquetel'],['menu','Menu'],['openbar','Open bar']]){
+    const antes = sel[tipo] ? sel[tipo].id : null, agora = escolhaDoCliente(tipo, d && d.id);
+    if(antes === agora) continue;
+    const nomeDe = id=>{ const lista = tipo==='menu'?MENUS:(tipo==='coquetel'?COQUETEIS:OPENBARS);
+      const op = lista.find(x=>x.id===id); return op ? op.nome : '—'; };
+    const onde = d ? `Dia ${d.numero} · ` : '';
+    if(antes && !agora) l.push(`${onde}${rotulo}: tirar ${nomeDe(antes)}`);
+    else if(!antes && agora) l.push(`${onde}${rotulo}: incluir ${nomeDe(agora)}`);
+    else l.push(`${onde}${rotulo}: trocar ${nomeDe(antes)} por ${nomeDe(agora)}`);
+  }
+  if(PROPOSTA.mesas.length) l.push(`Layout${ORC_REAL.multiDia ? ` do ${AMB.nome}` : ''}: ${PROPOSTA.mesas.length} mesas de ${MESA.lugares} lugares`);
+  return l;
+}
+/* mensagem pronta para o cliente mandar na MESMA conversa em que recebeu o link */
+function linkDaConversa(){
+  const ajustes = ajustesDoCliente();
+  const r = calcular(PROPOSTA);
+  const total = fmt(ORC_REAL ? Math.round(r.total*ORC_REAL.fator) : r.total);
+  const msg = `Olá! Aqui é da ${CLIENTE_NOME}. Sobre a proposta ${ORC_NUMERO}:\n`
+    + (ajustes.length ? ajustes.map(a=>`• ${a}`).join('\n') + `\nTotal estimado na página: ${total}.\n`
+                      : `Revisei a proposta e está do meu jeito. Total: ${total}.\n`)
+    + `Podemos confirmar?`;
+  return `https://wa.me/${WA_NUM}?text=${encodeURIComponent(msg)}`;
+}
 function abrirModal(){
   const r = calcular(PROPOSTA);
   const extras = ITENS_EDITAVEIS.filter(it=>PROPOSTA.extras[it.id]>0)
@@ -2709,7 +3463,24 @@ function abrirModal(){
     <button type="button" class="modal__fechar" data-fecha-modal aria-label="Fechar">
       <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
     <h3 class="modal__titulo" id="modalTitulo">Confirmar ajustes</h3>
-    <ul class="modal__lista">
+    <ul class="modal__lista">${ORC_REAL ? `
+      ${ORC_REAL.multiDia
+        ? ORC_REAL.dias.map(d=>`<li><span>Dia ${d.numero} · ${esc(d.dataBR)}${d.espaco ? ` · ${esc(d.espaco)}` : ''}</span><b>${d.conv} convidados</b></li>`
+            + ['coquetel','menu','openbar'].map(t=>{ const s = selecaoReal(t, d.id); const tinha = !!d.sel[t];
+                if(!s && !tinha) return '';
+                const rotulo = t==='coquetel' ? 'Coquetel' : (t==='menu' ? 'Menu' : 'Open bar');
+                return `<li><span>Dia ${d.numero} · ${rotulo}</span><b>${s ? esc(s.nome) : '<span style="color:#9F2F2F">retirado</span>'}</b></li>`;
+              }).join('')).join('')
+        : `<li><span>Convidados</span><b>${PROPOSTA.convidados}${PROPOSTA.convidados!==ORC_REAL.conv ? ` <small style="color:var(--taupe);font-weight:400">(era ${ORC_REAL.conv})</small>` : ''}</b></li>
+      <li><span>Data do evento</span><b>${DATA_EVENTO_BR}</b></li>
+      ${['coquetel','menu','openbar'].map(t=>{ const s = selecaoReal(t); const tinha = !!ORC_REAL.sel[t];
+        if(!s && !tinha) return '';
+        const rotulo = t==='coquetel' ? 'Coquetel' : (t==='menu' ? 'Menu' : 'Open bar');
+        return `<li><span>${rotulo}</span><b>${s ? esc(s.nome) : '<span style="color:#9F2F2F">retirado</span>'}</b></li>`;
+      }).join('')}`}
+      <li><span>Layout do salão</span><b>${PROPOSTA.mesas.length ? `${PROPOSTA.mesas.length} mesas de ${MESA.lugares} lugares` : 'como enviado'}</b></li>
+      <li class="total"><span>${mexeuNoOrcamento() ? 'Total estimado' : 'Total da proposta'}</span><b>${fmt(Math.round(r.total*ORC_REAL.fator))}</b></li>`
+    : `
       <li><span>Convidados</span><b>${PROPOSTA.convidados}</b></li>
       <li><span>Dia simulado</span><b>${diaRotulo}</b></li>
       <li><span>Coquetel ${esc(r.coq.nome)}</span><b>${fmt(r.coq.preco)} /pessoa</b></li>
@@ -2719,7 +3490,7 @@ function abrirModal(){
       <li><span>Layout do salão</span><b>${PROPOSTA.mesas.length
         ? `${PROPOSTA.mesas.length} mesas de ${MESA.lugares} lugares`
         : 'ainda sem mesas'}</b></li>
-      <li class="total"><span>Total do investimento</span><b>${fmt(r.total)}</b></li>
+      <li class="total"><span>Total do investimento</span><b>${fmt(r.total)}</b></li>`}
     </ul>
     <p class="modal__aviso">Ao confirmar, sua consultora recebe os ajustes e retorna em até 1 dia útil.
       A data segue sujeita a disponibilidade.</p>
@@ -2728,16 +3499,30 @@ function abrirModal(){
       <button type="button" class="btn btn--ghost" data-fecha-modal>Continuar ajustando</button>
     </div>`;
   panel.querySelector('#btnEnviar').addEventListener('click', ()=>{
+    /* FIM DE FLUXO (v18.09-2): os ajustes voltam para a MESMA conversa em que
+       o cliente recebeu o link — é assim que a consultora fica sabendo. A
+       página mostra o que ele pediu e o caminho de volta, caso a janela do
+       WhatsApp seja bloqueada pelo navegador. */
+    const url = linkDaConversa();
+    const ajustes = ajustesDoCliente();
+    window.__ULTIMO_ENVIO__ = url;
+    try{ window.open(url, '_blank', 'noopener'); }catch(e){}
     panel.innerHTML = `
       <button type="button" class="modal__fechar" data-fecha-modal aria-label="Fechar">
         <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
       <div class="modal__ok" role="status">
         <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m7.5 12.5 3 3 6-6.5"/></svg>
-        <h4 id="modalTitulo">Ajustes enviados!</h4>
-        <p>Sua consultora recebe os ajustes e retorna em até 1 dia útil para confirmar a disponibilidade da data.</p>
-        <small>Protótipo: nenhum dado foi enviado de verdade.</small>
+        <h4 id="modalTitulo">Recebemos os seus ajustes</h4>
+        <p>${ajustes.length
+          ? 'Leve esta lista para a conversa e a sua consultora confirma preço e disponibilidade:'
+          : 'Abrimos a conversa com a sua consultora para você confirmar a proposta.'}</p>
+        ${ajustes.length ? `<ul class="modal__ajustes">${ajustes.map(a=>`<li>${esc(a)}</li>`).join('')}</ul>` : ''}
+      </div>
+      <div class="modal__acoes">
+        <a class="btn btn--gold" id="btnConversa" href="${url}" target="_blank" rel="noopener">Voltar para a conversa</a>
+        <button type="button" class="btn btn--ghost" data-fecha-modal>Continuar vendo a proposta</button>
       </div>`;
-    panel.querySelector('.modal__fechar').focus();
+    panel.querySelector('#btnConversa').focus();
   });
   focoModal = document.activeElement;
   modal.hidden = false;
@@ -3052,7 +3837,13 @@ function mostrarToast(msg, dur){
   toastTimer = setTimeout(()=>toastEl.classList.remove('on'), dur || 2800);
 }
 function copiarTexto(t){
-  if(navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(t);
+  /* a API moderna recusa quando a aba não está em foco; nesse caso a reserva
+     do textarea ainda copia, então ela vale como segunda tentativa */
+  if(navigator.clipboard && navigator.clipboard.writeText)
+    return navigator.clipboard.writeText(t).catch(()=>copiarPorCampo(t));
+  return copiarPorCampo(t);
+}
+function copiarPorCampo(t){
   /* reserva para navegador antigo/contexto sem clipboard API */
   return new Promise((res, rej)=>{
     const ta = document.createElement('textarea');
@@ -3286,6 +4077,7 @@ const T3 = {
   orb:{...AMB.camera.orb}, orb0:{...AMB.camera.orb},   /* órbita inicial do ambiente */
   plano:null, corteLigado:false,                        /* plano de corte do telhado (só com corteY) */
   fadeCena:null, fadeMat:null, fadeCam:null,            /* fusão em preto do tour (v18.08-22) */
+  TH:null, cartelaMat:null,                             /* cartela do vídeo curto (v18.09-11) */
   ponteiros:new Map(), pinca:0
 };
 /* =================================================================
@@ -3514,6 +4306,21 @@ function telaoMaterial(TH){
     g.addColorStop(1,'rgba(201,171,120,0)');
     ctx.fillStyle = g; ctx.fillRect(0,0,1024,564);
     ctx.textAlign = 'center'; ctx.fillStyle = '#C9AB78';
+    /* logo do cliente no painel: entra centralizada, respeitando a proporção,
+       com o tipo de evento embaixo. Sem logo (ou se ela falhar), volta o nome
+       desenhado em Cormorant, como sempre foi. */
+    if(LOGO_CLIENTE && LOGO_TELAO){
+      const cx = 512, maxL = 700, maxA = 260;
+      const esc = Math.min(maxL/LOGO_TELAO.width, maxA/LOGO_TELAO.height);
+      const l = LOGO_TELAO.width*esc, a = LOGO_TELAO.height*esc;
+      ctx.drawImage(LOGO_TELAO, cx - l/2, 300 - a/2, l, a);
+      if('letterSpacing' in ctx) ctx.letterSpacing = '10px';
+      ctx.font = 'italic 400 54px "Cormorant Garamond", Georgia, serif';
+      ctx.fillStyle = 'rgba(201,171,120,.85)';
+      ctx.fillText(TELAO_SUB, 512+5, 470);
+      tx.needsUpdate = true;
+      return;
+    }
     if('letterSpacing' in ctx) ctx.letterSpacing = '26px';
     /* nome do cliente (proposta real) ou DIMY (demo); nomes longos reduzem a
        fonte até caber no painel — nunca corta */
@@ -3533,6 +4340,14 @@ function telaoMaterial(TH){
     tx.needsUpdate = true;
   };
   desenhar();
+  /* a logo chega depois da primeira pintura: carrega e redesenha o painel */
+  if(LOGO_CLIENTE && !LOGO_TELAO){
+    const im = new Image();
+    im.crossOrigin = 'anonymous';
+    im.onload = ()=>{ LOGO_TELAO = im; desenhar(); };
+    im.onerror = ()=>{ LOGO_TELAO = null; };        /* fica o nome escrito */
+    im.src = LOGO_CLIENTE;
+  }
   /* o 1º draw pode sair na serif reserva; redesenha quando a Cormorant chegar */
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(desenhar).catch(()=>{});
   /* emissiveMap = a própria arte: o painel parece um LED aceso, sem estourar */
@@ -3585,6 +4400,10 @@ function tresIniciar(){
   T3.fadeCena = new TH.Scene();
   T3.fadeMat = new TH.MeshBasicMaterial({color:0x000000, transparent:true, opacity:0, depthTest:false, depthWrite:false});
   T3.fadeCena.add(new TH.Mesh(new TH.PlaneGeometry(2, 2), T3.fadeMat));
+  /* cartela do vídeo curto: mesmo plano em frente à câmera, com a arte */
+  T3.TH = TH;
+  T3.cartelaMat = new TH.MeshBasicMaterial({transparent:true, opacity:0, depthTest:false, depthWrite:false});
+  T3.fadeCena.add(new TH.Mesh(new TH.PlaneGeometry(2, 2), T3.cartelaMat));
   T3.fadeCam = new TH.OrthographicCamera(-1, 1, 1, -1, 0, 1);
   T3.fadeCam.position.z = .5;
 
@@ -3818,8 +4637,9 @@ function tresLaco(ts){
   if(TOUR.ativo) tourAtualizar(ts || performance.now());
   tresCorte();
   T3.renderer.render(T3.cena, T3.cam);
-  if(TOUR.ativo && TOUR.fade > 0){          /* fusão em preto entre os planos do tour */
+  if(TOUR.ativo && (TOUR.fade > 0 || TOUR.cartela > 0)){   /* fusão em preto e cartela do vídeo curto */
     T3.fadeMat.opacity = TOUR.fade;
+    T3.cartelaMat.opacity = TOUR.cartela || 0;
     T3.renderer.autoClear = false;
     T3.renderer.render(T3.fadeCena, T3.fadeCam);
     T3.renderer.autoClear = true;
@@ -3852,16 +4672,19 @@ function tresAtivar(){
   if(T3.carregando) return;
   T3.carregando = true;
   $('#tresStatus').hidden = false;
+  esperaDaMaquete(true);   /* o render entra desfocado enquanto a maquete baixa */
   /* three (módulo) + GLTFLoader + meshopt + os GLBs (salão, mesa real e os
      props do ambiente) — tudo lazy, só nesta primeira abertura; ficam em cache */
   carregarThree().then(carregarMaquete).then(()=>{
     T3.carregando = false;
     tresIniciar();
     $('#tresStatus').hidden = true;
+    esperaDaMaquete(false);   /* maquete na tela: tira o desfoque da espera */
     if(visaoAtual==='v3d') tresAbrir();
   }).catch(()=>{
     T3.carregando = false;
     $('#tresStatus').hidden = true;
+    esperaDaMaquete(false);
     tresFalhar('A maquete não carregou agora. Sem drama: no 2D dá para montar o layout do mesmo jeito.');
   });
 }
@@ -4525,24 +5348,24 @@ function tourRoteiroSalao(){
   const telaoAlvo = V(1737, 550, 1.8);
   return [
     /* 1 · entra pela porta da entrada, baixo, avançando para o salão */
-    {dur:7,  pos:linear(V(330,300,1.45), V(724,338,1.7)),
+    {dur:7,  legenda:'Entrada', pos:linear(V(330,300,1.45), V(724,338,1.7)),
              look:linear(V(760,330,1.5), V(1100,520,1.1))},
     /* 2 · cruza a abertura (y<420 na divisa x≈772) e dobra até a pista */
-    {dur:6,  pos:curva(V(724,338,1.7), V(806,412,1.7), V(846,596,1.7)),
+    {dur:6,  legenda:'Chegada ao salão', pos:curva(V(724,338,1.7), V(806,412,1.7), V(846,596,1.7)),
              look:linear(V(1100,520,1.1), V(1350,596,1.25))},
     /* 3 · corredor da pista central, mesas dos dois lados */
-    {dur:10, pos:linear(V(846,596,1.7), fimCorredor),
+    {dur:10, legenda:'Corredor central', pos:linear(V(846,596,1.7), fimCorredor),
              look:linear(V(1350,596,1.25), V(1700,560,1.4))},
     /* 4 · aproxima da mesa mais central */
-    {dur:4,  pos:linear(fimCorredor, orbP(a0)), look:linear(V(1700,560,1.4), mesaC)},
+    {dur:4,  legenda:'Mesas', pos:linear(fimCorredor, orbP(a0)), look:linear(V(1700,560,1.4), mesaC)},
     /* 5 · meia-volta lenta ao redor da mesa, a 2,5 m */
-    {dur:12, pos:k=>orbP(a0 + Math.PI*k), look:fixo(mesaC)},
+    {dur:12, legenda:'A sua mesa', pos:k=>orbP(a0 + Math.PI*k), look:fixo(mesaC)},
     /* 6 · segue ao palco e enquadra o telão com a logo */
-    {dur:6,  pos:linear(orbP(a0+Math.PI), V(1565,572,1.65)), look:linear(mesaC, telaoAlvo)},
+    {dur:6,  legenda:'Palco e telão', pos:linear(orbP(a0+Math.PI), V(1565,572,1.65)), look:linear(mesaC, telaoAlvo)},
     /* 7 · ~3 s no telão (push-in leve, o painel inteiro sempre no quadro) */
-    {dur:3,  pos:linear(V(1565,572,1.65), V(1598,564,1.62)), look:fixo(telaoAlvo)},
+    {dur:3,  legenda:'Telão com a sua marca', pos:linear(V(1565,572,1.65), V(1598,564,1.62)), look:fixo(telaoAlvo)},
     /* 8 · grua: sobe para a vista geral diagonal e encerra */
-    {dur:9,  pos:linear(V(1598,564,1.62), V(880,880,19)), look:linear(telaoAlvo, V(1260,555,0))},
+    {dur:9,  legenda:'Vista geral', pos:linear(V(1598,564,1.62), V(880,880,19)), look:linear(telaoAlvo, V(1260,555,0))},
     /* 9 · MEZANINO (v18.08-24, só se o ambiente tiver piso superior): fusão
        preta e dolly de 5 m pela área principal do mezanino, à altura do olhar,
        olhando a pista lá embaixo */
@@ -4576,6 +5399,21 @@ function tourAtualizar(ts){
      com fusao:true (os planos do Salão não têm — caminho contínuo) */
   const t = limita(k, 0, 1)*seg.dur, F = .2;
   TOUR.fade = seg.fusao ? Math.max(0, 1 - t/F, 1 - (seg.dur - t)/F) : 0;
+  /* vídeo curto: cartela de abertura nos 2,4 s iniciais e de fecho nos 2,4 s
+     finais, entrando e saindo em meio segundo */
+  TOUR.cartela = 0;
+  if(TOUR.curto){
+    const total = TOUR.segs.reduce((a,s)=>a+s.dur, 0);
+    const antes = TOUR.segs.slice(0, TOUR.i).reduce((a,s)=>a+s.dur, 0);
+    const agora = antes + t, C = 2.4, S = .5;
+    if(agora <= C){
+      if(!TOUR.cartelaFim && !TOUR.cartelaPronta){ tourCartelaLigar(false); TOUR.cartelaPronta = true; }
+      TOUR.cartela = Math.min(1, (C - agora)/S);
+    }else if(agora >= total - C){
+      if(!TOUR.cartelaFim){ tourCartelaLigar(true); TOUR.cartelaFim = true; }
+      TOUR.cartela = Math.min(1, (agora - (total - C))/S);
+    }
+  }
 }
 /* legenda do tour: nome da área do plano (roteiro genérico) ou o texto de sempre */
 function tourLegenda(seg){
@@ -4583,22 +5421,93 @@ function tourLegenda(seg){
     ? `Tour · ${seg.legenda} — Esc para parar`
     : `Tour com o layout atual (versão ${PROPOSTA.rev}) — Esc para parar`;
 }
-function tourIniciar(gravar){
+/* VÍDEO CURTO PARA MANDAR (v18.09-11) — o tour inteiro tem quase um minuto,
+   que é muito para o WhatsApp e para uma reunião. Este recorte pega os planos
+   mais fortes do mesmo roteiro (a entrada, a mesa e o telão com a marca do
+   cliente, e a vista geral do fim), acelera um pouco cada um e fecha em
+   ~25 s. Nada é inventado: são os mesmos trechos, com a mesma cena. */
+const VIDEO_CURTO_SEG = 25;
+function tourRoteiroCurto(){
+  const todos = tourMontarRoteiro();
+  if(todos.length <= 4) return todos;
+  /* primeiro (entrada), o do telão quando existir, o mais longo do meio e o
+     último (vista geral) — sem repetir nenhum */
+  const iTelao = todos.findIndex(p=>/tel[aã]o|palco/i.test(p.legenda||''));
+  const meio = todos.slice(1, -1)
+    .map((p,i)=>({p, i:i+1}))
+    .sort((a,b)=>b.p.dur - a.p.dur)
+    .map(x=>x.i);
+  const escolhidos = [...new Set([0, iTelao, meio[0], meio[1], todos.length-1].filter(i=>i>=0))]
+    .sort((a,b)=>a-b).slice(0, 4);
+  const planos = escolhidos.map(i=>({...todos[i]}));
+  /* encaixa a duração total no tamanho do recorte, sem plano de menos de 4 s */
+  const soma = planos.reduce((a,p)=>a+p.dur, 0) || 1;
+  const k = VIDEO_CURTO_SEG / soma;
+  planos.forEach(p=>{ p.dur = Math.max(4, +(p.dur*k).toFixed(1)); });
+  return planos;
+}
+/* cartela de abertura e de fecho: o nome do evento e do cliente, o espaço e a
+   assinatura da casa — desenhadas no mesmo canvas que está sendo gravado */
+function tourCartela(TH, fim){
+  const cv = document.createElement('canvas');
+  cv.width = 1280; cv.height = 720;
+  const c = cv.getContext('2d');
+  c.fillStyle = '#14181d'; c.fillRect(0,0,1280,720);
+  const g = c.createRadialGradient(640,330,40,640,360,760);
+  g.addColorStop(0,'rgba(201,171,120,.16)'); g.addColorStop(1,'rgba(201,171,120,0)');
+  c.fillStyle = g; c.fillRect(0,0,1280,720);
+  c.textAlign = 'center';
+  if('letterSpacing' in c) c.letterSpacing = '8px';
+  c.fillStyle = 'rgba(201,171,120,.85)';
+  c.font = '500 26px "Inter", Helvetica, Arial, sans-serif';
+  c.fillText(fim ? 'INDAIÁ EVENTOS' : (EVENTO_NOME || 'PROPOSTA').toUpperCase(), 640, 300);
+  if('letterSpacing' in c) c.letterSpacing = '2px';
+  c.fillStyle = '#F7F8F9';
+  let fonte = 78;
+  const titulo = fim ? (AMB.rotulo || AMB.nome) : CLIENTE_NOME;
+  c.font = `600 ${fonte}px "Cormorant Garamond", Georgia, serif`;
+  while(fonte > 32 && c.measureText(titulo).width > 1060){
+    fonte -= 4; c.font = `600 ${fonte}px "Cormorant Garamond", Georgia, serif`;
+  }
+  c.fillText(titulo, 640, 392);
+  c.strokeStyle = 'rgba(201,171,120,.5)'; c.lineWidth = 2;
+  c.beginPath(); c.moveTo(520, 432); c.lineTo(760, 432); c.stroke();
+  c.fillStyle = 'rgba(247,248,249,.72)';
+  c.font = 'italic 400 34px "Cormorant Garamond", Georgia, serif';
+  c.fillText(fim ? 'o seu evento, do jeito que você desenhou' : `${AMB.nome} · ${DATA_EVENTO_BR}`, 640, 486);
+  const tx = new TH.CanvasTexture(cv);
+  tx.colorSpace = TH.SRGBColorSpace;
+  return tx;
+}
+function tourCartelaLigar(fim){
+  if(!T3.cartelaMat) return;
+  const TH = T3.TH;
+  if(T3.cartelaMat.map) T3.cartelaMat.map.dispose();
+  T3.cartelaMat.map = tourCartela(TH, fim);
+  T3.cartelaMat.needsUpdate = true;
+}
+function tourIniciar(gravar, curto){
   if(!T3.pronto || T3.falhou || TOUR.ativo) return;
   tresMesas();                             /* garantia dupla: a cena SEMPRE nasce do estado salvo */
-  TOUR.segs = tourMontarRoteiro();
+  TOUR.curto = !!curto;
+  TOUR.cartela = 0; TOUR.cartelaPronta = false; TOUR.cartelaFim = false;
+  TOUR.segs = curto ? tourRoteiroCurto() : tourMontarRoteiro();
   TOUR.i = 0; TOUR.segIni = 0; TOUR.fade = 0; TOUR.ativo = true;   /* o 1º quadro já posiciona a câmera no início */
   if(gravar) tourGravarComecar();
   $('#btnTour').textContent = '◼ Parar';
   $('#btnGravarTour').disabled = true;
+  if($('#btnVideoCurto')) $('#btnVideoCurto').disabled = true;
   tourLegenda(TOUR.segs[0]);
 }
 function tourParar(completo){
   if(!TOUR.ativo) return;
   TOUR.ativo = false;
+  TOUR.cartela = 0;
+  if(T3.cartelaMat) T3.cartelaMat.opacity = 0;
   tourGravarFim(completo);                 /* baixa o vídeo só quando o tour termina inteiro */
   $('#btnTour').textContent = '▶ Gerar tour com o layout atual';
   $('#btnGravarTour').disabled = false;
+  if($('#btnVideoCurto')) $('#btnVideoCurto').disabled = false;
   tresLegendaPadrao();
   tresCamera();                            /* devolve a câmera à órbita manual */
 }
@@ -4607,7 +5516,9 @@ function tourParar(completo){
 function tourGravarComecar(){
   TOUR.pedacos = [];
   try{
-    const mimes = ['video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm','video/mp4'];
+    /* MP4 primeiro: é o que toca no WhatsApp e no iPhone sem conversão — o
+       webm fica como reserva para quem não grava mp4 */
+    const mimes = ['video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];
     const mime = mimes.find(m=>MediaRecorder.isTypeSupported(m)) || '';
     const fluxo = T3.renderer.domElement.captureStream(30);
     TOUR.gravador = new MediaRecorder(fluxo, mime ? {mimeType:mime, videoBitsPerSecond:8000000} : undefined);
@@ -4632,18 +5543,22 @@ function tourGravarFim(baixar){
     /* v{rev} no nome: o arquivo declara de qual versão do layout ele saiu */
     const slugCli = CLIENTE_NOME.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')
       .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'') || 'proposta';
-    a.download = `tour-${slugCli}-v${PROPOSTA.rev}.${tipo.includes('mp4') ? 'mp4' : 'webm'}`;
+    a.download = `${TOUR.curto ? 'convite' : 'tour'}-${slugCli}-v${PROPOSTA.rev}.${tipo.includes('mp4') ? 'mp4' : 'webm'}`;
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(()=>URL.revokeObjectURL(a.href), 10000);
-    mostrarToast('Vídeo do tour baixado — confira em Downloads');
+    mostrarToast(TOUR.curto
+      ? `Vídeo curto pronto (${Math.round(blob.size/1e5)/10} MB) — está em Downloads, pronto para enviar`
+      : 'Vídeo do tour baixado — confira em Downloads');
   };
   try{ g.stop(); }catch(e){}
 }
-$('#btnTour').addEventListener('click', ()=>{ TOUR.ativo ? tourParar(false) : tourIniciar(false); });
-$('#btnGravarTour').addEventListener('click', ()=>{ if(!TOUR.ativo) tourIniciar(true); });
-/* sem MediaRecorder/captureStream (navegador antigo): o botão de gravar some */
+$('#btnTour').addEventListener('click', ()=>{ TOUR.ativo ? tourParar(false) : tourIniciar(false, false); });
+$('#btnGravarTour').addEventListener('click', ()=>{ if(!TOUR.ativo) tourIniciar(true, false); });
+$('#btnVideoCurto').addEventListener('click', ()=>{ if(!TOUR.ativo) tourIniciar(true, true); });
+/* sem MediaRecorder/captureStream (navegador antigo): os botões de gravar somem */
 if(!('MediaRecorder' in window) || !HTMLCanvasElement.prototype.captureStream){
   $('#btnGravarTour').hidden = true;
+  $('#btnVideoCurto').hidden = true;
   $('#tourNota').hidden = true;
 }
 
@@ -4653,13 +5568,50 @@ if(!('MediaRecorder' in window) || !HTMLCanvasElement.prototype.captureStream){
    cada ambiente vive no registro (AMBIENTES.<id>.galeria, v18.08-21).
    ================================================================= */
 const GALERIA = AMB.galeria;
+/* FOTO SOB MEDIDA (v18.09-2) — as fotos do bucket são as originais do chat
+   (uma delas tem 11,6 MB): a página passa a pedir ao Storage a versão do
+   tamanho que vai MOSTRAR, pelo endpoint de imagem do Supabase. Medido na
+   chat-0202: 11,6 MB → 1,2 MB (1400 px) → 637 KB (800 px). Sem transformação
+   disponível (outra origem ou 404), cai na URL original. */
+function fotoNoTamanho(url, largura, qualidade){
+  const u = String(url||'');
+  if(!/\/storage\/v1\/object\/public\//.test(u)) return u;
+  return u.replace('/storage/v1/object/public/', '/storage/v1/render/image/public/')
+    + (u.includes('?') ? '&' : '?') + `width=${largura}&quality=${qualidade}`;
+}
+const fotoGrid = f => fotoNoTamanho(f.url, 900, 70);      /* miniatura do mosaico */
+const fotoCheia = f => fotoNoTamanho(f.url, 1800, 78);    /* ao ampliar (lightbox) */
+/* enquanto a maquete de 20 MB baixa, o quadro do 3D mostra o render do salão
+   desfocado — o cliente vê o espaço dele em vez de uma área vazia */
+function esperaDaMaquete(ligar){
+  const box = document.getElementById('tresBox');
+  if(!box) return;
+  if(!ligar){ box.classList.remove('esperando'); box.style.backgroundImage = ''; return; }
+  const f = (GALERIA||[])[0];
+  if(!f || !f.url) return;
+  box.style.backgroundImage = `url("${fotoNoTamanho(f.url, 900, 60)}")`;
+  box.classList.add('esperando');
+}
+/* imagem do topo: a 1ª da galeria do ambiente, no tamanho da tela */
+function montarHero(){
+  const img = document.getElementById('heroImg');
+  const f = (GALERIA||[])[0];
+  if(!img || !f || !f.url) return;
+  const fundo = img.parentElement;
+  img.onload = ()=>fundo.classList.add('is-loaded');
+  img.onerror = ()=>fundo.remove();
+  img.src = fotoNoTamanho(f.url, innerWidth > 900 ? 1800 : 900, 72);
+  img.alt = '';
+}
 function montarGaleria(){
   const grid = $('#galeriaGrid');
   grid.innerHTML = GALERIA.map((f,i)=>`
     <button type="button" class="gfoto" data-i="${i}" style="aspect-ratio:${f.w}/${f.h}"
       aria-label="Ampliar foto: ${esc(f.cap)}">
       ${f.badge?`<span class="gfoto__badge${f.badgeCls==='salao'?' gfoto__badge--salao':''}">${esc(f.badge)}</span>`:''}
-      <img src="${f.url}" alt="${esc(f.cap)}" loading="lazy" decoding="async"
+      <img src="${fotoGrid(f)}" srcset="${fotoNoTamanho(f.url, 600, 68)} 600w, ${fotoGrid(f)} 900w, ${fotoNoTamanho(f.url, 1400, 72)} 1400w"
+        sizes="(max-width:760px) 92vw, 46vw"
+        width="${f.w}" height="${f.h}" alt="${esc(f.cap)}" loading="lazy" decoding="async"
         onload="this.parentElement.classList.add('is-loaded')"
         onerror="this.parentElement.classList.add('is-loaded');this.style.display='none'">
     </button>`).join('');
@@ -4675,11 +5627,11 @@ function mostrarLux(i){
   const f = GALERIA[luxIdx];
   luxImg.classList.remove('is-loaded');
   luxImg.onload = ()=>luxImg.classList.add('is-loaded');
-  luxImg.src = f.url;
+  luxImg.src = fotoCheia(f);
   luxImg.alt = f.cap;
   luxCap.innerHTML = `<b>${esc(f.cap)}</b><small>${luxIdx+1} de ${GALERIA.length} · ${esc(f.selo||'Foto real')}</small>`;
   /* pré-carrega as vizinhas para navegar sem espera */
-  [1,-1].forEach(d=>{ const v=new Image(); v.src=GALERIA[(luxIdx+d+GALERIA.length)%GALERIA.length].url; });
+  [1,-1].forEach(d=>{ const v=new Image(); v.src=fotoCheia(GALERIA[(luxIdx+d+GALERIA.length)%GALERIA.length]); });
 }
 function abrirLux(i){
   focoLux = document.activeElement;
@@ -4762,6 +5714,7 @@ montarItens();
 montarPills();
 montarPlanta();
 montarGaleria();
+montarHero();
 /* link com layout sugerido: o botão restaura para ELE, e o rótulo diz isso */
 if(LAYOUT_SUGERIDO) $('#btnPadrao').textContent = 'Restaurar layout sugerido';
 Object.keys(GRUPOS).forEach(pintarSelecao);
@@ -4776,21 +5729,359 @@ atualizarTotais();
    NOVO a cada edição no painel da equipe — o preview é sempre fiel. */
 
 /* validade efetiva (hero, investimento, rodapé) + banner de vencida */
-function aplicarValidade(){
-  document.querySelectorAll('.js-validade').forEach(el=>el.textContent = dataBR(VALIDADE_ISO));
-  const [a,m,d] = VALIDADE_ISO.split('-').map(Number);
-  const hoje = new Date(); hoje.setHours(0,0,0,0);
-  const vencida = new Date(a, m-1, d) < hoje;
-  let av = document.querySelector('.expirada');
-  if(vencida){
-    if(!av){
-      av = document.createElement('p');
-      av.className = 'expirada'; av.setAttribute('role','status');
-      $('#conteudo').prepend(av);
-    }
-    av.innerHTML = `Esta proposta expirou em <b>${dataBR(VALIDADE_ISO)}</b> — fale com a gente na conversa para renovar.`;
-  }else if(av) av.remove();
+/* =================================================================
+   AS FRASES DA CAPA (v18.09-9) — a proposta abre falando do que aquele
+   evento vai ser NAQUELA casa. Nada é escrito na hora pela consultora: a
+   página monta a partir de duas coisas que já sabemos — o TIPO DE EVENTO
+   (vem do orçamento) e o ESPAÇO. Cada frase de espaço fala só do que existe
+   mesmo naquela casa (vidro, deck, lagoa, casarão), porque promessa que a
+   casa não cumpre volta como reclamação no dia.
+   ================================================================= */
+const FRASES_EVENTO = {
+  corporativo: {titulo:'Uma noite à altura<br>da sua <em>equipe</em>.',
+    fecho:'do primeiro café ao último brinde'},
+  dinner:      {titulo:'Um jantar que as pessoas<br><em>lembram</em> depois.',
+    fecho:'do couvert ao café'},
+  formatura:   {titulo:'A noite que fecha<br>uma <em>história</em>.',
+    fecho:'da entrada da turma ao último brinde'},
+  casamento:   {titulo:'O dia de vocês, do jeito<br>que <em>imaginaram</em>.',
+    fecho:'da cerimônia ao último brinde'},
+  '15 anos':   {titulo:'A festa que ela vai<br><em>contar</em> a vida toda.',
+    fecho:'da entrada à valsa'},
+  padrao:      {titulo:'Um evento à altura do que<br>ele <em>representa</em>.',
+    fecho:'da montagem à última mesa recolhida'},
+};
+/* o que só acontece em cada casa — escrito a partir do que a página já
+   desenha e fotografa: vidro, deck, lagoa, casarão, dois níveis */
+const FRASES_ESPACO = {
+  salao_eventos:'Mais de vinte metros de salão, o vidro de ponta a ponta e a figueira iluminada no deck.',
+  mezanino:'Salão envidraçado com a cidade na janela e um mezanino com vista única: o seu evento em dois níveis.',
+  solar:'Um casarão histórico: o pátio da árvore para receber, o hall para a abertura e o salão para a noite.',
+  mirante:'A Lagoa da Conceição inteira na janela, cristal no teto e o Hall dos Espelhos na chegada dos convidados.',
+  canto_lagoa:'O deck de frente para a Lagoa e o salão logo atrás: abertura, coquetel e jantar sem ninguém sair do lugar.',
+};
+/* a assinatura do Indaiá, que vale em qualquer casa e é o diferencial de
+   verdade: a operação inteira é nossa. Fica numa linha discreta, para não
+   roubar a frase da casa nem empurrar os botões para fora da tela. */
+const FRASE_INDAIA = 'Cozinha, equipe e estrutura são nossas, {fecho}.';
+/* O MIOLO TAMBÉM FALA A LÍNGUA DO EVENTO (v18.09-10) — a capa já muda; aqui
+   mudam os títulos e as chamadas das seções, e cada uma ganha a linha do que
+   só o Indaiá entrega. O que NÃO muda: a mecânica ("troque à vontade", "o
+   total responde na hora"), que é a mesma para todo mundo. */
+const DIFERENCIAL = {
+  cardapios:'Cozinha própria dentro da casa: o que chega à mesa foi feito aqui, no dia e entregue na temperatura ideal.',
+  extras:'Palco, telão de LED, som e iluminação são da casa — sem preocupação com a montagem.',
+  planta:'O layout para imaginar e personalizar o seu evento.',
+  galeria:'Fotos reais de eventos entregues.',
+};
+const TEXTOS_EVENTO = {
+  corporativo:{
+    resumo:['Tudo <em>combinado</em>, num olhar.','Data, lugar e tamanho do evento. O número de participantes é seu: mexa nele e veja a proposta acompanhar.'],
+    cardapios:['A mesa que sustenta o <em>encontro</em>.','Três escolhas, todas suas: o coquetel de chegada, o jantar e o bar. Troque à vontade — o total responde na hora.'],
+    extras:['A <em>estrutura</em> que o seu evento pede.','O que já está na proposta. Ajuste as quantidades do que é ajustável — o que acompanha o número de participantes se ajusta sozinho.'],
+    galeria:['Onde o seu <em>evento</em> acontece.',''],
+  },
+  dinner:{
+    cardapios:['A mesa que <em>conduz</em> o jantar.','Três escolhas, todas suas: o coquetel de chegada, o jantar e o bar. Troque à vontade — o total responde na hora.'],
+    extras:['Os <em>detalhes</em> que sustentam o jantar.',''],
+    galeria:['Onde o seu <em>jantar</em> acontece.',''],
+  },
+  formatura:{
+    cardapios:['A mesa que <em>celebra</em> a turma.',''],
+    extras:['A <em>estrutura</em> que a noite da turma pede.',''],
+    galeria:['Onde a sua <em>formatura</em> acontece.',''],
+  },
+  padrao:{},   /* casamento, 15 anos e os demais ficam com o texto da página */
+};
+function chaveDoEvento(nome){
+  const n = normNome(nome||'');
+  if(!n) return 'corporativo';
+  if(/corporativ/.test(n)) return 'corporativo';
+  if(/dinner|jantar/.test(n)) return 'dinner';
+  if(/formatura/.test(n)) return 'formatura';
+  if(/casamento|renovacao de votos|elopement/.test(n)) return 'casamento';
+  if(/15 anos/.test(n)) return '15 anos';
+  return 'padrao';
 }
+function vestirFrases(tipoEvento){
+  const ev = FRASES_EVENTO[chaveDoEvento(tipoEvento)] || FRASES_EVENTO.corporativo;
+  const tit = document.querySelector('.hero__title');
+  if(tit) tit.innerHTML = ev.titulo;
+  const frase = document.getElementById('heroFrase');
+  if(frase) frase.textContent = FRASES_ESPACO[ESPACO] || '';
+  const ajuste = document.querySelector('.hero__ajuste');
+  if(ajuste) ajuste.textContent = `${FRASE_INDAIA.replace('{fecho}', ev.fecho)} Ajuste a proposta do seu jeito: o investimento recalcula na hora.`;
+  vestirSecoes(tipoEvento);
+}
+/* COMPARTILHAR, NUNCA BAIXAR (v18.09-10) — arquivo salvo circula depois de
+   vencido; o link leva sempre a validade junto e abre atualizado. No celular
+   usa o compartilhamento do próprio aparelho; no computador copia o texto. */
+function textoParaCompartilhar(){
+  const fim = fimDaValidade();
+  const pad = n=>String(n).padStart(2,'0');
+  const quando = `${dataBR(VALIDADE_ISO)} às ${pad(fim.getHours())}:${pad(fim.getMinutes())}`;
+  const onde = AMB.rotulo || AMB.nome;
+  return VALIDADE_VENCIDA
+    ? `Proposta do Indaiá Eventos — ${onde}. A validade desta proposta terminou em ${quando}; o link abre e a nossa equipe renova os valores.`
+    : `Proposta do Indaiá Eventos — ${onde}. Vale até ${quando}: depois desse prazo os valores podem mudar.`;
+}
+async function compartilharProposta(){
+  const url = location.href;
+  const texto = textoParaCompartilhar();
+  const titulo = EVENTO_NOME ? `${EVENTO_NOME} · ${CLIENTE_NOME}` : `Proposta ${CLIENTE_NOME}`;
+  /* o compartilhamento do aparelho só no celular: no computador o Chrome tem
+     navigator.share mas ele não abre nada, e o cliente ficaria sem resposta */
+  const noAparelho = !!navigator.share && matchMedia('(pointer:coarse)').matches;
+  if(noAparelho){
+    try{ await navigator.share({title: titulo, text: texto, url}); return; }
+    catch(e){ if(e && e.name === 'AbortError') return; }   /* desistiu: sem aviso */
+  }
+  try{ await copiarTexto(`${texto}\n${url}`); mostrarToast('Link copiado com a validade junto — é só colar para quem decide com você.', 3600); }
+  catch(e){ mostrarToast('Copie o endereço da página para compartilhar.'); }
+}
+
+/* títulos e chamadas do miolo + a linha de diferencial de cada seção.
+   O texto impresso na página é o de festa (casamento, 15 anos): quem tem
+   versão própria recebe a dela, e quem não tem VOLTA para o original — sem
+   isso, trocar o tipo de evento deixava o texto do tipo anterior na tela. */
+const TEXTO_ORIGINAL = {};
+const SECOES_COM_TEXTO = [...new Set(Object.values(TEXTOS_EVENTO).flatMap(t=>Object.keys(t)))];
+function vestirSecoes(tipoEvento){
+  const t = TEXTOS_EVENTO[chaveDoEvento(tipoEvento)] || {};
+  for(const id of SECOES_COM_TEXTO){
+    const sec = document.getElementById(id); if(!sec) continue;
+    const h = sec.querySelector('.sec__title'), p = sec.querySelector('.sec__intro');
+    if(!TEXTO_ORIGINAL[id]) TEXTO_ORIGINAL[id] = [h ? h.innerHTML : '', p ? p.textContent : ''];
+    const [titulo, intro] = t[id] || [];
+    if(h) h.innerHTML = titulo || TEXTO_ORIGINAL[id][0];
+    if(p) p.textContent = intro || TEXTO_ORIGINAL[id][1];
+  }
+  /* a linha do diferencial entra depois da chamada, uma vez só por seção */
+  for(const [id, frase] of Object.entries(DIFERENCIAL)){
+    const sec = document.getElementById(id); if(!sec) continue;
+    const base = sec.querySelector('.sec__intro'); if(!base) continue;
+    let linha = sec.querySelector('.sec__dif');
+    if(!linha){
+      linha = document.createElement('p');
+      linha.className = 'sec__dif';
+      base.after(linha);
+    }
+    linha.textContent = frase;
+  }
+}
+
+/* =================================================================
+   QUEM JÁ FEZ AQUI (v18.09-7) — prova social ESCOLHIDA A DEDO.
+   As avaliações são do Google (tabelas `google_business_locations` e
+   `google_avaliacoes` do CRM), lidas em 28/09/2026 e CONGELADAS aqui: a
+   página não busca nada em tempo real. A decisão é da Dani — feed que muda
+   sozinho um dia traz um comentário ruim bem no meio da negociação.
+   Para trocar: rodar `crm-backend/src/scripts/_ler-avaliacoes-google.ts`,
+   escolher de novo, e atualizar este bloco (com a data da curadoria).
+   Critério usado: nota 5, nome de verdade, texto entre 80 e 300 letras, sem
+   nenhuma ressalva no meio, sem menção a casamento/aniversário (a proposta é
+   corporativa) e sem emoji.
+   ================================================================= */
+const PROVA_SOCIAL = {
+  curadoria: '2026-09-28',
+  itapema: {
+    nota: 4.7, total: 10050, onde: 'Itapema',
+    depoimentos: [
+      {nome:'Fernanda Moraes Ramos Alexi', data:'2026-09-21',
+       txt:'Espaço muito bonito e agradável, com uma vista maravilhosa. O ambiente é bem cuidado e proporciona uma experiência muito agradável para eventos. Gostei bastante e recomendo!'},
+      {nome:'Leticia Villacorta', data:'2026-08-22',
+       txt:'Excelente recepção! Lugar lindo, comida saborosa e atendimento maravilhoso.'},
+      {nome:'Kelly Gomes', data:'2026-08-22',
+       txt:'Espaço maravilhoso. Atendentes sorridentes e sempre muito prestativas. Evento top.'},
+    ],
+  },
+  mirante: {
+    nota: 4.8, total: 1687, onde: 'Mirante da Lagoa',
+    depoimentos: [
+      {nome:'Rafael Borges Schaeffer', data:'2026-09-19',
+       txt:'Lugar muito elegante e amplo. Atendimento dos garçons excelente, sempre verificando se precisa de algo e dispostos. Ambiente muito bem conservado e limpo, inclusive banheiros com kits de higiene.'},
+      {nome:'Marcielen Dalla Costa', data:'2026-09-18',
+       txt:'Linda vista. Cardápio saboroso e variado. Espaço muito bonito e organizado.'},
+      {nome:'Ana Valle', data:'2026-09-05',
+       txt:'Maravilhoso! Excelente atendimento, ambiente agradável e equipe bem treinada e competente!'},
+    ],
+  },
+  canto_lagoa: {
+    nota: 4.9, total: 1587, onde: 'Canto da Lagoa',
+    depoimentos: [
+      {nome:'Alê Maranhão', data:'2026-09-27',
+       txt:'Espaço maravilhoso, vista sensacional, atendimento muito bom! Banheiros bons e sempre limpos. Alimentação muito boa e saborosa.'},
+      {nome:'Simone Honorata', data:'2026-09-06',
+       txt:'Lugar maravilhoso. Organizado, limpo, funcionários muito simpáticos, preocupados com os convidados.'},
+      {nome:'Endryeli Reis', data:'2026-08-22',
+       txt:'Ambiente muito agradável, todos muito educados e prestativos. Comida, decoração, garçons, tudo ótimo.'},
+    ],
+  },
+  /* FLORIANÓPOLIS — o Solar 915 e o Mediterrâneo 242 ficam na mesma cidade das
+     duas casas que têm ficha no Google (Mirante da Lagoa e Canto da Lagoa),
+     mas não têm ficha própria. Então a nota é a das casas de Florianópolis
+     somadas e cada depoimento diz de qual casa veio: é verdade, e o cliente
+     lê de onde é. (4,8×1.687 + 4,9×1.587) ÷ 3.274 = 4,8. */
+  florianopolis: {
+    nota: 4.8, total: 3274, onde: 'Florianópolis',
+    depoimentos: [
+      {nome:'Rafael Borges Schaeffer', data:'2026-09-19', casa:'Mirante da Lagoa',
+       txt:'Lugar muito elegante e amplo. Atendimento dos garçons excelente, sempre verificando se precisa de algo e dispostos. Ambiente muito bem conservado e limpo, inclusive banheiros com kits de higiene.'},
+      {nome:'Alê Maranhão', data:'2026-09-27', casa:'Canto da Lagoa',
+       txt:'Espaço maravilhoso, vista sensacional, atendimento muito bom! Banheiros bons e sempre limpos. Alimentação muito boa e saborosa.'},
+      {nome:'Ana Valle', data:'2026-09-05', casa:'Mirante da Lagoa',
+       txt:'Maravilhoso! Excelente atendimento, ambiente agradável e equipe bem treinada e competente!'},
+    ],
+  },
+  /* a rede inteira, para quando não soubermos a cidade */
+  rede: {nota: 4.7, total: 16403, onde: '', depoimentos: []},
+};
+/* qual ficha vale para cada ambiente da página */
+const PROVA_DO_ESPACO = {
+  salao_eventos:'itapema', mezanino:'itapema',
+  mirante:'mirante', canto_lagoa:'canto_lagoa', solar:'florianopolis',
+};
+/* e para os espaços que a página não desenha, pelo nome que vem do CRM
+   (Mediterrâneo 242 e Solar 915 são as casas de Florianópolis) */
+const PROVA_POR_NOME = [
+  [/mediterraneo|solar/, 'florianopolis'],
+  [/mirante/, 'mirante'],
+  [/canto da lagoa/, 'canto_lagoa'],
+  [/salao de eventos|mezanino|panoramico|lounge|salao principal/, 'itapema'],
+];
+/* `nomeDoCRM` = o espaço que veio no orçamento; vale mais que o ambiente
+   aberto, porque a proposta pode ser de uma casa que a página não desenha */
+function montarProva(nomeDoCRM){
+  const sec = document.getElementById('prova'); if(!sec) return;
+  let chave = PROVA_DO_ESPACO[ESPACO] || 'rede';
+  if(nomeDoCRM){
+    const n = normNome(nomeDoCRM);
+    const achado = PROVA_POR_NOME.find(([re])=>re.test(n));
+    if(achado) chave = achado[1];
+  }
+  const p = PROVA_SOCIAL[chave];
+  if(!p || !p.nota){ sec.hidden = true; return; }
+  sec.hidden = false;
+  /* estrelas honestas: 4,7 mostra quatro cheias e uma apagada, não cinco */
+  const cheias = Math.floor(p.nota), resto = p.nota - cheias;
+  const estrelas = '★'.repeat(cheias)
+    + (resto >= 0.25 ? `<span class="prova__meia">★</span>` : '')
+    + '☆'.repeat(Math.max(0, 5 - cheias - (resto >= 0.25 ? 1 : 0)));
+  document.getElementById('provaSelo').innerHTML =
+    `<span class="prova__nota">${String(p.nota).replace('.',',')}</span>`
+    + `<span class="prova__estrelas" aria-hidden="true">${estrelas}</span>`
+    + `<span class="prova__quantas">no Google · ${p.total.toLocaleString('pt-BR')} avaliações`
+    + `${p.onde ? ` · Indaiá ${/^(Itapema|Florianópolis)$/.test(p.onde) ? 'em' : 'no'} ${p.onde}` : ' nas casas do Indaiá'}</span>`;
+  /* quando os depoimentos são de casas irmãs da mesma cidade, a intro diz isso */
+  const cidade = p.depoimentos.some(d=>d.casa);
+  document.getElementById('provaIntro').textContent = !p.depoimentos.length
+    ? 'A média das casas do Indaiá no Google, somando todas as unidades.'
+    : cidade
+      ? `O que quem esteve nas nossas casas de ${p.onde} escreveu, com nome e data — direto do Google.`
+      : `O que quem esteve ${AMB.emTitulo==='salão' ? 'no salão' : `no ${p.onde}`} escreveu, com nome e data — direto do Google.`;
+  document.getElementById('provaGrid').innerHTML = p.depoimentos.map(d=>`
+    <figure class="prova__card">
+      <span class="prova__aspas" aria-hidden="true">“</span>
+      <blockquote class="prova__txt">${esc(d.txt)}</blockquote>
+      <figcaption class="prova__quem"><b>${esc(d.nome)}</b>${dataBR(d.data)} · ${d.casa ? `${esc(d.casa)}, ${esc(p.onde)}` : 'avaliação no Google'}</figcaption>
+    </figure>`).join('');
+}
+/* a logo do cliente assina o alto e o rodapé; se ela não carregar, o nome
+   dele continua lá — a proposta nunca fica sem assinatura */
+function vestirMarcaCliente(){
+  if(!LOGO_CLIENTE) return;
+  document.querySelectorAll('.brand__mono').forEach(el=>{
+    if(el.previousElementSibling && el.previousElementSibling.classList.contains('brand__logo')) return;
+    const img = document.createElement('img');
+    img.className = 'brand__logo'; img.src = LOGO_CLIENTE;
+    img.alt = CLIENTE_NOME; img.decoding = 'async';
+    img.onerror = ()=>img.remove();          /* volta a aparecer o nome */
+    el.before(img);
+  });
+  if(COR_CLIENTE) document.documentElement.style.setProperty('--marca-cliente', COR_CLIENTE);
+}
+/* fim da validade: a hora exata que o CRM gravou no link; sem ela, o fim do
+   dia da validade. O começo da contagem é o primeiro acesso do cliente a ESTE
+   link (guardado aqui no aparelho) — assim a barra nunca pula de tamanho. */
+let VALIDADE_FIM = null;          /* Date, vem do expires_at do token */
+let validadeTimer = 0, VALIDADE_VENCIDA = false;
+function fimDaValidade(){
+  if(VALIDADE_FIM) return VALIDADE_FIM;
+  const [a,m,d] = VALIDADE_ISO.split('-').map(Number);
+  return new Date(a, m-1, d, 23, 59, 59);
+}
+function inicioDaContagem(fim){
+  const chave = CHAVE+'_abriu';
+  let t = 0;
+  try{ t = parseInt(localStorage.getItem(chave)||'0', 10) || 0; }catch(e){}
+  if(!t || t > fim.getTime()){ t = Date.now(); try{ localStorage.setItem(chave, String(t)); }catch(e){} }
+  /* janela mínima de 24 h para a barra não nascer quase vazia */
+  return Math.min(t, fim.getTime() - 864e5);
+}
+function aplicarValidade(){
+  const pad = n=>String(n).padStart(2,'0');
+  /* cada chamada refaz a contagem: sem isso o relógio anterior continuava
+     escrevendo por cima quando a validade mudava */
+  if(validadeTimer){ clearInterval(validadeTimer); validadeTimer = 0; }
+  const fim = fimDaValidade();
+  const hora = `${pad(fim.getHours())}:${pad(fim.getMinutes())}`;
+  document.querySelectorAll('.js-validade').forEach(el=>el.textContent = dataBR(VALIDADE_ISO));
+  let av = document.querySelector('.expirada');
+  if(!av){
+    av = document.createElement('div');
+    av.className = 'expirada'; av.setAttribute('role','status');
+    av.innerHTML = '<p class="expirada__txt"></p><div class="expirada__trilho" aria-hidden="true"><div class="expirada__barra"></div></div>';
+    $('#conteudo').prepend(av);
+  }
+  const txt = av.querySelector('.expirada__txt'), barra = av.querySelector('.expirada__barra');
+  const inicio = inicioDaContagem(fim);
+  const tick = ()=>{
+    const resta = fim.getTime() - Date.now();
+    const frac = Math.max(0, Math.min(1, resta/Math.max(1, fim.getTime()-inicio)));
+    barra.style.transform = `scaleX(${frac})`;
+    av.classList.toggle('is-final', resta>0 && frac<=.25);
+    av.classList.toggle('is-vencida', resta<=0);
+    if(resta<=0){
+      txt.innerHTML = `Esta proposta venceu em <b>${dataBR(VALIDADE_ISO)} às ${hora}</b> — os valores podem ter mudado. `
+        + '<button type="button" class="expirada__falar js-falar-equipe">Falar com a equipe para renovar</button>';
+      marcarVencida();
+      clearInterval(validadeTimer); validadeTimer = 0; return;
+    }
+    const t = Math.floor(resta/1000), d = Math.floor(t/86400), h = Math.floor(t%86400/3600),
+      m = Math.floor(t%3600/60), ss = t%60;
+    const restam = d ? `${d} d ${h} h ${pad(m)} min` : (h ? `${h} h ${pad(m)} min ${pad(ss)} s` : `${m} min ${pad(ss)} s`);
+    txt.innerHTML = `Proposta válida até <b>${dataBR(VALIDADE_ISO)} às ${hora}</b> · <span class="expirada__restam">restam ${restam}</span>`;
+    marcarVencida(false);       /* validade nova chegou: volta ao normal */
+  };
+  tick();
+  if(!validadeTimer && fim.getTime() > Date.now()) validadeTimer = setInterval(tick, 1000);
+}
+/* vencida: o cliente continua mexendo e vendo tudo — o que muda é o convite,
+   que passa a ser falar com a equipe para renovar (decisão de 16/09).
+   Vai e VOLTA: a página abre com a validade impressa (que pode estar velha) e
+   só depois recebe a do CRM — sem o caminho de volta, a proposta boa ficava
+   com os botões de proposta vencida. */
+const TEXTO_CTA = {};
+function marcarVencida(vencida = true){
+  if(VALIDADE_VENCIDA === vencida) return;
+  VALIDADE_VENCIDA = vencida;
+  document.documentElement.classList.toggle('proposta-vencida', vencida);
+  const alvos = [['btn1','#btnConfirmar','Falar com a equipe'],
+    ['btn2','#btnCtaFinal','Falar com a equipe para renovar'],
+    ['fine','.cta__fine','A validade desta proposta acabou. Continue a conversa com a nossa equipe, que renova com você.']];
+  for(const [chave, sel, texto] of alvos){
+    const el = document.querySelector(sel); if(!el) continue;
+    if(TEXTO_CTA[chave] == null) TEXTO_CTA[chave] = el.textContent;
+    el.textContent = vencida ? texto : TEXTO_CTA[chave];
+  }
+}
+/* qualquer caminho de "confirmar" com a proposta vencida vira conversa */
+document.addEventListener('click', ev=>{
+  const alvo = ev.target.closest('.js-falar-equipe, #btnConfirmar, #btnCtaFinal');
+  if(!alvo || !VALIDADE_VENCIDA) return;
+  ev.preventDefault(); ev.stopPropagation();
+  window.open(linkDaConversa(), '_blank', 'noopener');
+}, true);
 
 /* nota do simulador de dia: dinâmica conforme as locações da equipe */
 const NOTA_DIA_PADRAO = $('#notaDia').textContent;
@@ -4838,6 +6129,9 @@ function aplicarEscassez(){
   linha.innerHTML = 'A data de 24/09 segue disponível <b class="disputada">— e disputada.</b>';
   $('#btnCtaFinal').before(linha);
 }
+vestirFrases();     /* a frase da capa, pelo espaço (o tipo vem depois, do CRM) */
+$('#btnCompartilhar').addEventListener('click', compartilharProposta);
+montarProva();      /* prova social do espaço (dados fixos, logo acima) */
 aplicarValidade();
 aplicarNotaDia();
 aplicarEscassez();
@@ -4864,7 +6158,11 @@ async function vestirPropostaCRM(){
     raiz = j.data || j;                    /* {orcamento, token, expires_at, ...} */
     o = raiz.orcamento || raiz;
     if(!o || typeof o !== 'object') throw new Error('resposta vazia');
-  }catch(e){ console.warn('[propostaCRM] não carregou — segue demo:', e); return; }
+  }catch(e){
+    console.warn('[propostaCRM] não carregou:', e);
+    propostaIndisponivel();   /* com token, nunca cai na demo DIMY */
+    return;
+  }
   try{
     const primeiroUso = !localStorage.getItem(CHAVE);
     const norm = s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
@@ -4897,6 +6195,9 @@ async function vestirPropostaCRM(){
     const val = validarISO(String(o.validade||'').slice(0,10))
       || validarISO(String(raiz.expires_at||'').slice(0,10));
     if(val) VALIDADE_ISO = val;
+    /* hora exata do vencimento do link, para a conta regressiva da faixa */
+    const fimISO = String(raiz.expires_at||'');
+    if(fimISO && !isNaN(Date.parse(fimISO))) VALIDADE_FIM = new Date(fimISO);
 
     /* identidade: cliente e número no lugar da demo */
     const nomeCli = String(o.cliente_nome||'').trim();
@@ -4907,12 +6208,22 @@ async function vestirPropostaCRM(){
       document.querySelector('meta[name="description"]')
         .setAttribute('content', `Proposta interativa corporativa — ${nomeCli} · ${DATA_EVENTO_BR} · ${AMB.nome}, ${AMB.cidadeLonga||''}`);
       document.querySelectorAll('.brand__mono').forEach(el=>el.textContent = nomeCli);
+      vestirMarcaCliente();
+      /* CAPA COM O NOME DO EVENTO (v18.09-6) — quando o CRM manda o nome do
+         evento, a capa fala dele ("Convenção Nacional 2026 · proposta para a
+         Algar"); sem o nome, segue como antes, com a empresa e a data. */
+      EVENTO_NOME = String(o.nome_evento || o.evento_nome || '').trim();
+      const chapeu = EVENTO_NOME
+        ? `${EVENTO_NOME} · proposta para ${nomeCli}`
+        : (dataLonga ? `Proposta corporativa · ${nomeCli} · ${dataLonga}` : '');
       document.querySelectorAll('.eyebrow').forEach(el=>{
         if(!/DIMY/i.test(el.textContent)) return;
-        el.textContent = dataLonga
-          ? `Proposta corporativa · ${nomeCli} · ${dataLonga}`
-          : el.textContent.replace(/DIMY/gi, nomeCli);
+        el.textContent = chapeu || el.textContent.replace(/DIMY/gi, nomeCli);
       });
+      if(EVENTO_NOME){
+        document.title = `${EVENTO_NOME} · proposta para ${nomeCli}`;
+        TELAO_SUB = EVENTO_NOME;
+      }
       const heroSub = document.querySelector('.hero__sub');
       if(heroSub && dataLonga) heroSub.innerHTML =
         `<span class="js-espaco-rotulo">${esc(AMB.rotulo)}</span> — ${esc(dataLonga)}.`;
@@ -4928,10 +6239,11 @@ async function vestirPropostaCRM(){
            da galeria do ambiente. */
       TELAO_TITULO = nomeCli;
       const tipoEv = o.tipo_evento && o.tipo_evento.nome;
-      TELAO_SUB = tipoEv ? `${tipoEv}${mData ? ' · '+mData[1] : ''}` : 'Indaiá Eventos';
+      /* o telão prefere o nome do evento; sem ele, o tipo e o ano */
+      TELAO_SUB = EVENTO_NOME || (tipoEv ? `${tipoEv}${mData ? ' · '+mData[1] : ''}` : 'Indaiá Eventos');
       if((AMB.cta||'').includes('dimy')){
         const fotoReal = (AMB.galeria||[]).find(g=>g && g.url && !/render/i.test(g.selo||''));
-        if(fotoReal) $('#ctaImg').src = fotoReal.url;
+        if(fotoReal) $('#ctaImg').src = fotoNoTamanho(fotoReal.url, 1600, 72);   /* fundo do CTA: não precisa do original de 11 MB */
       }
     }
 
@@ -4943,6 +6255,42 @@ async function vestirPropostaCRM(){
       if(selBar) PROPOSTA.openbar = selBar;
     }
     PROPOSTA.dia = PADRAO.dia;   /* dia é sempre o do orçamento — cliente não altera */
+
+    /* MODO REAL: as linhas, os serviços e o total passam a ser os do CRM */
+    ORC_REAL = lerOrcamentoReal(o);
+    if(ORC_REAL){
+      PROPOSTA.convidados = ORC_REAL.conv;
+      for(const t of TIPOS_CARD) PROPOSTA[t] = ORC_REAL.sel[t] ? ORC_REAL.sel[t].id : null;
+      /* multi-dia: o cardápio de cada dia nasce do que o consultor montou */
+      if(ORC_REAL.multiDia){
+        PROPOSTA.dias = {};
+        for(const d of ORC_REAL.dias) PROPOSTA.dias[d.id] = Object.fromEntries(
+          TIPOS_CARD.map(t=>[t, d.sel[t] ? d.sel[t].id : null]));
+      }
+      /* ajustes que o cliente já tinha feito NESTE link continuam valendo */
+      try{
+        const meu = JSON.parse(localStorage.getItem(CHAVE+'_real')||'null');
+        if(meu){
+          if(Number.isInteger(meu.convidados)) PROPOSTA.convidados = limita(meu.convidados, 30, 500);
+          for(const t of TIPOS_CARD) if(t in meu) PROPOSTA[t] = meu[t];
+          if(ORC_REAL.multiDia && meu.dias) for(const d of ORC_REAL.dias){
+            const g = meu.dias[d.id]; if(!g) continue;
+            for(const t of TIPOS_CARD) if(t in g) PROPOSTA.dias[d.id][t] = g[t];
+          }
+        }
+      }catch(e){}
+      /* o dia aberto é o espelho: os cards e a vitrine leem de PROPOSTA[tipo] */
+      if(ORC_REAL.multiDia) for(const t of TIPOS_CARD) PROPOSTA[t] = escolhaDoCliente(t, ORC_REAL.diaAtivo);
+      if(ORC_REAL.multiDia) vestirMultiDia();
+      montarItens();
+    }
+    /* a capa fala do tipo de evento do orçamento (corporativo, dinner…) */
+    vestirFrases(o.tipo_evento && o.tipo_evento.nome);
+    /* a prova social é da CASA do orçamento (o Mediterrâneo 242 e o Solar 915
+       são de Florianópolis, e a página não desenha o Mediterrâneo) */
+    const espacoDoOrc = (o.espaco && o.espaco.nome)
+      || (ORC_REAL && ORC_REAL.multiDia && (ORC_REAL.dias[0]||{}).espaco) || '';
+    if(espacoDoOrc) montarProva(espacoDoOrc);
 
     /* repinta tudo que depende do estado (funções idempotentes do arranque) */
     Object.keys(GRUPOS).forEach(pintarSelecao);

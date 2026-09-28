@@ -1,7 +1,7 @@
 import { createRequire } from 'module';
-const require = createRequire('c:/Users/usuário/Desktop/Projetos/crm-backend/package.json');
+const require = createRequire(process.env.PUPPETEER_EM || 'c:/Users/usuário/Desktop/Projetos/crm-backend/package.json');
 const puppeteer = require('puppeteer');
-const S = 'C:/Users/USURIO~1/AppData/Local/Temp/claude/c--Users-usu-rio-Desktop-Projetos/b42bf2eb-7914-4252-bbe8-6e2b90755015/scratchpad/mezanino';
+const S = process.env.PROVA_OUT || '.';
 const browser = await puppeteer.launch({ headless: 'new', executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe', args: ['--window-size=1500,900'] });
 let falhas = 0;
 const ok = (c, m) => { console.log((c ? 'OK   ' : 'FALHOU ✗ ') + m); if (!c) falhas++; };

@@ -3,7 +3,7 @@
 // Requisito: puppeteer + Chrome — ajuste o createRequire abaixo para uma pasta
 // SUA que tenha `npm i puppeteer` (na máquina da Indaiá ele vem do crm-backend).
 import { createRequire } from 'module';
-const require = createRequire('c:/Users/usuário/Desktop/Projetos/crm-backend/package.json');
+const require = createRequire(process.env.PUPPETEER_EM || 'c:/Users/usuário/Desktop/Projetos/crm-backend/package.json');
 const puppeteer = require('puppeteer');
 
 const URL_PROPOSTA = process.argv[2];

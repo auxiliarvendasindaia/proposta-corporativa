@@ -1,9 +1,9 @@
 // Teste completo do editor com máscara: arrasto real a cada ponto circulado + proibidos + extremos.
 import { createRequire } from 'module';
-const require = createRequire('c:/Users/usuário/Desktop/Projetos/crm-backend/package.json');
+const require = createRequire(process.env.PUPPETEER_EM || 'c:/Users/usuário/Desktop/Projetos/crm-backend/package.json');
 const puppeteer = require('puppeteer');
 
-const URL_ALVO = process.argv[2] || 'file:///C:/Users/usu%C3%A1rio/Desktop/Projetos/proposta-corporativa/index.html';
+const URL_ALVO = process.argv[2] || process.env.PROPOSTA_URL || 'file:///C:/Users/usu%C3%A1rio/Desktop/Projetos/proposta-corporativa/index.html';
 const browser = await puppeteer.launch({ headless: 'new', executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe', args: ['--window-size=1400,1320'] });
 const page = await browser.newPage();
 await page.setViewport({ width: 1400, height: 1320 });
@@ -73,6 +73,6 @@ console.log('\nerros de JS na página:', errosJs.length ? errosJs : 'nenhum');
 console.log(falhas === 0 && errosJs.length === 0 ? '\n✅ TODOS OS TESTES PASSARAM' : `\n❌ ${falhas} falhas`);
 
 const svgEl = await page.$('#plantaSvg');
-await svgEl.screenshot({ path: 'C:/Users/USURIO~1/AppData/Local/Temp/claude/c--Users-usu-rio-Desktop-Projetos/b42bf2eb-7914-4252-bbe8-6e2b90755015/scratchpad/prova-mascara.png' });
+await svgEl.screenshot({ path: process.env.PROVA_OUT || 'prova-mascara.png' });
 await browser.close();
 process.exit(falhas === 0 && errosJs.length === 0 ? 0 : 1);
