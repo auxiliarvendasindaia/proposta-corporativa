@@ -631,6 +631,13 @@ html.sem-io .reveal{opacity:1;transform:none;}
   max-width:92vw;text-align:center;}
 .toast.on{opacity:1;transform:translate(-50%,0);visibility:visible;}
 
+/* ---------- o filme do espaço, antes das fotos ---------- */
+.filme{margin:0 0 26px;}
+.filme__player{aspect-ratio:16/9;border-radius:var(--radius);overflow:hidden;background:#0E1114;
+  box-shadow:var(--sh-2, var(--sh-1));}
+.filme__player video{width:100%;height:100%;display:block;}
+.filme__cap{margin:.8rem 0 0;font-size:.82rem;color:var(--taupe);line-height:1.6;}
+
 /* ---------- quem já fez aqui (prova social escolhida a dedo) ---------- */
 .prova__selo{display:inline-flex;align-items:center;gap:14px;margin:0 0 1.8rem;padding:.7em 1.2em;
   background:var(--cream);border:1px solid var(--line-soft);border-radius:999px;box-shadow:var(--sh-1);}
@@ -1057,11 +1064,14 @@ html.so-layout body{padding-bottom:0;}
             <p class="visao__legenda" id="tresLegenda">Maquete do seu layout · gire com o dedo</p>
             <div class="tour3d__acoes">
               <button type="button" class="btn btn--ghost" id="btnTour">▶ Gerar tour com o layout atual</button>
-              <button type="button" class="btn btn--ghost" id="btnVideoCurto">⬇ Vídeo curto para enviar</button>
-              <button type="button" class="btn btn--ghost" id="btnGravarTour">⬇ Gravar tour completo</button>
               <button type="button" class="btn btn--ghost" id="btn3dEditar">Ajustar as mesas em 2D</button>
+              <!-- os botões de gravar vídeo saíram (decisão de 28/09): o filme
+                   do espaço fica na própria página, na seção 05. O gravador
+                   continua no código, usado só pelo ferramentas/gerar-filme.mjs -->
+              <button type="button" class="btn btn--ghost" id="btnVideoCurto" hidden>Vídeo curto</button>
+              <button type="button" class="btn btn--ghost" id="btnGravarTour" hidden>Gravar tour</button>
             </div>
-            <p class="tour3d__nota" id="tourNota">O vídeo sai com o seu layout atual — o curto tem cerca de 25 segundos, com a marca do cliente no telão.</p>
+            <p class="tour3d__nota" id="tourNota">O tour roda com o seu layout atual.</p>
           </div>
         </div>
 
@@ -1107,6 +1117,18 @@ html.so-layout body{padding-bottom:0;}
       <h2 class="sec__title">Onde a sua festa <em>acontece</em>.</h2>
       <p class="sec__intro js-galeria-intro">O layout padrão da casa em render — e fotos reais do Salão de Eventos de Itapema, incluindo um evento corporativo entregue nele.</p>
     </div>
+    <!-- O FILME DO ESPAÇO (v18.09-13) — um passeio pronto, no mesmo lugar em
+         que a proposta mostra as fotos. É arquivo (assets/ambientes/<slug>/
+         video/passeio.mp4 + poster.jpg), como nas propostas da Algar e do
+         Sebrae: nada é gerado no navegador do cliente, e o vídeo só começa a
+         baixar quando ele dá play (preload="metadata"). A seção some sozinha
+         se o ambiente ainda não tiver filme. -->
+    <figure class="filme reveal" id="filme" hidden>
+      <div class="filme__player">
+        <video id="filmeVideo" controls playsinline preload="metadata"></video>
+      </div>
+      <figcaption class="filme__cap" id="filmeCap"></figcaption>
+    </figure>
     <div class="galeria reveal" id="galeriaGrid"></div>
   </div>
 </section>
@@ -1208,7 +1230,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta ORC-2026-01837 · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer — é só pedir na nossa conversa.
-      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-12</span></p>
+      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-14</span></p>
   </div>
 </footer>
 
@@ -1567,6 +1589,9 @@ const AMBIENTES = {
     cidadeLonga:'Itapema · Santa Catarina', emTitulo:'salão',
     descricao:'Proposta interativa corporativa — DIMY · 24/09/2026 · Salão de Eventos, Itapema/SC.',
     galeriaIntro:'O layout padrão da casa em render — e fotos reais do Salão de Eventos de Itapema, incluindo um evento corporativo entregue nele.',
+    /* o filme do espaço (gerado por ferramentas/gerar-filme.mjs) */
+    filme:{src:'assets/ambientes/salao_eventos/video/passeio.mp4', poster:'assets/ambientes/salao_eventos/video/poster.jpg',
+      cap:'Um passeio pelo Salão de Eventos, com a montagem da casa — 25 segundos.'},
     planta:{src:'assets/planta-salao-eventos.jpg', w:1920, h:1080,
       alt:'Planta vazia do Salão de Eventos de Itapema vista de cima'},
     pxm:(1832-765)/24.5,                                  // ≈ 43,55 px por metro (eixo X oficial)
@@ -1651,6 +1676,9 @@ const AMBIENTES = {
     cidadeLonga:'Florianópolis · Santa Catarina', emTitulo:'Solar',
     descricao:'Proposta interativa corporativa — DIMY · 24/09/2026 · Solar, Florianópolis/SC.',
     galeriaIntro:'Fotos reais do Solar, em Florianópolis: o casarão histórico e o pátio da árvore montados para receber.',
+    /* o filme do espaço (gerado por ferramentas/gerar-filme.mjs) */
+    filme:{src:'assets/ambientes/solar/video/passeio.mp4', poster:'assets/ambientes/solar/video/poster.jpg',
+      cap:'Um passeio pelo Solar, com a montagem da casa — 25 segundos.'},
     planta:{src:'assets/ambientes/solar/planta.jpg', w:1920, h:864,
       alt:'Planta vazia do Solar, em Florianópolis, vista de cima'},
     pxm:36.4,
@@ -1806,6 +1834,9 @@ const AMBIENTES = {
     cidadeLonga:'Itapema · Santa Catarina', emTitulo:'Mezanino',
     descricao:'Proposta interativa corporativa — DIMY · 24/09/2026 · Mezanino, Itapema/SC.',
     galeriaIntro:'Fotos reais do Mezanino, em Itapema: o salão envidraçado com vista para a cidade, o lounge e o deck de madeira do mezanino.',
+    /* o filme do espaço (gerado por ferramentas/gerar-filme.mjs) */
+    filme:{src:'assets/ambientes/mezanino/video/passeio.mp4', poster:'assets/ambientes/mezanino/video/poster.jpg',
+      cap:'Um passeio pelo Mezanino, com a montagem da casa — 25 segundos.'},
     planta:{src:'assets/ambientes/mezanino/planta.jpg', w:1920, h:1080,
       alt:'Planta vazia do térreo do Mezanino, em Itapema, vista de cima',
       recorte:{x:450, y:20, w:1020, h:1020}},                  /* o espaço ocupa px 508..1412 × 89..991 */
@@ -1895,6 +1926,9 @@ const AMBIENTES = {
     cidadeLonga:'Florianópolis · Santa Catarina', emTitulo:'Mirante',
     descricao:'Proposta interativa corporativa — DIMY · 24/09/2026 · Mirante da Lagoa, Florianópolis/SC.',
     galeriaIntro:'Fotos reais do Mirante da Lagoa: o salão envidraçado com vista para a Lagoa da Conceição, os lustres de cristal e o lounge.',
+    /* o filme do espaço (gerado por ferramentas/gerar-filme.mjs) */
+    filme:{src:'assets/ambientes/mirante/video/passeio.mp4', poster:'assets/ambientes/mirante/video/poster.jpg',
+      cap:'Um passeio pelo Mirante da Lagoa, com a montagem da casa — 25 segundos.'},
     planta:{src:'assets/ambientes/mirante/planta.jpg', w:1920, h:1080,
       alt:'Planta vazia do térreo do Mirante da Lagoa vista de cima'},
     pxm:40,
@@ -1989,6 +2023,9 @@ const AMBIENTES = {
     cidadeLonga:'Florianópolis · Santa Catarina', emTitulo:'Canto da Lagoa',
     descricao:'Proposta interativa corporativa — DIMY · 24/09/2026 · Canto da Lagoa, Florianópolis/SC.',
     galeriaIntro:'Fotos reais do Canto da Lagoa: o salão, o deck de frente para a Lagoa da Conceição e os ambientes de cerimônia.',
+    /* o filme do espaço (gerado por ferramentas/gerar-filme.mjs) */
+    filme:{src:'assets/ambientes/canto_lagoa/video/passeio.mp4', poster:'assets/ambientes/canto_lagoa/video/poster.jpg',
+      cap:'Um passeio pelo Canto da Lagoa, com a montagem da casa — 25 segundos.'},
     planta:{src:'assets/ambientes/canto_lagoa/planta.jpg', w:1920, h:1080,
       alt:'Planta vazia do Salão Principal do Canto da Lagoa vista de cima'},
     pxm:23,
@@ -2312,6 +2349,12 @@ let ORC_NUMERO = 'ORC-2026-01837';
 let DATA_EVENTO_BR = '24/09/2026';
 let TELAO_TITULO = 'DIMY';           /* texto desenhado no telão de LED do 3D */
 let TELAO_SUB = 'Convenção 2026';
+/* no filme do espaço o painel é da casa, nunca de um cliente */
+/* no filme DO ESPAÇO o painel é da casa; no filme de uma proposta
+   (com token), a marca do cliente continua, que é o ponto dele */
+if(new URLSearchParams(location.search).has('filme') && !/[?&]proposta=[0-9a-f]{32,}/i.test(location.search)){
+  TELAO_TITULO='INDAIÁ'; TELAO_SUB='Eventos corporativos';
+}
 /* MARCA DO CLIENTE (v18.09-6) — quando o CRM manda a logo, ela entra em dois
    lugares e SÓ neles: a assinatura do alto da página e o telão de LED da
    maquete. O resto da proposta continua com a tipografia, as cores e o jeito
@@ -2319,6 +2362,13 @@ let TELAO_SUB = 'Convenção 2026';
 let LOGO_CLIENTE = '';               /* URL da logo (PNG/SVG com fundo livre) */
 let COR_CLIENTE = '';                /* cor da marca, usada só nessa assinatura */
 let EVENTO_NOME = '';                /* "Convenção Nacional 2026" */
+/* MODO FILME (?filme=1) — usado só pelo ferramentas/gerar-filme.mjs, que grava
+   o passeio do ESPAÇO. O filme fica na proposta de todo mundo, então nada de
+   cliente pode aparecer nele: o telão e as cartelas ficam com a marca da casa
+   (regra congelada de 09/09 — material de um cliente nunca vai na proposta de
+   outro). Na proposta do cliente este parâmetro não existe. */
+const MODO_FILME = new URLSearchParams(location.search).has('filme') && !PROPOSTA_TOKEN;
+const FILME_DO_CLIENTE = new URLSearchParams(location.search).has('filme') && !!PROPOSTA_TOKEN;
 let LOGO_TELAO = null;               /* a logo já carregada, para o canvas do LED */
 let LOGO_OPACA = false;              /* a logo tem fundo sólido? (ganha cartão claro) */
 /* os cantos da logo entregam o segredo: se os quatro forem opacos, o arquivo
@@ -4455,8 +4505,12 @@ function tresIniciar(){
   });
 
   /* PISTA + PALCO + TELÃO só nos ambientes com telao:true (Salão de Eventos);
-     o Solar não tem cabeceira de pista (v18.08-21) */
-  if(AMB.telao){
+     o Solar não tem cabeceira de pista (v18.08-21).
+     v18.09-14: COM ORÇAMENTO, o cenário é o que o cliente contratou — palco
+     só se houver palco na lista, telão só se houver audiovisual/LED. Sem
+     orçamento (demonstração), a casa aparece montada como sempre. */
+  const CEN = cenarioContratado();
+  if(AMB.telao && (CEN.palco || CEN.telao)){
   /* faixa da pista (y 556–637 na planta) com brilho dourado sutil, 6 mm acima
      do PISO REAL para não brigar com o piso do GLB */
   const pA = pxParaM(810, 556), pB = pxParaM(1690, 637);
@@ -4476,20 +4530,24 @@ function tresIniciar(){
      (campo do snapshot da proposta); no protótipo ela é desenhada em
      canvas em runtime (DIMY · Convenção 2026). */
   const palcoA = pxParaM(1690,450), palcoB = pxParaM(1745,650);
-  const palco = new TH.Mesh(
-    new TH.BoxGeometry(palcoB.x-palcoA.x, .4, palcoB.z-palcoA.z),
-    new TH.MeshStandardMaterial({color:0x23282E, roughness:.85}));
-  palco.position.set((palcoA.x+palcoB.x)/2, PISO_Y+.2, (palcoA.z+palcoB.z)/2);
-  palco.castShadow = palco.receiveShadow = true;
-  T3.cena.add(palco);
+  if(CEN.palco){
+    const palco = new TH.Mesh(
+      new TH.BoxGeometry(palcoB.x-palcoA.x, .4, palcoB.z-palcoA.z),
+      new TH.MeshStandardMaterial({color:0x23282E, roughness:.85}));
+    palco.position.set((palcoA.x+palcoB.x)/2, PISO_Y+.2, (palcoA.z+palcoB.z)/2);
+    palco.castShadow = palco.receiveShadow = true;
+    T3.cena.add(palco);
+  }
+  if(CEN.telao){
   const TELAO_W = 4.0, TELAO_H = 2.2, telaoC = pxParaM(1735,550);
-  const telaoY = PISO_Y + .4 + .30 + TELAO_H/2;     /* apoiado 30 cm acima do tablado */
+  /* sem palco contratado, o painel desce para o piso */
+  const telaoY = PISO_Y + (CEN.palco ? .4 : 0) + .30 + TELAO_H/2;
   const matBorda = new TH.MeshStandardMaterial({color:0x171B20, roughness:.55});
   const moldura = new TH.Mesh(new TH.BoxGeometry(.07, TELAO_H+.12, TELAO_W+.12), matBorda);
   moldura.position.set(telaoC.x, telaoY, telaoC.z);
   moldura.castShadow = true;
   T3.cena.add(moldura);
-  for(const dz of [-TELAO_W/2+.35, TELAO_W/2-.35]){  /* pés curtos até o tablado */
+  if(CEN.palco) for(const dz of [-TELAO_W/2+.35, TELAO_W/2-.35]){  /* pés curtos até o tablado */
     const pe = new TH.Mesh(new TH.BoxGeometry(.07, .34, .12), matBorda);
     pe.position.set(telaoC.x, PISO_Y+.4+.17, telaoC.z+dz);
     T3.cena.add(pe);
@@ -4498,6 +4556,7 @@ function tresIniciar(){
   telao.rotation.y = -Math.PI/2;                     /* normal para −x: de frente pro salão */
   telao.position.set(telaoC.x-.045, telaoY, telaoC.z);
   T3.cena.add(telao);
+  }
   }
 
   /* luz de fim de tarde: ambiente + direcional bem âmbar, sombra suave.
@@ -4670,15 +4729,43 @@ function tresCorte(){
 function tresLaco(ts){
   T3.raf = requestAnimationFrame(tresLaco);
   if(TOUR.ativo) tourAtualizar(ts || performance.now());
+  tresDesenhar();
+}
+/* um quadro: a cena e, por cima, a fusão em preto e a cartela do filme */
+function tresDesenhar(){
   tresCorte();
   T3.renderer.render(T3.cena, T3.cam);
-  if(TOUR.ativo && (TOUR.fade > 0 || TOUR.cartela > 0)){   /* fusão em preto e cartela do vídeo curto */
+  if(TOUR.ativo && (TOUR.fade > 0 || TOUR.cartela > 0)){
     T3.fadeMat.opacity = TOUR.fade;
     T3.cartelaMat.opacity = TOUR.cartela || 0;
     T3.renderer.autoClear = false;
     T3.renderer.render(T3.fadeCena, T3.fadeCam);
     T3.renderer.autoClear = true;
   }
+}
+/* FILME QUADRO A QUADRO (v18.09-13) — gravar a tela em tempo real a 1080p
+   dava 8,6 quadros por segundo e o passeio saía travado. O gerador do filme
+   (ferramentas/gerar-filme.mjs) passou a pedir UM QUADRO POR VEZ, no tempo
+   exato, e a montar o vídeo depois: 30 quadros por segundo, independente do
+   computador. Nada disso roda na proposta do cliente. */
+function filmePreparar(curto){
+  if(!T3.pronto) return 0;
+  if(T3.raf){ cancelAnimationFrame(T3.raf); T3.raf = 0; }   /* o laço sai da frente */
+  tresMesas();
+  TOUR.segs = curto ? tourRoteiroCurto() : tourMontarRoteiro();
+  TOUR.curto = !!curto; TOUR.ativo = true; TOUR.i = 0; TOUR.segIni = 0;
+  TOUR.fade = 0; TOUR.cartela = 0; TOUR.cartelaPronta = false; TOUR.cartelaFim = false;
+  return TOUR.segs.reduce((a,s)=>a+s.dur, 0);
+}
+/* devolve o quadro JÁ LIDO: desenhar numa chamada e ler na seguinte dava
+   quadro preto, porque o navegador limpa o buffer do WebGL entre as duas
+   (o vídeo saía piscando). Render e leitura moram no mesmo turno. */
+function filmeQuadro(segundos){
+  if(!TOUR.ativo) return null;
+  tourAtualizar(segundos*1000);
+  if(!TOUR.ativo) return null;       /* passou do fim do roteiro */
+  tresDesenhar();
+  return T3.renderer.domElement.toDataURL('image/jpeg', 0.92);
 }
 function tresParar(){
   if(TOUR.ativo) tourParar(false); /* saiu da visão no meio do tour: para e descarta gravação */
@@ -5432,7 +5519,9 @@ function tourAtualizar(ts){
   T3.cam.lookAt(seg.look(e));
   /* fusão em preto (v18.08-22): 0,2 s entrando + 0,2 s saindo de cada plano
      com fusao:true (os planos do Salão não têm — caminho contínuo) */
-  const t = limita(k, 0, 1)*seg.dur, F = .2;
+  /* v18.09-14: a fusão era de 0,2 s e deixava ~0,1 s de preto total no meio
+     da emenda — parecia piscada. Com 0,5 s a passagem fica suave. */
+  const t = limita(k, 0, 1)*seg.dur, F = .5;
   TOUR.fade = seg.fusao ? Math.max(0, 1 - t/F, 1 - (seg.dur - t)/F) : 0;
   /* vídeo curto: cartela de abertura nos 2,4 s iniciais e de fecho nos 2,4 s
      finais, entrando e saindo em meio segundo */
@@ -5495,11 +5584,13 @@ function tourCartela(TH, fim){
   if('letterSpacing' in c) c.letterSpacing = '8px';
   c.fillStyle = 'rgba(201,171,120,.85)';
   c.font = '500 26px "Inter", Helvetica, Arial, sans-serif';
-  c.fillText(fim ? 'INDAIÁ EVENTOS' : (EVENTO_NOME || 'PROPOSTA').toUpperCase(), 640, 300);
+  /* no filme do espaço as duas cartelas são da casa; na proposta, a de
+     abertura é do evento do cliente e a de fecho é do Indaiá */
+  c.fillText(MODO_FILME || fim ? 'INDAIÁ EVENTOS' : (EVENTO_NOME || 'PROPOSTA').toUpperCase(), 640, 300);
   if('letterSpacing' in c) c.letterSpacing = '2px';
   c.fillStyle = '#F7F8F9';
   let fonte = 78;
-  const titulo = fim ? (AMB.rotulo || AMB.nome) : CLIENTE_NOME;
+  const titulo = (MODO_FILME || fim) ? (AMB.rotulo || AMB.nome) : CLIENTE_NOME;
   c.font = `600 ${fonte}px "Cormorant Garamond", Georgia, serif`;
   while(fonte > 32 && c.measureText(titulo).width > 1060){
     fonte -= 4; c.font = `600 ${fonte}px "Cormorant Garamond", Georgia, serif`;
@@ -5509,7 +5600,9 @@ function tourCartela(TH, fim){
   c.beginPath(); c.moveTo(520, 432); c.lineTo(760, 432); c.stroke();
   c.fillStyle = 'rgba(247,248,249,.72)';
   c.font = 'italic 400 34px "Cormorant Garamond", Georgia, serif';
-  c.fillText(fim ? 'o seu evento, do jeito que você desenhou' : `${AMB.nome} · ${DATA_EVENTO_BR}`, 640, 486);
+  c.fillText(MODO_FILME
+    ? (fim ? 'o seu evento começa aqui' : 'um passeio pela casa')
+    : (fim ? 'o seu evento, do jeito que você desenhou' : `${AMB.nome} · ${DATA_EVENTO_BR}`), 640, 486);
   const tx = new TH.CanvasTexture(cv);
   tx.colorSpace = TH.SRGBColorSpace;
   return tx;
@@ -5590,12 +5683,9 @@ function tourGravarFim(baixar){
 $('#btnTour').addEventListener('click', ()=>{ TOUR.ativo ? tourParar(false) : tourIniciar(false, false); });
 $('#btnGravarTour').addEventListener('click', ()=>{ if(!TOUR.ativo) tourIniciar(true, false); });
 $('#btnVideoCurto').addEventListener('click', ()=>{ if(!TOUR.ativo) tourIniciar(true, true); });
-/* sem MediaRecorder/captureStream (navegador antigo): os botões de gravar somem */
-if(!('MediaRecorder' in window) || !HTMLCanvasElement.prototype.captureStream){
-  $('#btnGravarTour').hidden = true;
-  $('#btnVideoCurto').hidden = true;
-  $('#tourNota').hidden = true;
-}
+/* os botões de gravar ficam escondidos na proposta (o filme já está na página);
+   o gravador continua vivo para o ferramentas/gerar-filme.mjs, que chama
+   tourIniciar(true, true) direto e salva o arquivo do espaço */
 
 /* =================================================================
    GALERIA — só este espaço, poucas fotos e EM ALTA (URL cheia também
@@ -6021,6 +6111,54 @@ function montarProva(nomeDoCRM){
       <figcaption class="prova__quem"><b>${esc(d.nome)}</b>${dataBR(d.data)} · ${d.casa ? `${esc(d.casa)}, ${esc(p.onde)}` : 'avaliação no Google'}</figcaption>
     </figure>`).join('');
 }
+/* O CENÁRIO É O QUE O CLIENTE CONTRATOU (v18.09-14) — com orçamento na mão,
+   a maquete só monta o que está na lista: palco se houver palco, painel de
+   LED se houver audiovisual/LED. Sem orçamento (a demonstração), a casa
+   aparece montada como sempre, senão a página abriria vazia. */
+function cenarioContratado(){
+  if(typeof ORC_REAL === 'undefined' || !ORC_REAL) return {palco:true, telao:true, doOrcamento:false};
+  const nomes = ORC_REAL.linhas.map(l=>normNome(l.nome)).join(' | ');
+  return {
+    palco: /\bpalco\b|tablado|praticavel/.test(nomes),
+    telao: /led|audiovisual|telao|painel|projec|datashow/.test(nomes),
+    doOrcamento: true,
+  };
+}
+/* o filme do espaço: arquivo pronto por ambiente, sem nada gerado na hora */
+function montarFilme(){
+  const sec = document.getElementById('filme'); if(!sec) return;
+  const v = AMB.filme;
+  if(!v || !v.src){ sec.hidden = true; return; }
+  const video = document.getElementById('filmeVideo');
+  video.poster = v.poster || '';
+  video.innerHTML = `<source src="${esc(v.src)}" type="video/mp4">`;
+  video.setAttribute('aria-label', v.cap || `Passeio pelo ${AMB.nome}`);
+  document.getElementById('filmeCap').textContent = v.cap
+    || `Passeio pelo ${AMB.nome} — montagem da casa, em vídeo.`;
+  sec.hidden = false;
+}
+/* FILME DA PROPOSTA (v18.09-14) — quando a equipe gera o vídeo DESTE cliente
+   (ferramentas/gerar-filme.mjs --proposta …), ele fica em
+   assets/propostas/<número>/. A página procura por ele e, achando, troca o
+   filme do espaço pelo do evento: mesma cena, com a marca do cliente no
+   telão e só o que ele contratou. Não achando, fica o da casa. */
+/* a lista abaixo é escrita pelo próprio ferramentas/gerar-filme.mjs quando
+   grava o vídeo de uma proposta — sem ela a página sairia tentando um arquivo
+   que quase nunca existe e enchendo o console de 404 */
+const PROPOSTAS_COM_FILME = ['ORC-2026-02412'];
+function filmeDaProposta(){
+  if(!ORC_REAL || !ORC_NUMERO) return;
+  if(!PROPOSTAS_COM_FILME.includes(ORC_NUMERO)) return;
+  const base = `assets/propostas/${encodeURIComponent(ORC_NUMERO)}/`;
+  const sec = document.getElementById('filme'), video = document.getElementById('filmeVideo');
+  if(!sec || !video) return;
+  video.poster = `${base}poster.jpg`;
+  video.innerHTML = `<source src="${base}passeio.mp4" type="video/mp4">`;
+  video.load();
+  document.getElementById('filmeCap').textContent =
+    `O seu evento no ${AMB.nome}, em vídeo — com a sua marca no telão e a montagem desta proposta.`;
+  sec.hidden = false;
+}
 /* a logo do cliente assina o alto e o rodapé; se ela não carregar, o nome
    dele continua lá — a proposta nunca fica sem assinatura */
 function vestirMarcaCliente(){
@@ -6204,6 +6342,7 @@ function aplicarEscassez(){
 vestirFrases();     /* a frase da capa, pelo espaço (o tipo vem depois, do CRM) */
 $('#btnCompartilhar').addEventListener('click', compartilharProposta);
 montarProva();      /* prova social do espaço (dados fixos, logo acima) */
+montarFilme();      /* o filme do espaço, se este ambiente já tiver um */
 aplicarValidade();
 aplicarNotaDia();
 aplicarEscassez();
@@ -6366,6 +6505,7 @@ async function vestirPropostaCRM(){
     }
     /* a capa fala do tipo de evento do orçamento (corporativo, dinner…) */
     vestirFrases(o.tipo_evento && o.tipo_evento.nome);
+    filmeDaProposta();   /* se a equipe já gerou o vídeo deste evento, é ele que toca */
     /* a prova social é da CASA do orçamento (o Mediterrâneo 242 e o Solar 915
        são de Florianópolis, e a página não desenha o Mediterrâneo) */
     const espacoDoOrc = (o.espaco && o.espaco.nome)
