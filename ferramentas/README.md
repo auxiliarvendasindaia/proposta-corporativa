@@ -39,6 +39,28 @@ O parâmetro `&api=` da página só é aceito em `localhost` — em produção e
   celular e o aviso de quanto o total mudou.
 - `gerar-simulacao-capa.mjs` — gera `_simulacao-capa.html` para comparar as formas de assinar a
   proposta (`?capa=hoje | logo | evento | tudo`). Não toca na página oficial.
+- `prova-video.mjs` — o vídeo curto: duração, planos, cartelas e o arquivo que sai.
+
+## O filme que a proposta mostra
+
+`gerar-filme.mjs` grava o passeio da maquete **quadro a quadro** (1080p, 30 q/s) e monta o MP4
+com o ffmpeg do crm-backend. Gravar a tela ao vivo dava 8,6 quadros por segundo e o vídeo saía
+travado; e desenhar num turno e ler no outro voltava quadro preto (era o "piscar").
+
+```
+node ferramentas/servir.mjs 8140                          # precisa do servidor no ar
+node ferramentas/gerar-filme.mjs                          # o filme de cada espaço
+node ferramentas/gerar-filme.mjs solar,mirante            # só alguns
+node ferramentas/gerar-filme.mjs salao_eventos --completo # tour inteiro (~57 s)
+
+# o filme DESTE cliente: logo no telão, layout e cenário do orçamento
+node ferramentas/gerar-filme.mjs --proposta <token> --api <base do CRM> --espaco salao_eventos
+```
+
+O filme do espaço vai para `assets/ambientes/<slug>/video/` e **não leva nada de cliente**
+(telão e cartelas com a marca da casa). O filme de uma proposta vai para
+`assets/propostas/<número>/` e a ferramenta anota o número em `PROPOSTAS_COM_FILME`, dentro do
+`index.html` — é assim que a página sabe que existe.
 - `prova-proposta-fechada.mjs` — `proposta.html`: valores travados, itens do orçamento virando
   peças no 2D/3D, ajustes de layout salvos e aviso quando o CRM não responde.
 - `testar-mascara.mjs [url]` — bateria de arrasto real do Salão de Eventos (referência histórica).
