@@ -145,8 +145,8 @@ html.sem-io .reveal{opacity:1;transform:none;}
 .hero__fundo::after{content:"";position:absolute;inset:0;
   background:linear-gradient(100deg,var(--cream) 0%,rgba(247,248,249,.94) 42%,rgba(247,248,249,.62) 66%,rgba(247,248,249,.38) 100%);}
 @media (max-width:760px){
-  .hero__fundo::after{background:linear-gradient(180deg,rgba(247,248,249,.90) 0%,rgba(247,248,249,.93) 55%,rgba(247,248,249,.99) 100%);}
-  .hero__fundo img{object-position:center 45%;}
+  .hero__fundo::after{background:linear-gradient(180deg,rgba(247,248,249,.62) 0%,rgba(247,248,249,.86) 38%,rgba(247,248,249,.97) 72%);}
+  .hero__fundo img{object-position:center 58%;}
 }
 .hero__title{font-family:var(--serif);font-weight:600;font-size:clamp(2.6rem,7.6vw,5.2rem);line-height:1.02;
   letter-spacing:-.015em;color:var(--brown-deep);margin:.2rem 0 1.2rem;}
@@ -509,7 +509,7 @@ html.sem-io .reveal{opacity:1;transform:none;}
 /* ---------- CTA final ---------- */
 .cta{position:relative;overflow:hidden;color:#fff;text-align:center;padding-block:clamp(72px,12vw,140px);}
 .cta__media{position:absolute;inset:0;z-index:0;background:var(--night);}
-.cta__media img{width:100%;height:100%;object-fit:cover;object-position:center 40%;}
+.cta__media img{width:100%;height:100%;object-fit:cover;object-position:center 62%;}
 /* véu mais denso + reforço embaixo (v18.08-15): a foto do salão real é
    clara — o gradiente garante contraste AA no título e nos textos brancos */
 .cta__veil{position:absolute;inset:0;background:
@@ -786,7 +786,10 @@ html.sem-io .reveal{opacity:1;transform:none;}
   .ovl__in{padding-top:72px;}
   .ph{width:min(78vw,300px);}
   .hero__actions .btn{width:100%;justify-content:center;}
+  .hero__validade{flex-wrap:wrap;align-items:flex-start;gap:.35em .6em;
+    border-radius:18px;line-height:1.9;}
   .vitrine{width:100%;justify-content:flex-start;}
+  .cta__acoes{width:100%;}
   .cta .btn{width:100%;max-width:420px;justify-content:center;}
   .planta__bar .btn{flex:1 1 auto;justify-content:center;}
   .planta__cont{margin:4px 0 0;width:100%;}
@@ -862,7 +865,7 @@ html.so-layout body{padding-bottom:0;}
     </div>
     <p class="hero__validade reveal" data-d="3">
       <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-      ORC-2026-01837 · Proposta válida até <span class="js-validade">25/08/2026</span>
+      <span class="js-orc">ORC-2026-01837</span> · Proposta válida até <span class="js-validade">25/08/2026</span>
     </p>
   </div>
 </section>
@@ -879,7 +882,7 @@ html.so-layout body{padding-bottom:0;}
       <div class="rcard reveal" id="cardData">
         <p class="rcard__lbl">Data do evento</p>
         <p class="rcard__val">24/09/2026</p>
-        <p class="rcard__sub">quinta-feira · a partir das 19h</p>
+        <p class="rcard__sub" id="cardDataSub">quinta-feira · a partir das 19h</p>
       </div>
       <div class="rcard reveal" data-d="1">
         <p class="rcard__lbl">Local</p>
@@ -1218,10 +1221,10 @@ html.so-layout body{padding-bottom:0;}
 <footer class="footer">
   <div class="wrap footer__inner">
     <span class="brand__mono">DIMY</span>
-    <p class="footer__fine">Proposta ORC-2026-01837 · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
+    <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer — é só pedir na nossa conversa.
-      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-17</span></p>
+      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-18</span></p>
   </div>
 </footer>
 
@@ -1583,6 +1586,9 @@ const AMBIENTES = {
     /* foto do alto da página: o salão inteiro montado para recepção (a foto
        do "evento corporativo" é a tela de uma apresentação, não o salão) */
     heroFoto:3,
+    /* fundo do fechamento: a pista com a chuva de cristais (a foto do evento
+       corporativo mostra o slide de outra empresa, legível no recorte) */
+    ctaFoto:4,
     /* o filme do espaço (gerado por ferramentas/gerar-filme.mjs) */
     filme:{src:'assets/ambientes/salao_eventos/video/passeio.mp4', poster:'assets/ambientes/salao_eventos/video/poster.jpg',
       cap:'Um passeio pelo Salão de Eventos, com a montagem da casa — 25 segundos.'},
@@ -1630,8 +1636,8 @@ const AMBIENTES = {
        cap:'Evento corporativo realizado neste salão · B. Fabbriani, 2022',
        badge:'Evento corporativo · neste salão', badgeCls:'salao'},
       {url:`${MID}chat-1100.jpg`, w:3000, h:2000,
-       cap:'Evento corporativo realizado neste salão · B. Fabbriani, 2022',
-       badge:'Evento corporativo · neste salão', badgeCls:'salao'},
+       cap:'O lounge com vista, montado para a recepção · B. Fabbriani, 2022',
+       badge:'Lounge da recepção', badgeCls:'salao'},
       {url:`${MID}chat-0208.jpg`, w:1600, h:1066,
        cap:'O salão montado para recepção · Salão de Eventos, Itapema/SC',
        badge:'Salão de Eventos · Itapema'},
@@ -3810,8 +3816,8 @@ function pintarPlanta(){
   const el = $('#plantaCont');
   el.textContent = n===0
     ? 'Nenhuma mesa ainda — comece pelo distribuir automático.'
-    : `${n} ${n===1?'mesa':'mesas'} · ${n}×${MESA.lugares} = ${lug} lugares` +
-      (MODO_LAYOUT ? '' : ' — ' + (lug>=conv ? `atende os ${conv} convidados` : `faltam ${conv-lug}`)) +
+    : `${n} ${n===1?'mesa':'mesas'} · ${n}×${MESA.lugares} = ${lug} lugares sentados` +
+      (MODO_LAYOUT ? '' : ' — ' + (lug>=conv ? `atende os ${conv} convidados` : `${conv} convidados no evento`)) +
       (PISOS.length>1 ? ' · ' + PISOS.map((P,i)=>`${P.nome} ${PROPOSTA.mesas.filter(m=>pisoDe(m)===i).length}`).join(' · ') : '');
   el.classList.toggle('ok', n>0 && lug>=conv);
   pintarPisos();
@@ -6530,6 +6536,9 @@ async function vestirPropostaCRM(){
     if(nomeCli){
       CLIENTE_NOME = nomeCli;
       if(o.numero) ORC_NUMERO = String(o.numero);
+      /* o número aparece em três lugares (capa, rodapé e nota do investimento);
+         sem isto a capa mostrava o número da proposta de outro cliente */
+      document.querySelectorAll('.js-orc').forEach(el=>el.textContent = ORC_NUMERO);
       document.title = `Proposta ${nomeCli} · Indaiá Eventos`;
       document.querySelector('meta[name="description"]')
         .setAttribute('content', `Proposta interativa corporativa — ${nomeCli} · ${DATA_EVENTO_BR} · ${AMB.nome}, ${AMB.cidadeLonga||''}`);
@@ -6563,6 +6572,13 @@ async function vestirPropostaCRM(){
         `<span class="js-espaco-rotulo">${esc(AMB.rotulo)}</span> — ${esc(dataLonga)}.`;
       const cardData = document.querySelector('#cardData .rcard__val');
       if(cardData) cardData.textContent = DATA_EVENTO_BR;
+      /* o dia da semana vinha impresso e ficava errado: 06/11/2026 é sexta e
+         o card dizia quinta. Agora sai da própria data do orçamento. */
+      const cardSub = document.getElementById('cardDataSub');
+      if(cardSub && DATA_EVENTO){
+        const diaSem = DATA_EVENTO.toLocaleDateString('pt-BR', {weekday:'long'});
+        cardSub.textContent = `${diaSem} · a partir das 19h`;
+      }
       const brandLink = document.querySelector('a.brand');
       if(brandLink) brandLink.setAttribute('aria-label', `${nomeCli} — voltar ao início da proposta`);
 
@@ -6576,7 +6592,8 @@ async function vestirPropostaCRM(){
       /* o telão prefere o nome do evento; sem ele, o tipo e o ano */
       TELAO_SUB = EVENTO_NOME || (tipoEv ? `${tipoEv}${mData ? ' · '+mData[1] : ''}` : 'Indaiá Eventos');
       if((AMB.cta||'').includes('dimy')){
-        const fotoReal = (AMB.galeria||[]).find(g=>g && g.url && !/render/i.test(g.selo||''));
+        const g = AMB.galeria||[];
+        const fotoReal = g[AMB.ctaFoto] || g.find(f=>f && f.url && !/render/i.test(f.selo||''));
         if(fotoReal) $('#ctaImg').src = fotoNoTamanho(fotoReal.url, 1600, 72);   /* fundo do CTA: não precisa do original de 11 MB */
       }
     }
