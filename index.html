@@ -1224,7 +1224,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer — é só pedir na nossa conversa.
-      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-18</span></p>
+      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-19</span></p>
   </div>
 </footer>
 
@@ -3158,7 +3158,8 @@ function pintarSelecao(tipo){
 function pintarVitrine(tipo){
   const g = GRUPOS[tipo], op = porId(g.lista, PROPOSTA[tipo]);
   const btn = $(g.botao);
-  const rotulo = tipo==='coquetel' ? `Coquetel · ${op.nome}` : op.nome;
+  const rotulo = !PROPOSTA[tipo] ? 'Não está nesta proposta · ver os cardápios'
+    : tipo==='coquetel' ? `Coquetel · ${op.nome}` : op.nome;
   btn.querySelector('.vitrine__sel').textContent = rotulo;
   btn.querySelector('.vitrine__thumbs').innerHTML = g.thumbs(op)
     .map(src=>`<img src="${src}" alt="" loading="lazy" decoding="async">`).join('');
