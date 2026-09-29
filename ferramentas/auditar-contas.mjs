@@ -184,16 +184,22 @@ conferirFechamento(v, 'trocou o coquetel');
 ok(trocou && cent(v.total) > antesTroca, `trocar por um pacote mais caro sobe o total (${brl(antesTroca)} → ${v.total})`);
 ok(/sujeito a confirmação/i.test(v.itens.map(i => i.preco).join(' ')),
   'o item que saiu do orçamento avisa que está sujeito a confirmação');
-const semOpenbar = await p1.evaluate(() => {
-  const b = [...document.querySelectorAll('#cardsOpenbar .nivel')].find(x => x.getAttribute('aria-pressed') === 'true');
-  if (!b) return false; b.click(); return true;
+/* o último open bar não sai (o evento não pode ficar sem bebida); com um
+   menu escolhido, o coquetel sai e as contas continuam fechando */
+const protegido = await p1.evaluate(async () => {
+  const esperar = ms => new Promise(r => setTimeout(r, ms));
+  document.querySelector('#cardsOpenbar .nivel[aria-pressed="true"] .nivel__tirar').click();
+  await esperar(400);
+  const aviso = document.querySelector('.toast')?.textContent || '';
+  const ficou = !!document.querySelector('#cardsOpenbar .nivel[aria-pressed="true"]');
+  document.querySelectorAll('#cardsMenu .nivel')[0].click(); await esperar(700);
+  document.querySelector('#cardsCoquetel .nivel[aria-pressed="true"] .nivel__tirar').click(); await esperar(700);
+  return { aviso, ficou, coquetelSaiu: !document.querySelector('#cardsCoquetel .nivel[aria-pressed="true"]') };
 });
-await espera(600);
+ok(protegido.ficou && /sem bebida/i.test(protegido.aviso), `o último open bar não sai (${protegido.aviso.slice(0, 44)}…)`);
+ok(protegido.coquetelSaiu, 'com um menu escolhido, o coquetel sai');
 v = await p1.evaluate(LER);
-if (semOpenbar) {
-  conferirFechamento(v, 'sem open bar');
-  ok(!v.itens.some(i => /open bar 1$/i.test(i.nome)), 'tirar o open bar tira a linha dele');
-}
+conferirFechamento(v, 'depois de retirar o coquetel');
 await p1.close();
 
 /* ====================== 2 · MODO REAL, DOIS DIAS ====================== */

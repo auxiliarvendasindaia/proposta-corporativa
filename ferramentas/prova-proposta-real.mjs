@@ -56,18 +56,42 @@ ok(!/Coffee Superior|DJ - Essencial|Crédito - Audiovisual|Sousplat/.test(r.iten
 ok(!/desconto|cupom/i.test(r.corpo), 'nenhuma menção a desconto ou cupom');
 ok(/sujeito a confirmação/i.test(r.aviso || ''), 'aviso de confirmação presente');
 ok(r.conv === 300 && /SEBRAE/i.test(r.titulo), `cliente e convidados do orçamento (${r.titulo})`);
-/* cliente mexe: sobe convidados e tira o open bar */
+
+/* RETIRAR DA PROPOSTA — o cliente tira o que não quer pelo botão do card, mas
+   o evento nunca fica sem comida nem sem bebida */
+const tirar = await p.evaluate(async () => {
+  const esperar = ms => new Promise(r => setTimeout(r, ms));
+  const btn = s => document.querySelector(`${s} .nivel[aria-pressed="true"] .nivel__tirar`);
+  const r = { visiveis: [...document.querySelectorAll('.nivel[aria-pressed="true"] .nivel__tirar')].length };
+  btn('#cardsOpenbar').click(); await esperar(400);
+  r.semBebida = document.querySelector('.toast')?.textContent || '';
+  r.openbarFicou = !!document.querySelector('#cardsOpenbar .nivel[aria-pressed="true"]');
+  btn('#cardsCoquetel')?.click(); await esperar(400);
+  r.semComida = document.querySelector('.toast')?.textContent || '';
+  /* com um menu escolhido, o coquetel pode sair */
+  document.querySelectorAll('#cardsMenu .nivel')[0].click(); await esperar(700);
+  btn('#cardsCoquetel').click(); await esperar(700);
+  r.coquetelSaiu = !document.querySelector('#cardsCoquetel .nivel[aria-pressed="true"]');
+  r.total = document.getElementById('totalGeral').textContent;
+  return r;
+});
+ok(tirar.visiveis >= 2, `o botão "Retirar da proposta" aparece nos cardápios escolhidos (${tirar.visiveis})`);
+ok(/sem bebida/i.test(tirar.semBebida) && tirar.openbarFicou, `o último open bar não sai (${tirar.semBebida.slice(0, 44)}…)`);
+ok(/sem comida/i.test(tirar.semComida), `a última comida não sai (${tirar.semComida.slice(0, 44)}…)`);
+ok(tirar.coquetelSaiu, `com um menu escolhido, o coquetel sai (total ${tirar.total})`);
+/* cliente mexe: sobe convidados e troca o cardápio */
 await p.evaluate(() => mudarConvidados(350)); await espera(400);
 const r2 = await estado(p);
 ok(cent(r2.total) > cent(r.total) && /Valor estimado/.test(r2.aviso || ''), `mudou convidados: ${r.total} → ${r2.total}`);
-await p.evaluate(() => selecionar('openbar', PROPOSTA.openbar)); await espera(400);
+await p.evaluate(() => { const b = [...document.querySelectorAll('#cardsMenu .nivel')].find(x => x.textContent.includes('Menu Excellence')); b.click(); });
+await espera(500);
 const r3 = await estado(p);
-ok(cent(r3.total) < cent(r2.total), `tirou o open bar: ${r2.total} → ${r3.total}`);
-/* não pode ficar sem alimentação */
-await p.evaluate(() => selecionar('coquetel', PROPOSTA.coquetel)); await espera(300);
+ok(cent(r3.total) > cent(r2.total), `trocou por um menu mais caro: ${r2.total} → ${r3.total}`);
+/* o último open bar continua protegido mesmo pelo clique no card */
+await p.evaluate(() => selecionar('openbar', PROPOSTA.openbar)); await espera(400);
 const r4 = await estado(p);
 const toast = await p.evaluate(() => document.querySelector('.toast')?.textContent || '');
-ok(/Coquetel|Pacote/i.test(r4.resumo), `alimentação protegida (${toast.slice(0, 60)})`);
+ok(cent(r4.total) === cent(r3.total) && /sem bebida/i.test(toast), `bebida protegida também no clique (${toast.slice(0, 52)})`);
 /* reabrir mantém os ajustes */
 await p.reload({ waitUntil: 'networkidle2' }); await espera(1500);
 const r5 = await estado(p);

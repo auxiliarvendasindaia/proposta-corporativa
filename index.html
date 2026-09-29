@@ -231,6 +231,16 @@ html.sem-io .reveal{opacity:1;transform:none;}
 .nivel[aria-pressed="true"]::after{content:"Selecionado";position:absolute;top:-1px;right:-1px;
   font-size:.52rem;letter-spacing:.2em;text-transform:uppercase;font-weight:500;
   background:var(--gold-soft);color:var(--ink);padding:.4em .8em;border-radius:0 var(--radius) 0 var(--radius);}
+/* RETIRAR DA PROPOSTA (v18.09-15) — só no card escolhido: o cliente tira o
+   que não quer sem precisar adivinhar que é clicando de novo. Some quando
+   aquele item é o último de comida ou o último de bebida. */
+.nivel__tirar{align-self:flex-start;margin-top:.15rem;padding:.42em .9em;border-radius:999px;
+  font-family:var(--sans);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;font-weight:500;
+  color:var(--brown);background:transparent;border:1px solid var(--line);cursor:pointer;
+  display:inline-flex;align-items:center;gap:.5em;transition:border-color .25s,color .25s,background .25s;}
+.nivel__tirar:hover{border-color:#9F2F2F;color:#9F2F2F;background:rgba(159,47,47,.06);}
+.nivel__tirar::before{content:"×";font-size:1.05em;line-height:1;}
+.nivel:not([aria-pressed="true"]) .nivel__tirar{display:none;}
 .gbloco__foot{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:1.2rem;}
 .gbloco__nota{font-size:.8rem;color:rgba(247,248,249,.78);margin:0;max-width:52ch;line-height:1.55;}
 /* cartão-vitrine "Ver cardápio": leque de 3 miniaturas do pacote selecionado + CTA */
@@ -844,7 +854,6 @@ html.so-layout body{padding-bottom:0;}
     <div class="hero__actions reveal" data-d="3">
       <a class="btn btn--solid btn--lg" href="#resumo">Ver a proposta
         <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14m0 0 6-6m-6 6-6-6"/></svg></a>
-      <a class="btn btn--ghost btn--lg" href="#investimento">Ir para o investimento</a>
     </div>
     <p class="hero__validade reveal" data-d="3">
       <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
@@ -859,7 +868,7 @@ html.so-layout body{padding-bottom:0;}
     <div class="sec__head reveal">
       <div class="sec__meta"><span class="sec__num">01</span><p class="eyebrow">O seu evento</p></div>
       <h2 class="sec__title">Tudo <em>combinado</em>, num olhar.</h2>
-      <p class="sec__intro">Data, lugar e tamanho da festa. O número de convidados é seu: mexa nele e veja a proposta acompanhar.</p>
+      <p class="sec__intro">Data, lugar e tamanho do evento. O número de participantes é seu: mexa nele e veja a proposta atualizar.</p>
     </div>
     <div class="resumo__grid">
       <div class="rcard reveal" id="cardData">
@@ -901,7 +910,7 @@ html.so-layout body{padding-bottom:0;}
     <div class="sec__head reveal">
       <div class="sec__meta"><span class="sec__num">02</span><p class="eyebrow">Gastronomia &amp; bar</p></div>
       <h2 class="sec__title">A mesa que <em>conduz</em> a noite.</h2>
-      <p class="sec__intro">Três escolhas, todas suas: o coquetel de chegada, o jantar e o bar. Troque à vontade — o total responde na hora.</p>
+      <p class="sec__intro">Três escolhas, todas suas: o coquetel de chegada, o jantar e o bar. Troque à vontade — o orçamento atualiza na hora.</p>
     </div>
 
     <div class="gbloco reveal" id="bloco-coquetel">
@@ -1230,7 +1239,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta ORC-2026-01837 · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer — é só pedir na nossa conversa.
-      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-14</span></p>
+      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-15</span></p>
   </div>
 </footer>
 
@@ -1589,6 +1598,9 @@ const AMBIENTES = {
     cidadeLonga:'Itapema · Santa Catarina', emTitulo:'salão',
     descricao:'Proposta interativa corporativa — DIMY · 24/09/2026 · Salão de Eventos, Itapema/SC.',
     galeriaIntro:'O layout padrão da casa em render — e fotos reais do Salão de Eventos de Itapema, incluindo um evento corporativo entregue nele.',
+    /* foto do alto da página: o salão inteiro montado para recepção (a foto
+       do "evento corporativo" é a tela de uma apresentação, não o salão) */
+    heroFoto:3,
     /* o filme do espaço (gerado por ferramentas/gerar-filme.mjs) */
     filme:{src:'assets/ambientes/salao_eventos/video/passeio.mp4', poster:'assets/ambientes/salao_eventos/video/poster.jpg',
       cap:'Um passeio pelo Salão de Eventos, com a montagem da casa — 25 segundos.'},
@@ -1676,6 +1688,9 @@ const AMBIENTES = {
     cidadeLonga:'Florianópolis · Santa Catarina', emTitulo:'Solar',
     descricao:'Proposta interativa corporativa — DIMY · 24/09/2026 · Solar, Florianópolis/SC.',
     galeriaIntro:'Fotos reais do Solar, em Florianópolis: o casarão histórico e o pátio da árvore montados para receber.',
+    /* foto do alto da página: pátio da árvore montado para jantar — nada de casamento nem
+       15 anos numa proposta corporativa */
+    heroFoto:0,
     /* o filme do espaço (gerado por ferramentas/gerar-filme.mjs) */
     filme:{src:'assets/ambientes/solar/video/passeio.mp4', poster:'assets/ambientes/solar/video/poster.jpg',
       cap:'Um passeio pelo Solar, com a montagem da casa — 25 segundos.'},
@@ -1834,6 +1849,9 @@ const AMBIENTES = {
     cidadeLonga:'Itapema · Santa Catarina', emTitulo:'Mezanino',
     descricao:'Proposta interativa corporativa — DIMY · 24/09/2026 · Mezanino, Itapema/SC.',
     galeriaIntro:'Fotos reais do Mezanino, em Itapema: o salão envidraçado com vista para a cidade, o lounge e o deck de madeira do mezanino.',
+    /* foto do alto da página: apresentação com telão e plateia — nada de casamento nem
+       15 anos numa proposta corporativa */
+    heroFoto:0,
     /* o filme do espaço (gerado por ferramentas/gerar-filme.mjs) */
     filme:{src:'assets/ambientes/mezanino/video/passeio.mp4', poster:'assets/ambientes/mezanino/video/poster.jpg',
       cap:'Um passeio pelo Mezanino, com a montagem da casa — 25 segundos.'},
@@ -1926,6 +1944,9 @@ const AMBIENTES = {
     cidadeLonga:'Florianópolis · Santa Catarina', emTitulo:'Mirante',
     descricao:'Proposta interativa corporativa — DIMY · 24/09/2026 · Mirante da Lagoa, Florianópolis/SC.',
     galeriaIntro:'Fotos reais do Mirante da Lagoa: o salão envidraçado com vista para a Lagoa da Conceição, os lustres de cristal e o lounge.',
+    /* foto do alto da página: salão em ensaio corporativo — nada de casamento nem
+       15 anos numa proposta corporativa */
+    heroFoto:4,
     /* o filme do espaço (gerado por ferramentas/gerar-filme.mjs) */
     filme:{src:'assets/ambientes/mirante/video/passeio.mp4', poster:'assets/ambientes/mirante/video/poster.jpg',
       cap:'Um passeio pelo Mirante da Lagoa, com a montagem da casa — 25 segundos.'},
@@ -2023,6 +2044,9 @@ const AMBIENTES = {
     cidadeLonga:'Florianópolis · Santa Catarina', emTitulo:'Canto da Lagoa',
     descricao:'Proposta interativa corporativa — DIMY · 24/09/2026 · Canto da Lagoa, Florianópolis/SC.',
     galeriaIntro:'Fotos reais do Canto da Lagoa: o salão, o deck de frente para a Lagoa da Conceição e os ambientes de cerimônia.',
+    /* foto do alto da página: mesa posta no deck, de frente para a lagoa — nada de casamento nem
+       15 anos numa proposta corporativa */
+    heroFoto:0,
     /* o filme do espaço (gerado por ferramentas/gerar-filme.mjs) */
     filme:{src:'assets/ambientes/canto_lagoa/video/passeio.mp4', poster:'assets/ambientes/canto_lagoa/video/poster.jpg',
       cap:'Um passeio pelo Canto da Lagoa, com a montagem da casa — 25 segundos.'},
@@ -2823,7 +2847,7 @@ function vestirMultiDia(){
   const intro1 = document.querySelector('#resumo .sec__intro');
   if(intro1) intro1.textContent = `São ${ds.length} dias de evento — escolha o dia na lista de itens para ver o que está em cada um.`;
   const intro2 = document.querySelector('#cardapios .sec__intro');
-  if(intro2) intro2.textContent = 'Cada dia tem o seu cardápio: escolha o dia e troque o coquetel, o jantar e o bar dele à vontade — o total responde na hora.';
+  if(intro2) intro2.textContent = 'Cada dia tem o seu cardápio: escolha o dia e troque o coquetel, o jantar e o bar dele à vontade — o orçamento atualiza na hora.';
   const rotTotal = document.querySelector('.inv__total span');
   if(rotTotal) rotTotal.textContent = `Total do investimento · ${ds.length} dias`;
   const nota = document.querySelector('#invCard .inv__nota');
@@ -3103,8 +3127,17 @@ function montarCards(tipo){
     b.innerHTML = `<p class="nivel__nome">${esc(op.nome)}</p>
       <p class="nivel__preco">${fmt(op.preco)}<small>por pessoa</small></p>
       <p class="nivel__res">${g.resumo(op)}</p>` +
-      (op.inclui && op.inclui.length ? `<p class="nivel__inclui">Inclui: ${esc(op.inclui.join(', '))}</p>` : '');
-    b.addEventListener('click', ()=>selecionar(tipo, op.id));
+      (op.inclui && op.inclui.length ? `<p class="nivel__inclui">Inclui: ${esc(op.inclui.join(', '))}</p>` : '')
+      + `<span class="nivel__tirar" role="button" tabindex="0" data-tirar="${tipo}">Retirar da proposta</span>`;
+    b.addEventListener('click', ev=>{
+      /* o "retirar" tem vida própria dentro do card escolhido */
+      if(ev.target.closest('[data-tirar]')){ ev.stopPropagation(); tirarDaProposta(tipo); return; }
+      selecionar(tipo, op.id);
+    });
+    b.addEventListener('keydown', ev=>{
+      if(!ev.target.closest('[data-tirar]')) return;
+      if(ev.key==='Enter' || ev.key===' '){ ev.preventDefault(); ev.stopPropagation(); tirarDaProposta(tipo); }
+    });
     box.appendChild(b);
   });
   box.addEventListener('scroll', ()=>sombraNiveis(box), {passive:true});
@@ -3144,26 +3177,31 @@ function pintarVitrine(tipo){
   btn.setAttribute('aria-label', `Ver o cardápio completo — ${rotulo}`);
 }
 
-function selecionar(tipo, id){
-  /* modo real: clicar no item já escolhido TIRA ele da proposta, desde que
-     sobre ao menos uma alimentação (menu ou coquetel). No evento de vários
-     dias a escolha é DO DIA aberto — e a regra da alimentação vale por dia. */
+/* O QUE NÃO PODE FICAR DE FORA (v18.09-15) — o cliente tira o que não quer,
+   mas o evento nunca fica sem comida nem sem bebida: o último cardápio de
+   comida (menu ou coquetel) e o último de bebida (open bar) não saem. No
+   evento de vários dias a conta é DO DIA aberto. */
+function podeTirar(tipo, dia){
+  const comida = ['menu','coquetel'].filter(t=>!!escolhaDoCliente(t, dia));
+  const bebida = ['openbar'].filter(t=>!!escolhaDoCliente(t, dia));
+  if(tipo==='openbar') return bebida.length > 1 ? true : 'bebida';
+  return comida.length > 1 ? true : 'comida';
+}
+function tirarDaProposta(tipo){
   const dia = diaCorrente();
-  const atual = ORC_REAL ? escolhaDoCliente(tipo, dia) : PROPOSTA[tipo];
-  let tirando = false;
-  if(ORC_REAL && atual===id){
-    if(tipo==='menu' || tipo==='coquetel'){
-      const outro = tipo==='menu' ? 'coquetel' : 'menu';
-      if(!escolhaDoCliente(outro, dia)){
-        const d = dia && diaDoOrcamento(dia);
-        mostrarToast(`${d ? `O dia ${d.numero}` : 'O evento'} precisa de ao menos uma alimentação — escolha a outra opção antes de tirar esta.`);
-        return;
-      }
-    }
-    tirando = true;
+  if(!escolhaDoCliente(tipo, dia)) return;
+  const ok = podeTirar(tipo, dia);
+  if(ok !== true){
+    const onde = dia && diaDoOrcamento(dia);
+    mostrarToast(ok === 'bebida'
+      ? `${onde ? `O dia ${onde.numero}` : 'O evento'} não pode ficar sem bebida — escolha outro open bar antes de tirar este.`
+      : `${onde ? `O dia ${onde.numero}` : 'O evento'} não pode ficar sem comida — escolha o menu ou o coquetel antes de tirar este.`);
+    return;
   }
-  if(!tirando && atual===id) return;
-  const novo = tirando ? null : id;
+  gravarEscolha(tipo, null, dia);
+}
+/* grava a escolha (ou a retirada) e repinta tudo o que depende dela */
+function gravarEscolha(tipo, novo, dia){
   if(dia){
     PROPOSTA.dias = PROPOSTA.dias || {};
     PROPOSTA.dias[dia] = {...(PROPOSTA.dias[dia]||{}), [tipo]: novo};
@@ -3171,12 +3209,20 @@ function selecionar(tipo, id){
   PROPOSTA[tipo] = novo;     /* espelho do dia aberto */
   salvar();
   const g = GRUPOS[tipo];
-  $(g.alvo).querySelectorAll('.nivel').forEach(b=>b.setAttribute('aria-pressed', String(!tirando && b.dataset.id===id)));
-  /* fade de 160ms na troca (mesmo gesto do cardápio publicado); as miniaturas
-     do cartão-vitrine trocam no meio do fade, junto com os totais */
-  const alvos=[$('#invCard'), $(g.botao)];
+  $(g.alvo).querySelectorAll('.nivel').forEach(b=>b.setAttribute('aria-pressed', String(!!novo && b.dataset.id===novo)));
+  const alvos = [$('#invCard'), $(g.botao)];
   alvos.forEach(el=>el.classList.add('trocando'));
   setTimeout(()=>{ pintarVitrine(tipo); atualizarTotais(); alvos.forEach(el=>el.classList.remove('trocando')); },160);
+}
+function selecionar(tipo, id){
+  /* clicar no item já escolhido também tira, como antes — o botão "Retirar da
+     proposta" existe porque ninguém adivinha esse clique */
+  const dia = diaCorrente();
+  const atual = ORC_REAL ? escolhaDoCliente(tipo, dia) : PROPOSTA[tipo];
+  if(ORC_REAL && atual===id){ tirarDaProposta(tipo); return; }
+  if(atual===id) return;
+  /* fade de 160 ms na troca (mesmo gesto do cardápio publicado) */
+  gravarEscolha(tipo, id, dia);
 }
 
 /* ---- lista de extras e estrutura ---- */
@@ -5712,15 +5758,22 @@ function esperaDaMaquete(ligar){
   const box = document.getElementById('tresBox');
   if(!box) return;
   if(!ligar){ box.classList.remove('esperando'); box.style.backgroundImage = ''; return; }
-  const f = (GALERIA||[])[0];
+  const f = fotoDestaque();
   if(!f || !f.url) return;
   box.style.backgroundImage = `url("${fotoNoTamanho(f.url, 900, 60)}")`;
   box.classList.add('esperando');
 }
 /* imagem do topo: a 1ª da galeria do ambiente, no tamanho da tela */
+/* a foto de destaque do espaço: a escolhida no registro (heroFoto) ou a
+   primeira da galeria. Vale para o alto da página e para a espera da maquete. */
+function fotoDestaque(){
+  const g = GALERIA || [];
+  const i = Number.isInteger(AMB.heroFoto) && g[AMB.heroFoto] ? AMB.heroFoto : 0;
+  return g[i];
+}
 function montarHero(){
   const img = document.getElementById('heroImg');
-  const f = (GALERIA||[])[0];
+  const f = fotoDestaque();
   if(!img || !f || !f.url) return;
   const fundo = img.parentElement;
   img.onload = ()=>fundo.classList.add('is-loaded');
@@ -5863,7 +5916,7 @@ atualizarTotais();
    casa não cumpre volta como reclamação no dia.
    ================================================================= */
 const FRASES_EVENTO = {
-  corporativo: {titulo:'Uma noite à altura<br>da sua <em>equipe</em>.',
+  corporativo: {titulo:'Uma noite à altura<br>dos seus <em>convidados</em>.',
     fecho:'do primeiro café ao último brinde'},
   dinner:      {titulo:'Um jantar que as pessoas<br><em>lembram</em> depois.',
     fecho:'do couvert ao café'},
@@ -5901,13 +5954,13 @@ const DIFERENCIAL = {
 };
 const TEXTOS_EVENTO = {
   corporativo:{
-    resumo:['Tudo <em>combinado</em>, num olhar.','Data, lugar e tamanho do evento. O número de participantes é seu: mexa nele e veja a proposta acompanhar.'],
-    cardapios:['A mesa que sustenta o <em>encontro</em>.','Três escolhas, todas suas: o coquetel de chegada, o jantar e o bar. Troque à vontade — o total responde na hora.'],
+    resumo:['Tudo <em>combinado</em>, num olhar.','Data, lugar e tamanho do evento. O número de participantes é seu: mexa nele e veja a proposta atualizar.'],
+    cardapios:['A mesa que sustenta o <em>encontro</em>.','Três escolhas, todas suas: o coquetel de chegada, o jantar e o bar. Troque à vontade — o orçamento atualiza na hora.'],
     extras:['A <em>estrutura</em> que o seu evento pede.','O que já está na proposta. Ajuste as quantidades do que é ajustável — o que acompanha o número de participantes se ajusta sozinho.'],
     galeria:['Onde o seu <em>evento</em> acontece.',''],
   },
   dinner:{
-    cardapios:['A mesa que <em>conduz</em> o jantar.','Três escolhas, todas suas: o coquetel de chegada, o jantar e o bar. Troque à vontade — o total responde na hora.'],
+    cardapios:['A mesa que <em>conduz</em> o jantar.','Três escolhas, todas suas: o coquetel de chegada, o jantar e o bar. Troque à vontade — o orçamento atualiza na hora.'],
     extras:['Os <em>detalhes</em> que sustentam o jantar.',''],
     galeria:['Onde o seu <em>jantar</em> acontece.',''],
   },

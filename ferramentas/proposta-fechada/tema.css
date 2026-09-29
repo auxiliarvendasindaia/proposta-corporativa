@@ -1,0 +1,69 @@
+/* =================================================================
+   TEMA DA FESTA — palha, dourado e neutros claros.
+   A página de sempre é grafite frio; a proposta fechada veste as cores
+   do evento. A marca do cliente é a ÚNICA coisa que entra com a cor
+   dela (a logo, em imagem) — nada do roxo/azul da marca escorre para
+   o resto da página.
+   Injetado no <head> pelo gerar-proposta-fechada.mjs, depois do CSS
+   do index: só redefine as variáveis e os poucos pontos que assumiam
+   fundo escuro.
+   ================================================================= */
+:root{
+  /* claros: do off-white ao palha */
+  --cream:#FBF8F1; --cream-2:#F5EFE2; --sand:#EBE1CC; --bege:#D9C9A6; --nude:#F1E9D9;
+  /* textos: marrom quente, nunca cinza azulado */
+  --taupe:#7D6E56; --brown:#5B4C39; --brown-deep:#3A3126; --ink:#2A2318;
+  /* dourado do evento */
+  --gold:#BE9E5E; --gold-soft:#D6BC8A; --gold-deep:#8A6E39;
+  --line:rgba(58,49,38,.16); --line-soft:rgba(58,49,38,.09);
+  --night:#2E2619;                       /* tabaco: tierbar, overlays */
+  --sh-1:0 1px 2px rgba(58,49,38,.05),0 4px 14px rgba(58,49,38,.08);
+  --sh-2:0 8px 18px rgba(58,49,38,.09),0 22px 50px rgba(58,49,38,.14);
+  --sh-3:0 30px 80px rgba(42,35,24,.28);
+  --linha-clara:rgba(58,49,38,.14);
+}
+body{background:var(--cream);}
+
+/* ---- o bloco dos cardápios deixa de ser escuro: vira palha ---- */
+.fechada .escuro{background:var(--sand);color:var(--brown-deep);}
+.fechada .escuro .sec__title,
+.fechada .escuro .gbloco__title{color:var(--brown-deep);}
+.fechada .escuro .sec__intro,
+.fechada .escuro .gbloco__hint,
+.fechada .escuro .gbloco__nota{color:var(--taupe);}
+.fechada .escuro .eyebrow,
+.fechada .escuro .sec__num{color:var(--gold-deep);}
+.fechada .escuro em{color:var(--gold-deep);}
+.fechada .escuro .gbloco+.gbloco{border-top:1px solid var(--line);}
+.fechada .escuro .vitrine{background:rgba(255,253,247,.72);border:1px solid var(--line);color:var(--brown-deep);}
+.fechada .escuro .vitrine:hover{border-color:var(--gold);}
+.fechada .escuro .vitrine__sel{color:var(--gold-deep);}
+.fechada .escuro .vitrine__cta{color:var(--brown-deep);}
+
+/* cartão "Contratado" sobre o palha */
+.fechada .contratado{border-color:rgba(58,49,38,.16);background:rgba(255,253,247,.66);}
+.fechada .contratado__nome{color:var(--brown-deep);}
+.fechada .contratado__preco{color:var(--brown);}
+.fechada .contratado__res{color:var(--taupe);}
+.fechada .contratado__selo{color:var(--gold-deep);border-color:rgba(190,158,94,.55);}
+
+/* ---- dourado no lugar certo: fios, selos e o total ---- */
+.fechada .sec__num,
+.fechada .eyebrow{color:var(--gold-deep);}
+.fechada .inv__total strong{color:var(--brown-deep);}
+.fechada .inv{background:#FFFDF7;border:1px solid var(--line-soft);}
+.fechada .inv__inclusos{background:var(--cream-2);}
+.fechada .tierbar{background:var(--night);}
+.fechada .tierbar__total{color:var(--gold-soft);}
+.fechada .btn--gold{background:var(--gold);border-color:var(--gold);color:#2A2318;}
+.fechada .btn--gold:hover{background:var(--gold-soft);border-color:var(--gold-soft);}
+.fechada .btn--solid{background:var(--brown-deep);border-color:var(--brown-deep);color:var(--cream);}
+
+/* ---- a logo do cliente (única cor de marca na página) ---- */
+.marca-logo{display:block;height:34px;width:auto;max-width:210px;object-fit:contain;}
+.footer .marca-logo{height:20px;opacity:.9;}
+/* no CTA a foto do salão é escura e a logo só existe em versão de fundo claro:
+   ela ganha um selo palha para continuar legível e com as cores certas */
+.cta .marca-logo{height:30px;margin:0 auto 1.3rem;padding:12px 22px;border-radius:999px;
+  background:rgba(251,248,241,.94);box-sizing:content-box;box-shadow:0 8px 24px rgba(42,35,24,.28);}
+@media (max-width:640px){ .marca-logo{height:26px;max-width:160px;} }

@@ -45,12 +45,27 @@ for (const [amb, regra] of Object.entries(ESPERADO)) {
 }
 
 /* 2 · o título acompanha o tipo de evento do orçamento */
-const TIPOS = [['Corporativo', /equipe/], ['Dinner', /jantar/i], ['Formatura', /história/],
+const TIPOS = [['Corporativo', /convidados/], ['Dinner', /jantar/i], ['Formatura', /história/],
   ['Casamento', /imaginaram/], ['15 Anos', /contar/], ['Outros Eventos', /representa/]];
 for (const [tipo, regra] of TIPOS) {
   const t = await p.evaluate(nome => { vestirFrases(nome); return document.querySelector('.hero__title').textContent.replace(/\s+/g, ' ').trim(); }, tipo);
   ok(regra.test(t), `${tipo}: "${t}"`);
 }
+
+/* 1b · a foto do alto é a escolhida para o espaço, e a capa tem UM caminho */
+for (const amb of ['salao_eventos', 'mezanino', 'mirante']) {
+  await p.goto(`${SITE}?espaco=${amb}`, { waitUntil: 'networkidle2' });
+  await p.waitForFunction(() => { const i = document.getElementById('heroImg'); return i && i.naturalWidth > 0; }, { timeout: 60000 }).catch(() => {});
+  const foto = await p.evaluate(() => {
+    const f = fotoDestaque(), i = document.getElementById('heroImg');
+    return { cap: (f && f.cap) || '', largura: i ? i.naturalWidth : 0, escolhida: AMB.heroFoto };
+  });
+  ok(foto.largura > 0, `${amb}: a foto do alto carregou (${foto.largura}px)`);
+  ok(!/casamento|noiv|15 anos|debutante/i.test(foto.cap), `${amb}: nada de casamento na capa ("${foto.cap.slice(0, 46)}")`);
+  ok(Number.isInteger(foto.escolhida), `${amb}: foto escolhida a dedo (índice ${foto.escolhida})`);
+}
+const botoesCapa = await p.evaluate(() => [...document.querySelectorAll('.hero__actions a')].map(a => a.textContent.trim()));
+ok(botoesCapa.length === 1 && /Ver a proposta/.test(botoesCapa[0]), `a capa tem um caminho só (${botoesCapa.join(' · ')})`);
 
 /* 2b · o miolo também fala a língua do evento, e cada seção mostra o que só
    o Indaiá entrega */
@@ -83,7 +98,7 @@ const real = await p.evaluate(() => ({
   frase: document.getElementById('heroFrase').textContent.trim(),
   chapeu: document.querySelector('.eyebrow').textContent.trim(),
 }));
-ok(/equipe/.test(real.titulo), `orçamento corporativo mantém o título da equipe (${real.titulo})`);
+ok(/convidados/.test(real.titulo), `orçamento corporativo traz o título dos convidados (${real.titulo})`);
 ok(/Mediterrâneo|vidro|figueira/.test(real.frase) || real.frase.length > 0, 'a frase da casa continua na capa');
 
 /* 3b · compartilhar leva a validade junto, e não existe baixar */
