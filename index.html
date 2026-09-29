@@ -151,11 +151,14 @@ html.sem-io .reveal{opacity:1;transform:none;}
 .hero__fundo{position:absolute;inset:0;overflow:hidden;opacity:0;transition:opacity .9s ease;}
 .hero__fundo.is-loaded{opacity:1;}
 .hero__fundo img{width:100%;height:100%;object-fit:cover;object-position:center 60%;}
+.hero__fundo video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  object-position:center 60%;opacity:0;transition:opacity 1.4s var(--ease-lux);}
+.hero__fundo.filme-ok video{opacity:1;}
 .hero__fundo::after{content:"";position:absolute;inset:0;
   background:linear-gradient(100deg,var(--cream) 0%,rgba(247,248,249,.94) 42%,rgba(247,248,249,.62) 66%,rgba(247,248,249,.38) 100%);}
 @media (max-width:760px){
   .hero__fundo::after{background:linear-gradient(180deg,rgba(247,248,249,.62) 0%,rgba(247,248,249,.86) 38%,rgba(247,248,249,.97) 72%);}
-  .hero__fundo img{object-position:center 58%;}
+  .hero__fundo img,.hero__fundo video{object-position:center 58%;}
 }
 .hero__title{font-family:var(--serif);font-weight:600;font-size:clamp(2.6rem,7.6vw,5.2rem);line-height:1.02;
   letter-spacing:-.015em;color:var(--brown-deep);margin:.2rem 0 1.2rem;}
@@ -175,6 +178,31 @@ html.sem-io .reveal{opacity:1;transform:none;}
 
 /* ---------- resumo do evento ---------- */
 .resumo__grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));align-items:stretch;}
+/* ---------- roteiro do evento ---------- */
+.roteiro{margin-top:clamp(36px,6vh,66px);border-top:1px solid var(--line);
+  padding-top:clamp(26px,4vh,40px);}
+.roteiro[hidden]{display:none;}
+.roteiro__head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;
+  gap:8px 32px;margin-bottom:clamp(26px,4vh,40px);}
+.roteiro__titulo{font-family:var(--serif);font-weight:600;letter-spacing:-.012em;margin:0;
+  font-size:clamp(1.5rem,3vw,2.1rem);color:var(--brown-deep);}
+.roteiro__titulo em{font-style:italic;color:var(--gold-deep);}
+.roteiro__nota{font-size:.84rem;line-height:1.6;color:var(--taupe);margin:0;max-width:42ch;}
+.roteiro__linha{list-style:none;margin:0;padding:0;display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(168px,1fr));}
+.roteiro__passo{position:relative;padding:30px clamp(14px,1.8vw,24px) 0 0;}
+/* o fio que costura os momentos passa na altura dos pontos */
+.roteiro__passo::before{content:"";position:absolute;left:6px;right:0;top:6px;height:1px;
+  background:var(--line);}
+.roteiro__passo:last-child::before{right:auto;width:0;}
+.roteiro__ponto{position:absolute;left:0;top:0;width:13px;height:13px;border-radius:50%;
+  background:var(--cream);border:2px solid var(--gold);box-sizing:border-box;}
+.roteiro__passo--fim .roteiro__ponto{background:var(--gold);}
+.roteiro__num{display:block;font-size:.66rem;letter-spacing:.24em;color:var(--gold-deep);
+  margin:0 0 .5rem;font-variant-numeric:tabular-nums;}
+.roteiro__nome{font-family:var(--serif);font-weight:600;font-size:1.12rem;line-height:1.25;
+  color:var(--brown-deep);margin:0 0 .4rem;}
+.roteiro__txt{font-size:.88rem;line-height:1.65;color:var(--brown);margin:0;max-width:30ch;}
 .rcard{background:var(--cream);border:1px solid var(--line-soft);border-radius:var(--radius);
   padding:24px 24px 22px;box-shadow:var(--sh-1);display:flex;flex-direction:column;gap:6px;}
 .rcard__lbl{font-size:.64rem;letter-spacing:.24em;text-transform:uppercase;color:var(--taupe);margin:0;}
@@ -339,7 +367,7 @@ html.sem-io .reveal{opacity:1;transform:none;}
    (trocar de pill não move o resto da página) */
 .visoes-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
 .visoes{display:grid;}
-.visao{grid-area:1/1;visibility:hidden;opacity:0;transition:opacity .16s;}
+.visao{grid-area:1/1;min-width:0;visibility:hidden;opacity:0;transition:opacity .16s;}
 .visao.ativa{visibility:visible;opacity:1;}
 .visao__frame{position:relative;aspect-ratio:16/10;overflow:hidden;border-radius:var(--radius);
   border:1px solid var(--line-soft);background:#fff;}
@@ -791,7 +819,8 @@ html.sem-io .reveal{opacity:1;transform:none;}
   .escassez-badge{padding:.45em .8em;}
   .escassez-badge__longo{display:none;}
   .escassez-badge__curto{display:inline;}
-  .tierbar .btn{width:100%;justify-content:center;padding:.72em 1.2em;font-size:.76rem;}
+  .tierbar .btn{width:100%;min-width:0;justify-content:center;padding:.72em 1.2em;font-size:.76rem;
+    white-space:normal;line-height:1.3;text-align:center;}
   .ovl__in{padding-top:72px;}
   .ph{width:min(78vw,300px);}
   .hero__actions .btn{width:100%;justify-content:center;}
@@ -799,7 +828,8 @@ html.sem-io .reveal{opacity:1;transform:none;}
     border-radius:18px;line-height:1.9;}
   .vitrine{width:100%;justify-content:flex-start;}
   .cta__acoes{width:100%;}
-  .cta .btn{width:100%;max-width:420px;justify-content:center;}
+  .cta .btn{width:100%;max-width:420px;min-width:0;justify-content:center;
+    white-space:normal;line-height:1.35;text-align:center;}
   .planta__bar .btn{flex:1 1 auto;justify-content:center;}
   .planta__cont{margin:4px 0 0;width:100%;}
   .tour3d__acoes{width:100%;}
@@ -808,6 +838,20 @@ html.sem-io .reveal{opacity:1;transform:none;}
   /* celular: quadro quadrado; o editor rola de lado com canvas de 560px
      (a planta tem ~14% de margem vazia em cima/embaixo — o corte residual
      em telas de 360px fica só nessa margem) */
+  /* roteiro no celular: um momento embaixo do outro, com o fio em pé */
+  /* nenhum rótulo de botão arrasta a página: em tela estreita eles quebram */
+  .btn{min-width:0;white-space:normal;line-height:1.3;text-align:center;}
+  /* a faixa do cardápio: miniaturas menores e o texto podendo quebrar */
+  .vitrine{max-width:100%;gap:12px;padding:10px 16px 10px 10px;}
+  .vitrine__thumbs img{width:52px;height:52px;}
+  .vitrine__cta{white-space:normal;font-size:.86rem;}
+  .roteiro__linha{grid-template-columns:1fr;}
+  .roteiro__passo{padding:0 0 22px 26px;}
+  .roteiro__passo::before{left:6px;top:6px;right:auto;bottom:-6px;width:1px;height:auto;}
+  .roteiro__passo:last-child{padding-bottom:0;}
+  .roteiro__passo:last-child::before{width:1px;height:0;}
+  .roteiro__nome{font-size:1.06rem;}
+  .roteiro__txt{max-width:none;}
   .visao__frame{aspect-ratio:1/1;}
   .planta__canvas{min-width:560px;}
   .lux__fig img{max-height:64svh;}
@@ -891,7 +935,7 @@ html.so-layout body{padding-bottom:0;}
       <div class="rcard reveal" id="cardData">
         <p class="rcard__lbl">Data do evento</p>
         <p class="rcard__val">24/09/2026</p>
-        <p class="rcard__sub" id="cardDataSub">quinta-feira · a partir das 19h</p>
+        <p class="rcard__sub" id="cardDataSub">quinta-feira · evento corporativo</p>
       </div>
       <div class="rcard reveal" data-d="1">
         <p class="rcard__lbl">Local</p>
@@ -917,6 +961,20 @@ html.so-layout body{padding-bottom:0;}
         <p class="rcard__nota" id="notaDia">Neste espaço, o investimento é o mesmo em qualquer dia da semana.</p>
         <p class="rcard__aviso">Mudança de data sujeita a disponibilidade — confirme com seu consultor.</p>
       </div>
+    </div>
+
+    <!-- O ROTEIRO (v18.09-21) — a sequência do evento, escrita pela página a
+         partir do que a proposta traz: o coquetel, o palco, o jantar e o bar
+         que o cliente escolheu. Sem horário: o orçamento do CRM não tem hora
+         do evento, e hora inventada em proposta é promessa que ninguém fez.
+         A sequência se refaz a cada troca de cardápio (ver montarRoteiro). -->
+    <div class="roteiro reveal" id="roteiro" hidden>
+      <div class="roteiro__head">
+        <h3 class="roteiro__titulo">Como a sua noite <em>acontece</em>.</h3>
+        <p class="roteiro__nota">A sequência é desenhada com você na Reunião de Alinhamento,
+          cerca de 30 dias antes do evento.</p>
+      </div>
+      <ol class="roteiro__linha" id="roteiroLinha"></ol>
     </div>
   </div>
 </section>
@@ -1233,7 +1291,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer — é só pedir na nossa conversa.
-      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-20</span></p>
+      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-21</span></p>
   </div>
 </footer>
 
@@ -3379,6 +3437,51 @@ function pintarTotal(cent){
   clearTimeout(deltaTimer);
   deltaTimer = setTimeout(()=>badge.classList.remove('on'), 4000);
 }
+/* O ROTEIRO DO EVENTO (v18.09-21) — a sequência sai do que a proposta traz:
+   o coquetel, o palco/telão do orçamento, o jantar e o bar que estão
+   escolhidos agora. Nada de horário: o orçamento do CRM não guarda hora do
+   evento, e a página não inventa promessa de horário. No evento de vários
+   dias o roteiro é DO DIA aberto. */
+function montarRoteiro(){
+  const sec = document.getElementById('roteiro'), box = document.getElementById('roteiroLinha');
+  if(!sec || !box) return;
+  if(MODO_LAYOUT){ sec.hidden = true; return; }
+  const dia = (ORC_REAL && ORC_REAL.multiDia) ? diaCorrente() : null;
+  const escolhido = tipo => { const e = escolhaDoCliente(tipo, dia); return e ? porId(GRUPOS[tipo].lista, e) : null; };
+  const coq = escolhido('coquetel'), menu = escolhido('menu'), bar = escolhido('openbar');
+  const cena = cenarioContratado();
+  const passos = [{nome:'A casa pronta',
+    txt:'Mesas postas, luz acesa e a nossa equipe a postos antes de o primeiro convidado chegar.'}];
+  if(coq){
+    const n = coq.secoes.reduce((a,x)=>a+x.itens.length,0);
+    passos.push({nome:'A chegada', txt:`Coquetel volante servido de pé: ${coq.nome}, ${n} itens em ${coq.secoes.length} categorias.`});
+  }
+  /* o palco e o telão só entram no roteiro se estiverem no orçamento */
+  if(cena.palco || cena.telao) passos.push({nome:'A hora da fala',
+    txt:(cena.palco && cena.telao) ? 'Palco e telão prontos para a abertura, a fala da diretoria e as homenagens.'
+      : cena.palco ? 'O palco pronto para a abertura, a fala da diretoria e as homenagens.'
+      : 'O telão pronto para a abertura, o vídeo institucional e as homenagens.'});
+  if(menu) passos.push({nome:'O jantar',
+    txt:`${menu.nome} em buffet completo: ${menu.secoes.map(x=>`${x.n} ${x.n===1?(SINGULAR[x.curto]||x.curto):x.curto}`).join(', ')}.`});
+  if(bar){
+    /* uma categoria só (o open bar de refrigerante, suco e água) não rende
+       lista: nesse caso o passo diz o que está servido, não o rótulo */
+    const cat = bar.secoes.map(x=>x.label.toLowerCase());
+    passos.push({nome:'O bar da noite', txt: cat.length>1
+      ? `${bar.nome} à vontade do começo ao fim: ${cat.join(', ')}.`
+      : `${bar.nome} à vontade do começo ao fim: ${bar.secoes[0].itens.join(', ').toLowerCase()}.`});
+  }
+  passos.push({nome:'O encerramento', fim:true,
+    txt:'A desmontagem é nossa. Do seu lado, fica só o evento entregue.'});
+  box.innerHTML = passos.map((x,i)=>`<li class="roteiro__passo${x.fim?' roteiro__passo--fim':''}">
+      <span class="roteiro__ponto" aria-hidden="true"></span>
+      <span class="roteiro__num">${String(i+1).padStart(2,'0')}</span>
+      <p class="roteiro__nome">${esc(x.nome)}</p>
+      <p class="roteiro__txt">${esc(x.txt)}</p>
+    </li>`).join('');
+  sec.hidden = false;
+}
+
 function atualizarTotais(){
   const r = calcular(PROPOSTA);
   const C = PROPOSTA.convidados;
@@ -3451,6 +3554,7 @@ function atualizarTotais(){
   const href = `https://wa.me/${WA_NUM}?text=${encodeURIComponent(msg)}`;
   document.querySelectorAll('.js-wa').forEach(a=>a.href=href);
   pintarPlanta(); /* contador de lugares compara com os convidados */
+  montarRoteiro(); /* o roteiro acompanha o cardápio escolhido */
   return r;
 }
 
@@ -6292,6 +6396,55 @@ function filmeDaProposta(){
 }
 /* a logo do cliente assina o alto e o rodapé; se ela não carregar, o nome
    dele continua lá — a proposta nunca fica sem assinatura */
+/* O FILME NO PRIMEIRO QUADRO (v18.09-21) — o vídeo da proposta já existia, na
+   seção 05. Aqui ele vira o fundo da capa: sem som, em laço, atrás do MESMO
+   véu da foto. A foto continua embaixo e o vídeo só aparece quando começa a
+   tocar (classe .filme-ok), então nada pisca e nada nasce preto. Se o navegador
+   barrar o autoplay, se o cliente pediu menos movimento ou se a conexão está
+   economizando dados, fica a foto — a capa nunca fica vazia. */
+function filmeAtual(){
+  if(ORC_REAL && ORC_NUMERO && PROPOSTAS_COM_FILME.includes(ORC_NUMERO)){
+    const base = `assets/propostas/${encodeURIComponent(ORC_NUMERO)}/`;
+    return {src:`${base}passeio.mp4`, poster:`${base}poster.jpg`};
+  }
+  return (AMB.filme && AMB.filme.src) ? {src:AMB.filme.src, poster:AMB.filme.poster||''} : null;
+}
+function filmeDaCapa(){
+  const fundo = document.querySelector('.hero__fundo');
+  if(!fundo || MODO_FILME || MODO_LAYOUT) return;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const con = navigator.connection || {};
+  if(con.saveData || /(^|-)2g$/.test(con.effectiveType||'')) return;
+  const v = filmeAtual(); if(!v) return;
+  let el = fundo.querySelector('video');
+  /* a proposta do cliente chega depois do primeiro desenho: quando o filme
+     dela entra no lugar do filme da casa, só a fonte é trocada */
+  if(el){
+    if(el.dataset.src === v.src) return;
+    el.dataset.src = v.src;
+    el.innerHTML = `<source src="${esc(v.src)}" type="video/mp4">`;
+    el.load(); const t = el.play(); if(t && t.catch) t.catch(()=>{});
+    return;
+  }
+  el = document.createElement('video');
+  el.muted = true; el.defaultMuted = true; el.loop = true; el.autoplay = true;
+  el.setAttribute('playsinline',''); el.setAttribute('muted','');
+  el.setAttribute('aria-hidden','true'); el.tabIndex = -1;
+  el.preload = 'auto'; el.dataset.src = v.src;
+  if(v.poster) el.poster = v.poster;
+  el.addEventListener('playing', ()=>fundo.classList.add('filme-ok'), {once:true});
+  el.innerHTML = `<source src="${esc(v.src)}" type="video/mp4">`;
+  fundo.appendChild(el);
+  const t = el.play(); if(t && t.catch) t.catch(()=>{});
+  /* fora da tela o filme para: nada de dois vídeos decodificando juntos
+     quando o cliente chega no player da seção 05 */
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(es=>es.forEach(x=>{
+      if(x.isIntersecting){ const q = el.play(); if(q && q.catch) q.catch(()=>{}); }
+      else el.pause();
+    }), {threshold:.04}).observe(fundo);
+  }
+}
 function vestirMarcaCliente(){
   if(!LOGO_CLIENTE) return;
   document.querySelectorAll('.brand__mono').forEach(el=>{
@@ -6474,6 +6627,9 @@ vestirFrases();     /* a frase da capa, pelo espaço (o tipo vem depois, do CRM)
 $('#btnCompartilhar').addEventListener('click', compartilharProposta);
 montarProva();      /* prova social do espaço (dados fixos, logo acima) */
 montarFilme();      /* o filme do espaço, se este ambiente já tiver um */
+/* capa com filme: na demonstração já começa; no link de proposta espera o CRM,
+   para nascer com o vídeo do cliente e não com o da casa */
+if(!PROPOSTA_TOKEN) filmeDaCapa();
 aplicarValidade();
 aplicarNotaDia();
 aplicarEscassez();
@@ -6587,7 +6743,8 @@ async function vestirPropostaCRM(){
       const cardSub = document.getElementById('cardDataSub');
       if(cardSub && DATA_EVENTO){
         const diaSem = DATA_EVENTO.toLocaleDateString('pt-BR', {weekday:'long'});
-        cardSub.textContent = `${diaSem} · a partir das 19h`;
+        const tipo = (o.tipo_evento && o.tipo_evento.nome) ? String(o.tipo_evento.nome).toLowerCase() : '';
+        cardSub.textContent = tipo ? `${diaSem} · ${tipo}` : diaSem;
       }
       const brandLink = document.querySelector('a.brand');
       if(brandLink) brandLink.setAttribute('aria-label', `${nomeCli} — voltar ao início da proposta`);
@@ -6648,6 +6805,7 @@ async function vestirPropostaCRM(){
     /* a capa fala do tipo de evento do orçamento (corporativo, dinner…) */
     vestirFrases(o.tipo_evento && o.tipo_evento.nome);
     filmeDaProposta();   /* se a equipe já gerou o vídeo deste evento, é ele que toca */
+    filmeDaCapa();       /* e é ele que roda na capa */
     /* a prova social é da CASA do orçamento (o Mediterrâneo 242 e o Solar 915
        são de Florianópolis, e a página não desenha o Mediterrâneo) */
     const espacoDoOrc = (o.espaco && o.espaco.nome)

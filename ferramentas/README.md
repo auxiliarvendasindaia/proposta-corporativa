@@ -40,6 +40,8 @@ O parâmetro `&api=` da página só é aceito em `localhost` — em produção e
 - `gerar-simulacao-capa.mjs` — gera `_simulacao-capa.html` para comparar as formas de assinar a
   proposta (`?capa=hoje | logo | evento | tudo`). Não toca na página oficial.
 - `prova-video.mjs` — o vídeo curto: duração, planos, cartelas e o arquivo que sai.
+- `prova-roteiro-capa.mjs` — o roteiro do evento (só promete o que está no orçamento, nunca
+  horário) e o filme de fundo da capa (é o do cliente, sem som, e some com `prefers-reduced-motion`).
 
 ## O filme que a proposta mostra
 

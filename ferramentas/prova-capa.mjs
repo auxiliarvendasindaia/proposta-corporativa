@@ -140,11 +140,34 @@ await espera(1600);
 const cel = await c.evaluate(() => {
   const f = document.getElementById('heroFrase').getBoundingClientRect();
   const a = document.querySelector('.hero__actions').getBoundingClientRect();
+  /* innerWidth no celular acompanha a largura do CONTEÚDO quando a página
+     escorre: comparar com ele deixava passar 207 px de rolagem lateral
+     (achado de 29/09). O que manda é o clientWidth do documento. */
+  const D = document.documentElement;
   return { fraseVisivel: f.top < innerHeight, botoes: Math.round(a.bottom), alt: innerHeight,
-    rolagemH: document.documentElement.scrollWidth <= innerWidth + 1 };
+    rolagemH: D.scrollWidth <= D.clientWidth + 1, largura: D.clientWidth, conteudo: D.scrollWidth };
 });
 ok(cel.fraseVisivel, 'no celular a frase aparece sem rolar');
-ok(cel.rolagemH, 'e a capa não escorre para o lado');
+ok(cel.rolagemH, `e a capa não escorre para o lado (${cel.largura} de tela, ${cel.conteudo} de conteúdo)`);
+
+/* 5 · NENHUMA LARGURA DE CELULAR ARRASTA A PÁGINA (29/09) — o editor de mesas
+   tem 560 px de largura mínima e, sem min-width:0 no item do grid, ele
+   esticava o documento inteiro: a página nascia com rolagem lateral e tudo
+   aparecia reduzido. A conta é feita em quatro telas, com e sem orçamento. */
+for (const larg of [320, 360, 390, 430]) {
+  for (const [rot, alvo] of [['sem orçamento', `${SITE}?espaco=salao_eventos`],
+    ['com orçamento', `${SITE}?espaco=salao_eventos&proposta=${'b'.repeat(40)}&api=${CRM}`]]) {
+    const t = await b.newPage();
+    t.on('pageerror', e => erros.push(String(e).slice(0, 130)));
+    await t.setViewport({ width: larg, height: 844, isMobile: true, deviceScaleFactor: 2 });
+    await t.goto(alvo, { waitUntil: 'networkidle2' });
+    await espera(1800);
+    const m = await t.evaluate(() => ({ tela: document.documentElement.clientWidth,
+      conteudo: document.documentElement.scrollWidth }));
+    ok(m.conteudo <= m.tela + 1, `${larg}px ${rot}: a página não arrasta de lado (conteúdo ${m.conteudo})`);
+    await t.close();
+  }
+}
 ok(erros.length === 0, `sem erros de JS ${erros.slice(0, 2).join(' | ')}`);
 
 await b.close();
