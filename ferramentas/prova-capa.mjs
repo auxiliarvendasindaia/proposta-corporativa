@@ -84,8 +84,14 @@ ok(/sustenta o encontro/.test(porId('cardapios').tit), `corporativo: "${porId('c
 ok(/estrutura que o seu evento pede/.test(porId('extras').tit), `corporativo: "${porId('extras').tit}"`);
 ok(/Onde o seu evento acontece/.test(porId('galeria').tit), `corporativo: "${porId('galeria').tit}"`);
 ok(!miolo.some(s => /festa/i.test(s.tit)), 'nenhum título de festa numa proposta corporativa');
-for (const id of ['cardapios', 'extras', 'planta', 'galeria'])
+/* sobraram dois diferenciais: cozinha própria e o layout que a operação
+   recebe (os de extras e galeria saíram a pedido da Dani) */
+for (const id of ['cardapios', 'planta'])
   ok(porId(id).dif.length > 20, `${id}: linha do diferencial ("${porId(id).dif.slice(0, 52)}…")`);
+for (const id of ['extras', 'galeria'])
+  ok(!porId(id).dif, `${id}: sem linha de diferencial, como pedido`);
+const tituloFotos = await p.evaluate(() => document.querySelector('.galeria__titulo')?.textContent || '');
+ok(/Fotos reais/.test(tituloFotos), `as fotos têm título depois do filme ("${tituloFotos}")`);
 /* casamento e 15 anos ficam com o texto original da página */
 const festa = await p.evaluate(() => { vestirFrases('Casamento'); return document.querySelector('#cardapios .sec__title').textContent.trim(); });
 ok(/conduz a noite/.test(festa), `casamento mantém o texto da casa ("${festa}")`);

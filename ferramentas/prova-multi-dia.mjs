@@ -191,7 +191,9 @@ const voltou = await p.evaluate(() => document.getElementById('totalGeral').text
 ok(cent(voltou) === Math.round(orc.valor_total * 100), `voltando o cardápio, o total volta ao do CRM (${voltou})`);
 
 /* 8 · resumo do fim de fluxo com os dois dias */
-await p.evaluate(() => document.getElementById('btnConfirmar')?.click() || document.querySelector('[data-abre-modal]')?.click());
+/* o botão agora vai direto para a conversa; o resumo por dia continua
+   existindo e é o que a mensagem leva — abrimos o modal à mão para conferir */
+await p.evaluate(() => abrirModal());
 await espera(600);
 const modal = await p.evaluate(() => {
   const el = document.querySelector('.modal__lista');
@@ -199,6 +201,8 @@ const modal = await p.evaluate(() => {
 });
 ok(/Dia 1/.test(modal) && /Dia 2/.test(modal), `o resumo lista os dois dias (${modal.slice(0, 120)})`);
 ok(!/desconto|cupom/i.test(modal), 'nenhuma palavra de desconto no resumo');
+const msg = decodeURIComponent((await p.evaluate(() => linkDaConversa())).split('text=')[1] || '');
+ok(/Dia 1/.test(msg) || /Dia 2/.test(msg) || /Total/.test(msg), `a conversa recebe os ajustes ("${msg.slice(0, 60).replace(/\s+/g, ' ')}…")`);
 
 /* 9 · nada de desconto/pagamento na página */
 const corpo = await p.evaluate(() => document.body.innerText);

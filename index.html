@@ -311,6 +311,11 @@ html.sem-io .reveal{opacity:1;transform:none;}
 .extras__micro{margin-top:1.4rem;padding:1rem 1.3rem;border-left:2px solid var(--gold);background:var(--cream-2);
   border-radius:0 var(--radius) var(--radius) 0;font-size:.9rem;color:var(--brown);max-width:64ch;line-height:1.6;}
 .extras__micro b{font-weight:500;color:var(--brown-deep);}
+.extras__micro__txt{margin:0 0 .9rem;}
+.extras__micro .btn{font-size:.82rem;}
+/* título das fotos, depois do filme */
+.galeria__titulo{font-family:var(--serif);font-weight:600;font-size:clamp(1.15rem,2vw,1.45rem);
+  color:var(--brown-deep);margin:2.2rem 0 1.1rem;}
 
 /* ---------- planta interativa (editor de mesas) ---------- */
 .planta{border:1px solid var(--line-soft);border-radius:var(--radius);background:var(--cream);box-shadow:var(--sh-1);
@@ -984,8 +989,11 @@ html.so-layout body{padding-bottom:0;}
       <p class="sec__intro">O que já está na proposta. Ajuste as quantidades do que é ajustável — o que acompanha o número de convidados se ajusta sozinho.</p>
     </div>
     <ul class="itens reveal" id="listaItens"></ul>
-    <p class="extras__micro reveal" data-d="1">Quer incluir algo que não está aqui (decoração, ativações)?
-      É só pedir na nossa conversa — a gente desenha junto.</p>
+    <div class="extras__micro reveal" data-d="1">
+      <p class="extras__micro__txt">Quer incluir algo que não está aqui (decoração, ativações)?
+        É só pedir na nossa conversa — a gente desenha junto.</p>
+      <button type="button" class="btn btn--ghost" id="btnMaisItens">Incluir mais itens no orçamento</button>
+    </div>
   </div>
 </section>
 
@@ -1124,7 +1132,6 @@ html.so-layout body{padding-bottom:0;}
     <div class="sec__head reveal">
       <div class="sec__meta"><span class="sec__num">05</span><p class="eyebrow">O espaço ao vivo</p></div>
       <h2 class="sec__title">Onde a sua festa <em>acontece</em>.</h2>
-      <p class="sec__intro js-galeria-intro">O layout padrão da casa em render — e fotos reais do Salão de Eventos de Itapema, incluindo um evento corporativo entregue nele.</p>
     </div>
     <!-- O FILME DO ESPAÇO (v18.09-13) — um passeio pronto, no mesmo lugar em
          que a proposta mostra as fotos. É arquivo (assets/ambientes/<slug>/
@@ -1138,6 +1145,7 @@ html.so-layout body{padding-bottom:0;}
       </div>
       <figcaption class="filme__cap" id="filmeCap"></figcaption>
     </figure>
+    <h3 class="galeria__titulo reveal">Fotos reais de eventos entregues.</h3>
     <div class="galeria reveal" id="galeriaGrid"></div>
   </div>
 </section>
@@ -1177,38 +1185,12 @@ html.so-layout body{padding-bottom:0;}
         <span>Total do investimento</span>
         <strong id="totalGeral" aria-live="polite">—</strong>
       </div>
-      <p class="inv__nota">Valores para <b id="invConvidados">200</b> convidados · Proposta válida até <span class="js-validade">25/08/2026</span> · Sem surpresas: taxas já inclusas.</p>
+      <p class="inv__nota">Valores para <b id="invConvidados">200</b> convidados · Proposta válida até <span class="js-validade">25/08/2026</span></p>
       <button type="button" class="inv__reset" id="btnReset">Restaurar a proposta original</button>
     </div>
   </div>
 </section>
 
-<!-- ===== 08 · COMO FUNCIONA ===== -->
-<section class="sec" id="como-funciona">
-  <div class="wrap">
-    <div class="sec__head reveal">
-      <div class="sec__meta"><span class="sec__num">08</span><p class="eyebrow">Como funciona</p></div>
-      <h2 class="sec__title">Do ajuste ao <em>contrato</em>, sem complicação.</h2>
-    </div>
-    <ol class="passos">
-      <li class="reveal">
-        <span class="passos__ic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h8M18 8h2M4 16h4M12 16h8"/><circle cx="15" cy="8" r="2.4"/><circle cx="9" cy="16" r="2.4"/></svg></span>
-        <h3>Você ajusta aqui</h3>
-        <p>Convidados, cardápios, bar e extras. O total acompanha cada escolha, sem letra miúda.</p>
-      </li>
-      <li class="reveal" data-d="1">
-        <span class="passos__ic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/><path d="m9.2 15.5 2 2 3.6-3.8"/></svg></span>
-        <h3>A consultora valida e reserva a data</h3>
-        <p>Ela recebe os seus ajustes, confirma a disponibilidade e fecha os detalhes com você.</p>
-      </li>
-      <li class="reveal" data-d="2">
-        <span class="passos__ic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l-.7 6.2a3.6 3.6 0 0 1-4.6 0Z"/><path d="M12 12.4V20M8.5 21h7"/></svg></span>
-        <h3>Contrato e brinde</h3>
-        <p>Assinatura simples e a data é sua. O resto da produção fica com a gente.</p>
-      </li>
-    </ol>
-  </div>
-</section>
 
 <!-- ===== CTA FINAL ===== -->
 <section class="cta" id="contato">
@@ -1221,7 +1203,7 @@ html.so-layout body{padding-bottom:0;}
     <h2 class="cta__title reveal" data-d="1">Vamos confirmar a <em>data</em> do seu evento?</h2>
     <p class="cta__lede reveal" data-d="2">A sua proposta já está pronta do seu jeito. Falta só a agenda.</p>
     <div class="cta__acoes reveal" data-d="3">
-      <button type="button" class="btn btn--gold btn--lg" id="btnCtaFinal">Confirmar os ajustes da proposta</button>
+      <button type="button" class="btn btn--gold btn--lg" id="btnCtaFinal">Validar orçamento e retomar conversa</button>
       <!-- compartilhar em vez de baixar: o arquivo salvo circula depois de
            vencido, o link leva sempre a validade junto -->
       <button type="button" class="btn btn--ghost btn--lg btn--claro" id="btnCompartilhar">Compartilhar com um colega</button>
@@ -1239,7 +1221,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta ORC-2026-01837 · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer — é só pedir na nossa conversa.
-      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-15</span></p>
+      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-16</span></p>
   </div>
 </footer>
 
@@ -1250,7 +1232,7 @@ html.so-layout body{padding-bottom:0;}
       <span class="tierbar__meta" id="tbResumo">—</span>
       <span class="tierbar__total" id="tbTotal">—</span>
     </div>
-    <button type="button" class="btn btn--gold" id="btnConfirmar">Confirmar ajustes</button>
+    <button type="button" class="btn btn--gold" id="btnConfirmar">Validar orçamento e retomar conversa</button>
   </div>
 </div>
 
@@ -3649,9 +3631,27 @@ function fecharModal(){
   document.body.style.overflow='';
   if(focoModal && focoModal.focus) focoModal.focus();
 }
-$('#btnConfirmar').addEventListener('click', abrirModal);
-/* CTA final: mesmo destino — o resumo dos ajustes segue para a equipe */
-$('#btnCtaFinal').addEventListener('click', abrirModal);
+/* VALIDAR E VOLTAR PARA A CONVERSA (v18.09-16) — o botão não abre mais um
+   resumo em tela: leva direto para a MESMA conversa em que o cliente recebeu
+   o link, com os ajustes dele já escritos na mensagem. Menos um passo entre
+   ele e a consultora. (O modal continua no código, para quando precisarmos.) */
+function validarEVoltar(){
+  const url = linkDaConversa();
+  const nova = window.open(url, '_blank', 'noopener');
+  if(!nova) location.href = url;          /* navegador bloqueou a aba nova */
+  mostrarToast('Os seus ajustes foram para a conversa com a nossa equipe.', 4000);
+}
+$('#btnConfirmar').addEventListener('click', validarEVoltar);
+$('#btnCtaFinal').addEventListener('click', validarEVoltar);
+/* "Incluir mais itens no orçamento": a mesma conversa, pedindo o que falta */
+$('#btnMaisItens').addEventListener('click', ()=>{
+  const msg = `Olá! Aqui é da ${CLIENTE_NOME}. Sobre a proposta ${ORC_NUMERO}: eu gostaria de incluir mais itens no orçamento.
+`
+    + 'Pode me ajudar com o que dá para acrescentar?';
+  const url = `https://wa.me/${WA_NUM}?text=${encodeURIComponent(msg)}`;
+  const nova = window.open(url, '_blank', 'noopener');
+  if(!nova) location.href = url;
+});
 modal.addEventListener('click', e=>{ if(e.target.closest('[data-fecha-modal]')) fecharModal(); });
 
 /* ---- Esc fecha + setas no lightbox + focus trap (dialogs) ---- */
@@ -4603,6 +4603,44 @@ function tresIniciar(){
   telao.position.set(telaoC.x-.045, telaoY, telaoC.z);
   T3.cena.add(telao);
   }
+  }
+
+  /* MESAS BISTRÔ (v18.09-16) — mobiliário do orçamento na maquete: tampo alto
+     de 1,10 m e duas banquetas cada, encostadas na parede de vidro, do lado
+     da pista. Quantidade = a do orçamento (o cliente contratou 10, a cena
+     mostra 10). Sem orçamento, nenhuma: a casa não põe bistrô por conta. */
+  if(CEN.bistros > 0 && AMB.telao){
+    const matTampo = new TH.MeshStandardMaterial({color:0xE8E2D6, roughness:.5});
+    const matPe = new TH.MeshStandardMaterial({color:0x2A2E33, roughness:.6, metalness:.35});
+    const matBanco = new TH.MeshStandardMaterial({color:0x6B4B2E, roughness:.75});
+    const geoTampo = new TH.CylinderGeometry(.35, .35, .05, 24);
+    const geoPe = new TH.CylinderGeometry(.045, .09, 1.05, 12);
+    const geoAssento = new TH.CylinderGeometry(.16, .16, .05, 16);
+    const geoPeBanco = new TH.CylinderGeometry(.03, .06, .72, 10);
+    /* duas fileiras ao longo do vidro, alternando os lados da pista */
+    for(let i=0;i<CEN.bistros;i++){
+      const lado = i % 2 === 0 ? 505 : 690;               /* y na planta */
+      const px = 900 + Math.floor(i/2) * 150;             /* espaçados 150 px */
+      if(px > 1640) break;                                /* não invade o palco */
+      const c = pxParaM(px, lado);
+      const g = new TH.Group();
+      const tampo = new TH.Mesh(geoTampo, matTampo);
+      tampo.position.y = 1.08; tampo.castShadow = true;
+      const pe = new TH.Mesh(geoPe, matPe);
+      pe.position.y = .53;
+      const base = new TH.Mesh(new TH.CylinderGeometry(.24, .24, .03, 16), matPe);
+      base.position.y = .015;
+      g.add(tampo, pe, base);
+      for(const dz of [-.62, .62]){                        /* as duas banquetas */
+        const assento = new TH.Mesh(geoAssento, matBanco);
+        assento.position.set(0, .74, dz); assento.castShadow = true;
+        const pb = new TH.Mesh(geoPeBanco, matPe);
+        pb.position.set(0, .36, dz);
+        g.add(assento, pb);
+      }
+      g.position.set(c.x, PISO_Y, c.z);
+      T3.cena.add(g);
+    }
   }
 
   /* luz de fim de tarde: ambiente + direcional bem âmbar, sombra suave.
@@ -5881,7 +5919,6 @@ function aplicarAmbiente(){
     $('#planta .sec__title').innerHTML = `Layout · <em>${AMB.nome}</em>`;
     $('#planta .sec__intro').textContent = 'Monte o layout em 2D, confira em 3D e grave o tour do espaço.';
   }
-  $('.js-galeria-intro').textContent = AMB.galeriaIntro;
   $('#panoNota').textContent = `Imagem 360° · ${AMB.nota360}`;
   const cta = $('#ctaImg');
   if(cta.getAttribute('src')!==AMB.cta) cta.src = AMB.cta;
@@ -5948,9 +5985,7 @@ const FRASE_INDAIA = 'Cozinha, equipe e estrutura são nossas, {fecho}.';
    total responde na hora"), que é a mesma para todo mundo. */
 const DIFERENCIAL = {
   cardapios:'Cozinha própria dentro da casa: o que chega à mesa foi feito aqui, no dia e entregue na temperatura ideal.',
-  extras:'Palco, telão de LED, som e iluminação são da casa — sem preocupação com a montagem.',
   planta:'O layout para imaginar e personalizar o seu evento.',
-  galeria:'Fotos reais de eventos entregues.',
 };
 const TEXTOS_EVENTO = {
   corporativo:{
@@ -6131,12 +6166,17 @@ const PROVA_POR_NOME = [
    aberto, porque a proposta pode ser de uma casa que a página não desenha */
 function montarProva(nomeDoCRM){
   const sec = document.getElementById('prova'); if(!sec) return;
-  let chave = PROVA_DO_ESPACO[ESPACO] || 'rede';
-  if(nomeDoCRM){
+  /* v18.09-16: manda o salão QUE ESTÁ NA TELA. Se o cliente está vendo o
+     Salão de Eventos de Itapema, as avaliações têm de ser de Itapema — mesmo
+     que o orçamento seja de outra casa. O nome do CRM só entra quando a
+     página não conhece o espaço aberto (aí ele é a única pista). */
+  let chave = PROVA_DO_ESPACO[ESPACO];
+  if(!chave && nomeDoCRM){
     const n = normNome(nomeDoCRM);
     const achado = PROVA_POR_NOME.find(([re])=>re.test(n));
     if(achado) chave = achado[1];
   }
+  chave = chave || 'rede';
   const p = PROVA_SOCIAL[chave];
   if(!p || !p.nota){ sec.hidden = true; return; }
   sec.hidden = false;
@@ -6155,8 +6195,8 @@ function montarProva(nomeDoCRM){
   document.getElementById('provaIntro').textContent = !p.depoimentos.length
     ? 'A média das casas do Indaiá no Google, somando todas as unidades.'
     : cidade
-      ? `O que quem esteve nas nossas casas de ${p.onde} escreveu, com nome e data — direto do Google.`
-      : `O que quem esteve ${AMB.emTitulo==='salão' ? 'no salão' : `no ${p.onde}`} escreveu, com nome e data — direto do Google.`;
+      ? `O que quem esteve nas nossas casas de ${p.onde} escreveu — direto do Google.`
+      : `O que quem esteve ${AMB.emTitulo==='salão' ? 'no salão' : `no ${p.onde}`} escreveu — direto do Google.`;
   document.getElementById('provaGrid').innerHTML = p.depoimentos.map(d=>`
     <figure class="prova__card">
       <span class="prova__aspas" aria-hidden="true">“</span>
@@ -6169,11 +6209,17 @@ function montarProva(nomeDoCRM){
    LED se houver audiovisual/LED. Sem orçamento (a demonstração), a casa
    aparece montada como sempre, senão a página abriria vazia. */
 function cenarioContratado(){
-  if(typeof ORC_REAL === 'undefined' || !ORC_REAL) return {palco:true, telao:true, doOrcamento:false};
-  const nomes = ORC_REAL.linhas.map(l=>normNome(l.nome)).join(' | ');
+  if(typeof ORC_REAL === 'undefined' || !ORC_REAL)
+    return {palco:true, telao:true, bistros:0, doOrcamento:false};
+  const linhas = ORC_REAL.linhas;
+  const nomes = linhas.map(l=>normNome(l.nome)).join(' | ');
+  /* mobiliário que aparece na maquete: as mesas bistrô vêm com a quantidade
+     do orçamento (o cliente contratou 10, a cena mostra 10) */
+  const bistro = linhas.find(l=>/bistro|bistrô|banqueta|cocktail/.test(normNome(l.nome)));
   return {
     palco: /\bpalco\b|tablado|praticavel/.test(nomes),
     telao: /led|audiovisual|telao|painel|projec|datashow/.test(nomes),
+    bistros: bistro ? Math.min(parseInt(bistro.qtd, 10) || 0, 24) : 0,
     doOrcamento: true,
   };
 }
@@ -6329,7 +6375,7 @@ function marcarVencida(vencida = true){
   if(VALIDADE_VENCIDA === vencida) return;
   VALIDADE_VENCIDA = vencida;
   document.documentElement.classList.toggle('proposta-vencida', vencida);
-  const alvos = [['btn1','#btnConfirmar','Falar com a equipe'],
+  const alvos = [['btn1','#btnConfirmar','Falar com a equipe para renovar'],
     ['btn2','#btnCtaFinal','Falar com a equipe para renovar'],
     ['fine','.cta__fine','A validade desta proposta acabou. Continue a conversa com a nossa equipe, que renova com você.']];
   for(const [chave, sel, texto] of alvos){

@@ -79,15 +79,17 @@ for (const [amb, esperado] of [['salao_eventos', '10.050'], ['mezanino', '10.050
   }
 }
 
-/* 2b · a casa vem do ORÇAMENTO: o Mediterrâneo 242 é de Florianópolis, mesmo
-   com a página aberta em outro ambiente */
+/* 2b · manda o salão QUE ESTÁ NA TELA (decisão de 29/09): a proposta aberta
+   no Salão de Eventos mostra avaliações de Itapema, mesmo que o orçamento
+   seja do Mediterrâneo 242, em Florianópolis */
 const CRM = process.env.CRM_FALSO || 'http://localhost:8141';
 await p.goto(`${SITE}?espaco=salao_eventos&proposta=${'b'.repeat(40)}&api=${CRM}`, { waitUntil: 'networkidle2' });
 await espera(2200);
 const med = await lerProva();
-ok(med.selo.includes('3.274') && /Florian/i.test(med.selo),
-  `orçamento do Mediterrâneo 242 traz a prova de Florianópolis (${med.selo.slice(0, 62)})`);
-ok(med.cards.every(c => /Mirante da Lagoa|Canto da Lagoa/.test(c.rodape)), 'e cada depoimento diz a casa');
+ok(med.selo.includes('10.050') && /Itapema/i.test(med.selo),
+  `a proposta aberta em Itapema mostra Itapema (${med.selo.slice(0, 62)})`);
+ok(med.cards.length === 3 && med.cards.every(c => !/Florian/i.test(c.rodape)),
+  'e nenhum depoimento é de outra cidade');
 
 /* 3 · nada é buscado na hora: a página não fala com o Google nem com o CRM por isso */
 ok(rede.length === 0, `nenhuma busca de avaliação em tempo real (${rede.slice(0, 2).join(' | ') || 'nenhuma'})`);
