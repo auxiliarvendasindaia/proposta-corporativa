@@ -87,7 +87,7 @@ const orcamento = {
   cliente_nome: 'SEBRAE',
   /* logo da empresa: no CRM real virá de companies.logo_url (hoje vazio em
      todas as 32 empresas). Aqui aponta para um arquivo local de teste. */
-  empresa: { nome: 'SEBRAE', logo_url: 'assets/clientes/sebrae.svg' },
+  empresa: { nome: 'SEBRAE', logo_url: 'assets/clientes/sebrae.png' },
   nome_evento: 'Cerimônia Nacional de Entrega da Bandeira Azul',
   cliente_email: null, cliente_telefone: null,
   data_evento: '2026-11-06', dia_semana: 'sexta', num_convidados: conv,

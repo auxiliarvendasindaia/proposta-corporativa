@@ -120,12 +120,12 @@ html.sem-io .reveal{opacity:1;transform:none;}
 .topbar__inner{display:flex;align-items:center;justify-content:space-between;gap:20px;height:64px;}
 /* assinatura do cliente: a logo dele no lugar do nome, na mesma altura ótica.
    A cor da marca dele entra SÓ aqui — o resto da página é do Indaiá. */
-.brand__logo{display:block;height:38px;width:auto;max-width:240px;object-fit:contain;}
-@media (max-width:760px){ .brand__logo{height:30px;max-width:170px;} }
+.brand__logo{display:block;height:46px;width:auto;max-width:260px;object-fit:contain;}
+@media (max-width:760px){ .brand__logo{height:34px;max-width:180px;} }
 .tem-marca-cliente .topbar{border-bottom:2px solid var(--marca-cliente);}
 .tem-marca-cliente .brand__mono{color:var(--marca-cliente);}
 .tem-marca-cliente .footer .brand__mono{color:var(--cream);}
-.footer .brand__logo{height:26px;filter:brightness(0) invert(1);opacity:.92;}
+.footer .brand__logo{height:34px;filter:brightness(0) invert(1);opacity:.88;}
 .brand__logo+.brand__mono{display:none;}
 .brand__mono{font-family:var(--serif);font-weight:700;font-size:1.3rem;letter-spacing:.34em;color:var(--brown-deep);
   padding-left:.34em; /* compensa o tracking da última letra */}
@@ -1221,7 +1221,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta ORC-2026-01837 · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer — é só pedir na nossa conversa.
-      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-16</span></p>
+      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-17</span></p>
   </div>
 </footer>
 
@@ -4424,31 +4424,25 @@ function telaoMaterial(TH){
     /* logo do cliente no painel: entra centralizada, respeitando a proporção,
        com o tipo de evento embaixo. Sem logo (ou se ela falhar), volta o nome
        desenhado em Cormorant, como sempre foi. */
+    /* TELÃO EM TELA CHEIA (v18.09-17) — é um LED: a arte do cliente ocupa o
+       painel inteiro, com fundo claro, como numa apresentação de verdade.
+       Antes a logo aparecia num cartãozinho no meio do painel escuro. */
     if(LOGO_CLIENTE && LOGO_TELAO){
-      const cx = 512, maxL = 660, maxA = 230;
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, 1024, 564);
+      const maxL = 1024*0.72, maxA = 564*0.52;
       const esc = Math.min(maxL/LOGO_TELAO.width, maxA/LOGO_TELAO.height);
       const l = LOGO_TELAO.width*esc, a = LOGO_TELAO.height*esc;
-      /* logo com fundo sólido (a maioria dos arquivos que o cliente manda)
-         ganha um cartão claro arredondado: vira letreiro no painel escuro,
-         em vez de um retângulo branco colado no meio do LED */
-      if(LOGO_OPACA){
-        const m = 34, rx = cx - l/2 - m, ry = 290 - a/2 - m, rw = l + m*2, rh = a + m*2, r = 22;
-        ctx.fillStyle = '#F7F8F9';
-        ctx.beginPath();
-        ctx.moveTo(rx+r, ry); ctx.arcTo(rx+rw, ry, rx+rw, ry+rh, r);
-        ctx.arcTo(rx+rw, ry+rh, rx, ry+rh, r); ctx.arcTo(rx, ry+rh, rx, ry, r);
-        ctx.arcTo(rx, ry, rx+rw, ry, r); ctx.closePath(); ctx.fill();
+      ctx.drawImage(LOGO_TELAO, 512 - l/2, 258 - a/2, l, a);
+      /* o nome do evento embaixo, na cor da marca, diminuindo até caber */
+      if('letterSpacing' in ctx) ctx.letterSpacing = '6px';
+      let fs = 46;
+      ctx.font = `500 ${fs}px "Inter", Helvetica, Arial, sans-serif`;
+      while(fs > 20 && ctx.measureText(TELAO_SUB).width > 860){
+        fs -= 2; ctx.font = `500 ${fs}px "Inter", Helvetica, Arial, sans-serif`;
       }
-      ctx.drawImage(LOGO_TELAO, cx - l/2, 290 - a/2, l, a);
-      /* o nome do evento embaixo, diminuindo até caber no painel */
-      if('letterSpacing' in ctx) ctx.letterSpacing = '8px';
-      let fs = 54;
-      ctx.font = `italic 400 ${fs}px "Cormorant Garamond", Georgia, serif`;
-      while(fs > 24 && ctx.measureText(TELAO_SUB).width > 900){
-        fs -= 3; ctx.font = `italic 400 ${fs}px "Cormorant Garamond", Georgia, serif`;
-      }
-      ctx.fillStyle = 'rgba(201,171,120,.85)';
-      ctx.fillText(TELAO_SUB, 512+5, 300 + a/2 + (LOGO_OPACA ? 92 : 74));
+      ctx.fillStyle = COR_CLIENTE || '#3A4048';
+      ctx.fillText(TELAO_SUB, 512, 258 + a/2 + 76);
       tx.needsUpdate = true;
       return;
     }
@@ -5670,23 +5664,45 @@ function tourCartela(TH, fim){
   c.font = '500 26px "Inter", Helvetica, Arial, sans-serif';
   /* no filme do espaço as duas cartelas são da casa; na proposta, a de
      abertura é do evento do cliente e a de fecho é do Indaiá */
-  c.fillText(MODO_FILME || fim ? 'INDAIÁ EVENTOS' : (EVENTO_NOME || 'PROPOSTA').toUpperCase(), 640, 300);
+  const comLogoCartela = !MODO_FILME && !fim && LOGO_TELAO;
+  c.fillText(MODO_FILME || fim ? 'INDAIÁ EVENTOS' : (EVENTO_NOME || 'PROPOSTA').toUpperCase(),
+    640, comLogoCartela ? 236 : 300);
   if('letterSpacing' in c) c.letterSpacing = '2px';
   c.fillStyle = '#F7F8F9';
-  let fonte = 78;
   const titulo = (MODO_FILME || fim) ? (AMB.rotulo || AMB.nome) : CLIENTE_NOME;
-  c.font = `600 ${fonte}px "Cormorant Garamond", Georgia, serif`;
-  while(fonte > 32 && c.measureText(titulo).width > 1060){
-    fonte -= 4; c.font = `600 ${fonte}px "Cormorant Garamond", Georgia, serif`;
+  /* na abertura do filme de uma proposta, quem assina é a LOGO do cliente —
+     o nome escrito só entra quando não há logo (ou no filme da casa) */
+  const comLogo = comLogoCartela;
+  if(comLogo){
+    const maxL = 560, maxA = 150;
+    const esc = Math.min(maxL/LOGO_TELAO.width, maxA/LOGO_TELAO.height);
+    const l = LOGO_TELAO.width*esc, a = LOGO_TELAO.height*esc;
+    /* cartão claro atrás: a marca é azul e o fundo da cartela é grafite */
+    const cy = 396;
+    const m = 30, rx = 640 - l/2 - m, ry = cy - a/2 - m, rw = l + m*2, rh = a + m*2, r = 16;
+    c.fillStyle = '#FFFFFF';
+    c.beginPath();
+    c.moveTo(rx+r, ry); c.arcTo(rx+rw, ry, rx+rw, ry+rh, r);
+    c.arcTo(rx+rw, ry+rh, rx, ry+rh, r); c.arcTo(rx, ry+rh, rx, ry, r);
+    c.arcTo(rx, ry, rx+rw, ry, r); c.closePath(); c.fill();
+    c.drawImage(LOGO_TELAO, 640 - l/2, cy - a/2, l, a);
+  }else{
+    let fonte = 78;
+    c.font = `600 ${fonte}px "Cormorant Garamond", Georgia, serif`;
+    while(fonte > 32 && c.measureText(titulo).width > 1060){
+      fonte -= 4; c.font = `600 ${fonte}px "Cormorant Garamond", Georgia, serif`;
+    }
+    c.fillText(titulo, 640, 392);
   }
-  c.fillText(titulo, 640, 392);
+  /* com a logo, o fio e a legenda descem para não encostar no cartão */
+  const yFio = comLogo ? 516 : 432;
   c.strokeStyle = 'rgba(201,171,120,.5)'; c.lineWidth = 2;
-  c.beginPath(); c.moveTo(520, 432); c.lineTo(760, 432); c.stroke();
+  c.beginPath(); c.moveTo(520, yFio); c.lineTo(760, yFio); c.stroke();
   c.fillStyle = 'rgba(247,248,249,.72)';
   c.font = 'italic 400 34px "Cormorant Garamond", Georgia, serif';
   c.fillText(MODO_FILME
     ? (fim ? 'o seu evento começa aqui' : 'um passeio pela casa')
-    : (fim ? 'o seu evento, do jeito que você desenhou' : `${AMB.nome} · ${DATA_EVENTO_BR}`), 640, 486);
+    : (fim ? 'o seu evento, do jeito que você desenhou' : `${AMB.nome} · ${DATA_EVENTO_BR}`), 640, yFio + 54);
   const tx = new TH.CanvasTexture(cv);
   tx.colorSpace = TH.SRGBColorSpace;
   return tx;
