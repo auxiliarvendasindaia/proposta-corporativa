@@ -187,7 +187,11 @@ for (const amb of lista) {
   } catch (e) { ok(false, `o 360° não ficou pronto (${String(e).slice(0, 60)})`); }
   if (pano) {
     console.log('   360:', JSON.stringify(pano));
-    ok(pano.tons > 8 && pano.escuros < 55, `o 360° mostra o salão (${pano.tons} tons, brilho ${pano.brilho}, ${pano.escuros}% escuro)`);
+    /* 30/09: o 360° abria mirando um ponto a 1–3 m do olho, ou seja, num
+       ângulo praticamente sorteado — escada escura no Mezanino, parede lisa no
+       Mirante. Agora corre o eixo mais longo da sala, inclinado 15° para baixo,
+       e o pior caso medido tem 29% de escuro. O teto cai de 55% para 38%. */
+    ok(pano.tons > 8 && pano.escuros < 38, `o 360° mostra o salão (${pano.tons} tons, brilho ${pano.brilho}, ${pano.escuros}% escuro)`);
   }
 
   /* ---- fotos da galeria ---- */

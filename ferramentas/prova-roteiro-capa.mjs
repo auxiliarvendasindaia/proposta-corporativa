@@ -113,6 +113,36 @@ const layout = await l.evaluate(() => ({ roteiro: document.getElementById('rotei
   video: !!document.querySelector('.hero__fundo video') }));
 ok(layout.roteiro && !layout.video, 'modo só-layout: sem roteiro e sem filme na capa');
 
+/* 7 · o índice lateral sai das próprias seções e marca onde o cliente está */
+const ix = await b.newPage();
+ix.on('pageerror', e => erros.push(String(e).slice(0, 140)));
+await semFreio(ix);
+await ix.setViewport({ width: 1440, height: 900 });
+await ix.goto(`${SITE}?espaco=salao_eventos&proposta=${TOKEN}&api=${CRM}`, { waitUntil: 'networkidle2' });
+await espera(3000);
+const indice = await ix.evaluate(() => {
+  const n = document.getElementById('indice');
+  if (!n) return null;
+  const secs = [...document.querySelectorAll('main > section.sec[id]')].filter(s => !s.hidden).map(s => s.id);
+  return { itens: [...n.querySelectorAll('a')].map(a => a.dataset.sec), secs, noTopo: n.classList.contains('on') };
+});
+ok(!!indice && indice.itens.join() === indice.secs.join(),
+  `o índice tem uma entrada por seção visível (${indice ? indice.itens.length : 0})`);
+ok(indice && !indice.noTopo, 'e fica escondido enquanto o cliente está na capa');
+for (const [alvo, escuro] of [['cardapios', true], ['investimento', false]]) {
+  await ix.evaluate(s => document.getElementById(s).scrollIntoView({ block: 'center' }), alvo);
+  await espera(800);
+  const m = await ix.evaluate(() => { const n = document.getElementById('indice');
+    const a = n.querySelector('a[aria-current="true"]');
+    return { marcado: a && a.dataset.sec, on: n.classList.contains('on'), claro: n.classList.contains('indice--claro') }; });
+  ok(m.marcado === alvo && m.on, `em "${alvo}" o índice marca a seção certa (${m.marcado})`);
+  ok(m.claro === escuro, `e clareia sobre a seção escura (${alvo}: ${m.claro})`);
+}
+const layoutIx = await b.newPage();
+await layoutIx.goto(`${SITE}?espaco=salao_eventos&modo=layout`, { waitUntil: 'networkidle2' });
+await espera(1500);
+ok(!(await layoutIx.evaluate(() => !!document.getElementById('indice'))), 'modo só-layout: sem índice');
+
 ok(erros.length === 0, `sem erros de JS ${erros.slice(0, 2).join(' | ')}`);
 await b.close();
 console.log(falhas ? `\n${falhas} FALHA(S)` : '\nTUDO VERDE');

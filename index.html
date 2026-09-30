@@ -555,7 +555,7 @@ html.sem-io .reveal{opacity:1;transform:none;}
 .cta__veil{position:absolute;inset:0;background:
   linear-gradient(180deg,rgba(20,24,29,.8) 0%,rgba(20,24,29,.84) 55%,rgba(20,24,29,.93) 100%);}
 .cta__inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;}
-.cta .eyebrow{color:var(--gold-soft);}
+.cta .eyebrow{color:var(--gold-soft);text-shadow:0 1px 10px rgba(20,24,29,.85);}
 .cta .eyebrow::before{display:none;}
 .cta__title{font-family:var(--serif);font-weight:600;font-size:clamp(2rem,5.6vw,3.8rem);line-height:1.08;
   margin:0 0 1.1rem;color:#fff;text-shadow:0 4px 40px rgba(20,24,29,.4);}
@@ -787,6 +787,32 @@ html.sem-io .reveal{opacity:1;transform:none;}
 @keyframes escassez-pulso{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.8;transform:scale(.98)}}
 .cta__escassez .disputada{color:#EF9A9A;font-weight:600;}
 
+/* ---------- índice lateral ---------- */
+/* ÍNDICE DAS SEÇÕES (v18.09-23) — a proposta tem sete etapas e nenhuma pista
+   de onde o cliente está. Um fio de pontos à esquerda resolve isso sem roubar
+   atenção: só aparece depois da capa, os nomes surgem no hover, e ele some em
+   telas estreitas (onde não há margem sobrando) e no modo só-layout. */
+.indice{position:fixed;left:14px;top:50%;transform:translateY(-50%);z-index:110;
+  display:none;opacity:0;transition:opacity .45s var(--ease-lux);pointer-events:none;}
+.indice.on{opacity:1;pointer-events:auto;}
+@media (min-width:1280px){.indice{display:block;}}
+@media (prefers-reduced-motion:reduce){.indice{transition:none;}}
+.indice ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:15px;}
+.indice a{display:flex;align-items:center;gap:10px;text-decoration:none;padding:3px 4px;border-radius:999px;}
+.indice__ponto{width:7px;height:7px;flex:0 0 auto;border-radius:50%;background:rgba(74,84,94,.34);
+  transition:background .3s,transform .3s var(--ease-lux);}
+.indice__nome{font-family:var(--sans);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--taupe);white-space:nowrap;opacity:0;transform:translateX(-5px);
+  transition:opacity .3s,transform .3s var(--ease-lux);}
+.indice a:hover .indice__nome,.indice a:focus-visible .indice__nome{opacity:1;transform:none;}
+.indice a:hover .indice__ponto{background:var(--gold-deep);}
+.indice a[aria-current="true"] .indice__ponto{background:var(--gold-deep);transform:scale(1.55);}
+.indice a[aria-current="true"] .indice__nome{opacity:1;transform:none;color:var(--brown-deep);font-weight:500;}
+/* em cima da seção escura o fio precisa clarear para continuar visível */
+.indice--claro .indice__ponto{background:rgba(247,248,249,.38);}
+.indice--claro .indice__nome{color:rgba(247,248,249,.72);}
+.indice--claro a[aria-current="true"] .indice__ponto{background:var(--gold-soft);}
+.indice--claro a[aria-current="true"] .indice__nome{color:var(--cream);}
 /* ---------- responsivo ---------- */
 @media (max-width:760px){
   body{padding-bottom:124px;} /* tierbar mobile tem 2 linhas: nada de conteúdo coberto */
@@ -1294,7 +1320,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer — é só pedir na nossa conversa.
-      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-22</span></p>
+      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-23</span></p>
   </div>
 </footer>
 
@@ -1700,7 +1726,7 @@ const AMBIENTES = {
        e o deck da figueira). chat-0180 fora (treliça no quadro); chat-0679 404. */
     galeria:[
       {url:'assets/planta-layout-padrao.jpg', w:1422, h:1106,
-       cap:'Render do salão no layout padrão da casa — 19 mesas · 152 lugares',
+       cap:'Render do salão no layout padrão da casa — 19 mesas de 8 lugares',
        selo:'Render da maquete', badge:'Layout padrão · 19 mesas', badgeCls:'salao'},
       {url:`${MID}chat-1101.jpg`, w:3000, h:2000,
        cap:'Evento corporativo realizado neste salão · B. Fabbriani, 2022',
@@ -1829,8 +1855,8 @@ const AMBIENTES = {
        registro segue com a entrada para religar com um flag. */
     panoInterno:false,
     panos:[
-      {id:'layout',  rotulo:'Seu layout', dinamico:true, lonDinamico:true, lon:270, lat:-2},
-      {id:'interno', rotulo:'Solar interno', dinamico:true, vazio:true, lonDinamico:true, lon:270, lat:-2,
+      {id:'layout',  rotulo:'Seu layout', dinamico:true, lonDinamico:true, lon:270, lat:-15},
+      {id:'interno', rotulo:'Solar interno', dinamico:true, vazio:true, lonDinamico:true, lon:270, lat:-15,
         legenda:'O Solar por dentro · pronto para receber o seu evento.'},
       {id:'arvore', rotulo:'Hall e pátio da árvore', arquivo:'assets/ambientes/solar/panos/arvore.jpg', lon:275, lat:0,
         legenda:'Passeio fotorrealista · o hall com forro em caixotões olhando o pátio da árvore.'},
@@ -1946,8 +1972,8 @@ const AMBIENTES = {
     olhoPanoPx:null,                                           /* dinâmico: panoOlho() */
     panoInterno:false,
     panos:[
-      {id:'layout',  rotulo:'Seu layout', dinamico:true, lonDinamico:true, lon:270, lat:-2},
-      {id:'interno', rotulo:'Mezanino interno', dinamico:true, vazio:true, lonDinamico:true, lon:270, lat:-2,
+      {id:'layout',  rotulo:'Seu layout', dinamico:true, lonDinamico:true, lon:270, lat:-15},
+      {id:'interno', rotulo:'Mezanino interno', dinamico:true, vazio:true, lonDinamico:true, lon:270, lat:-15,
         legenda:'O Mezanino por dentro · pronto para receber o seu evento.'}
     ],
     nota360:'Mezanino Itapema',
@@ -2048,8 +2074,8 @@ const AMBIENTES = {
     olhoPanoPx:null,
     panoInterno:false,
     panos:[
-      {id:'layout',  rotulo:'Seu layout', dinamico:true, lonDinamico:true, lon:270, lat:-2},
-      {id:'interno', rotulo:'Mirante interno', dinamico:true, vazio:true, lonDinamico:true, lon:270, lat:-2,
+      {id:'layout',  rotulo:'Seu layout', dinamico:true, lon:270, lat:-15},
+      {id:'interno', rotulo:'Mirante interno', dinamico:true, vazio:true, lon:270, lat:-15,
         legenda:'O Mirante por dentro · pronto para receber o seu evento.'}
     ],
     nota360:'Mirante da Lagoa Florianópolis',
@@ -2160,8 +2186,8 @@ const AMBIENTES = {
     olhoPanoPx:null,
     panoInterno:false,
     panos:[
-      {id:'layout',  rotulo:'Seu layout', dinamico:true, lonDinamico:true, lon:270, lat:-2},
-      {id:'interno', rotulo:'Canto da Lagoa interno', dinamico:true, vazio:true, lonDinamico:true, lon:270, lat:-2,
+      {id:'layout',  rotulo:'Seu layout', dinamico:true, lonDinamico:true, lon:270, lat:-15},
+      {id:'interno', rotulo:'Canto da Lagoa interno', dinamico:true, vazio:true, lonDinamico:true, lon:270, lat:-15,
         legenda:'O Canto da Lagoa por dentro · pronto para receber o seu evento.'}
     ],
     nota360:'Canto da Lagoa Florianópolis',
@@ -3452,6 +3478,48 @@ function pintarTotal(cent){
    escolhidos agora. Nada de horário: o orçamento do CRM não guarda hora do
    evento, e a página não inventa promessa de horário. No evento de vários
    dias o roteiro é DO DIA aberto. */
+/* O ÍNDICE DAS SEÇÕES (v18.09-23) — montado a partir das próprias seções, com
+   o nome que cada uma já usa na tela: se uma seção nascer ou sumir (a prova
+   social, por exemplo), o índice acompanha sem ninguém lembrar de mexer aqui.
+   Ele aparece depois da capa e marca onde o cliente está. */
+let obsIndice = null;
+function montarIndice(){
+  if(MODO_LAYOUT) return;
+  const secs = [...document.querySelectorAll('main > section.sec[id]')].filter(s=>!s.hidden);
+  if(secs.length < 3) return;
+  let nav = document.getElementById('indice');
+  if(!nav){
+    nav = document.createElement('nav');
+    nav.className = 'indice'; nav.id = 'indice';
+    nav.setAttribute('aria-label', 'Seções da proposta');
+    document.body.appendChild(nav);
+  }
+  nav.innerHTML = '<ol>' + secs.map(sec=>{
+    const nome = (sec.querySelector('.sec__meta .eyebrow')||{}).textContent || sec.id;
+    return `<li><a href="#${sec.id}" data-sec="${sec.id}">
+      <span class="indice__ponto" aria-hidden="true"></span>
+      <span class="indice__nome">${esc(nome.trim())}</span></a></li>`;
+  }).join('') + '</ol>';
+  const links = new Map([...nav.querySelectorAll('a')].map(a=>[a.dataset.sec, a]));
+  const marcar = id => {
+    links.forEach((a,k)=>a.setAttribute('aria-current', String(k===id)));
+    const sec = document.getElementById(id);
+    nav.classList.toggle('indice--claro', !!sec && sec.classList.contains('escuro'));
+  };
+  if(obsIndice) obsIndice.disconnect();
+  /* a seção "atual" é a que cruza a faixa do meio da tela: sem isso, seção
+     curta e seção longa disputavam a marcação a cada rolagem */
+  obsIndice = new IntersectionObserver(es=>{
+    const vis = es.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
+    if(vis) marcar(vis.target.id);
+  }, {rootMargin:'-45% 0px -45% 0px', threshold:0});
+  secs.forEach(sec=>obsIndice.observe(sec));
+  /* só depois da capa: no topo o índice não tem o que marcar */
+  const topo = document.getElementById('topo');
+  const mostrar = ()=>nav.classList.toggle('on', scrollY > (topo ? topo.offsetHeight*0.6 : 400));
+  mostrar();
+  addEventListener('scroll', mostrar, {passive:true});
+}
 function montarRoteiro(){
   const sec = document.getElementById('roteiro'), box = document.getElementById('roteiroLinha');
   if(!sec || !box) return;
@@ -5301,9 +5369,22 @@ function panoGerarLayout(id){
       /* olho calculado com o layout do cliente (vale também para o vazio,
          para os dois panoramas terem o mesmo ponto de vista) */
       const olho = panoOlho();
-      if(amb.lonDinamico){             /* abre olhando o centro da área principal */
-        const c = centroPrincipalPx(), o = pxParaM(olho.x, olho.y), cm = pxParaM(c.x, c.y);
-        amb.lon = Math.round(Math.atan2(cm.z-o.z, cm.x-o.x)*180/Math.PI);
+      if(amb.lonDinamico){
+        /* ABRE OLHANDO O FUNDO DO SALÃO (30/09/2026) — antes mirava o CENTRO
+           da área principal, mas o olho já nasce quase no centro (medido: de
+           1,07 m a 3,01 m de distância). Com um vetor tão curto o ângulo era
+           praticamente ruído, e o 360° abria numa escada escura (Mezanino),
+           numa parede lisa (Mirante) ou no teto (Canto da Lagoa). Agora a
+           vista corre o eixo MAIS LONGO da sala, para o lado que tem mais
+           salão pela frente: é a vista com profundidade, com as mesas
+           afastando — a mesma que o Salão de Eventos já usava na mão. */
+        const P = SALAO_PRINCIPAL;
+        const larg = P.x1 - P.x0, fund = P.y1 - P.y0;
+        const alvoPx = larg >= fund
+          ? {x:(olho.x - P.x0) > (P.x1 - olho.x) ? P.x0 : P.x1, y:(P.y0 + P.y1)/2}
+          : {x:(P.x0 + P.x1)/2, y:(olho.y - P.y0) > (P.y1 - olho.y) ? P.y0 : P.y1};
+        const o = pxParaM(olho.x, olho.y), al = pxParaM(alvoPx.x, alvoPx.y);
+        amb.lon = Math.round(Math.atan2(al.z - o.z, al.x - o.x)*180/Math.PI);
       }
       let tx;
       if(amb.vazio){
@@ -5931,7 +6012,12 @@ $('#btnVideoCurto').addEventListener('click', ()=>{ if(!TOUR.ativo) tourIniciar(
 const PERFIL_SOCIAL = ['casamento', '15 anos'];
 function galeriaDoEvento(tipoEvento){
   const social = PERFIL_SOCIAL.includes(chaveDoEvento(tipoEvento));
-  return (AMB.galeria || []).filter(f => social || f.perfil !== 'social');
+  const lista = (AMB.galeria || []).filter(f => social || f.perfil !== 'social');
+  /* evento entregue NESTE espaço (selo 'salao') abre a galeria: é a prova, e
+     é o que o cliente corporativo quer ver antes do ambiente vazio */
+  return lista.map((f, i) => ({f, i}))
+    .sort((a, c) => (c.f.badgeCls === 'salao') - (a.f.badgeCls === 'salao') || a.i - c.i)
+    .map(x => x.f);
 }
 let GALERIA = galeriaDoEvento(null);
 /* FOTO SOB MEDIDA (v18.09-2) — as fotos do bucket são as originais do chat
@@ -5973,7 +6059,10 @@ function montarHero(){
   const fundo = img.parentElement;
   img.onload = ()=>fundo.classList.add('is-loaded');
   img.onerror = ()=>fundo.remove();
-  img.src = fotoNoTamanho(f.url, innerWidth > 900 ? 1800 : 900, 72);
+  /* a largura pedida acompanha a DENSIDADE da tela: num celular de 3x, 900 px
+     abriam macios. O teto de 1800 evita pedir imagem gigante num monitor 4K. */
+  const larguraReal = Math.round(innerWidth * Math.min(devicePixelRatio || 1, 2.5));
+  img.src = fotoNoTamanho(f.url, Math.min(1800, Math.max(900, larguraReal)), 72);
   img.alt = '';
 }
 function montarGaleria(){
@@ -6655,6 +6744,7 @@ vestirFrases();     /* a frase da capa, pelo espaço (o tipo vem depois, do CRM)
 $('#btnCompartilhar').addEventListener('click', compartilharProposta);
 montarProva();      /* prova social do espaço (dados fixos, logo acima) */
 montarFilme();      /* o filme do espaço, se este ambiente já tiver um */
+montarIndice();     /* o fio de seções à esquerda (desktop) */
 /* capa com filme: na demonstração já começa; no link de proposta espera o CRM,
    para nascer com o vídeo do cliente e não com o da casa */
 if(!PROPOSTA_TOKEN) filmeDaCapa();
@@ -6844,6 +6934,7 @@ async function vestirPropostaCRM(){
     const espacoDoOrc = (o.espaco && o.espaco.nome)
       || (ORC_REAL && ORC_REAL.multiDia && (ORC_REAL.dias[0]||{}).espaco) || '';
     if(espacoDoOrc) montarProva(espacoDoOrc);
+    montarIndice();      /* a prova social pode ter nascido agora */
 
     /* repinta tudo que depende do estado (funções idempotentes do arranque) */
     Object.keys(GRUPOS).forEach(pintarSelecao);
