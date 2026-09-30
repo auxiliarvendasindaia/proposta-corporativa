@@ -42,6 +42,12 @@ O parâmetro `&api=` da página só é aceito em `localhost` — em produção e
 - `prova-video.mjs` — o vídeo curto: duração, planos, cartelas e o arquivo que sai.
 - `prova-roteiro-capa.mjs` — o roteiro do evento (só promete o que está no orçamento, nunca
   horário) e o filme de fundo da capa (é o do cliente, sem som, e some com `prefers-reduced-motion`).
+- `prova-peso-fotos.mjs` — o teto de peso da primeira tela (a capa baixava 10,8 MB; hoje 1,6) e a
+  curadoria das fotos: nenhuma foto de casamento numa proposta corporativa, e todas de volta
+  quando a proposta é de casamento.
+- `enxugar-midia.mjs` — gera o **corte da capa** (`capa.mp4`: 720p, 10 s, laço sem emenda, ~1,3 MB)
+  a partir do passeio já conferido, reduz os posters e converte o sprite da mesa para webp.
+  Rode depois de gerar qualquer filme novo.
 
 ## O filme que a proposta mostra
 

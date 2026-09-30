@@ -450,6 +450,9 @@ html.sem-io .reveal{opacity:1;transform:none;}
 /* ---------- galeria (mosaico + lightbox) ---------- */
 .galeria{columns:2;column-gap:12px;}
 @media(min-width:900px){.galeria{columns:3;column-gap:16px;}}
+/* casa com pouca foto de evento corporativo: duas colunas fecham a fileira em
+   vez de deixar um buraco na terceira */
+@media(min-width:900px){.galeria--poucas{columns:2;}}
 .gfoto{position:relative;display:block;width:100%;break-inside:avoid;margin:0 0 12px;padding:0;
   border:1px solid var(--line-soft);border-radius:var(--radius);overflow:hidden;background:var(--sand);
   cursor:zoom-in;text-align:left;}
@@ -1108,7 +1111,7 @@ html.so-layout body{padding-bottom:0;}
                         <circle class="mesa__tampo" r="30.8"/>
                         <circle class="mesa__toalha" r="24"/>
                       </g>
-                      <image href="assets/mesa-foto.png" x="-50.8" y="-50.8" width="101.6" height="101.6"/>
+                      <image href="assets/mesa-foto.webp" x="-50.8" y="-50.8" width="101.6" height="101.6"/>
                     </symbol>
                   </defs>
                   <g id="reguaCamada" class="regua" aria-hidden="true"></g>
@@ -1291,7 +1294,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer — é só pedir na nossa conversa.
-      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-21</span></p>
+      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-22</span></p>
   </div>
 </footer>
 
@@ -1862,7 +1865,8 @@ const AMBIENTES = {
       {url:`${MID}chat-2388.jpg`, w:2997, h:4500,
        cap:'Mesas ao redor da árvore, sob o forro em caixotões · Solar, Florianópolis/SC',
        badge:'Pátio da Árvore · neste espaço', badgeCls:'salao'},
-      {url:`${MID}chat-2394.jpg`, w:4500, h:2997,
+      {perfil:'social',   /* bolo de casamento na mesa */
+       url:`${MID}chat-2394.jpg`, w:4500, h:2997,
        cap:'Convidados à mesa no pátio · Solar, Florianópolis/SC',
        badge:'Evento realizado · neste espaço', badgeCls:'salao'},
       {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/06b5d5c1-f71e-4bc5-a7ca-87a59d723ac5/1787688910647-f4d89262.jpg', w:1672, h:941,
@@ -1965,13 +1969,15 @@ const AMBIENTES = {
       {url:`${MID}chat-0876.jpg`, w:6561, h:4374,
        cap:'O salão à noite, com o bar e o deck do mezanino ao fundo · Mezanino, Itapema/SC',
        badge:'Mezanino · Itapema'},
-      {url:`${MID}chat-0864.jpg`, w:1600, h:1066,
+      {perfil:'social',   /* letreiro LOVE no palco */
+       url:`${MID}chat-0864.jpg`, w:1600, h:1066,
        cap:'Lounge sob as luzes de varal, de frente para a vista · Mezanino, Itapema/SC',
        badge:'Mezanino · Itapema'},
       {url:`${MID}chat-0803.jpg`, w:1600, h:1066,
        cap:'O lounge do Mezanino · Itapema/SC',
        badge:'Mezanino · Itapema'},
-      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/acervo/full/ita-mezanino-2.jpg', w:1066, h:1600,
+      {perfil:'social',   /* noiva de véu em primeiro plano */
+       url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/acervo/full/ita-mezanino-2.jpg', w:1066, h:1600,
        cap:'As mesas postas vistas do deck do mezanino · Mezanino, Itapema/SC',
        badge:'Vista do deck · neste espaço', badgeCls:'salao'}
     ],
@@ -2167,19 +2173,23 @@ const AMBIENTES = {
       {url:`${MID}chat-0828.jpg`, w:6191, h:3981,
        cap:'O salão montado com mesas de madeira e cadeiras crossback · Canto da Lagoa, Florianópolis/SC',
        badge:'Canto da Lagoa · Florianópolis', badgeCls:'salao'},
-      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/acervo/full/fln-ambiente-canto-lagoa-17-branco-verde-dourado.jpg', w:1600, h:1067,
+      {perfil:'social',   /* arco de flores da cerimônia */
+       url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/acervo/full/fln-ambiente-canto-lagoa-17-branco-verde-dourado.jpg', w:1600, h:1067,
        cap:'Mesa posta no deck, de frente para a Lagoa da Conceição · Canto da Lagoa, Florianópolis/SC',
        badge:'Deck da Lagoa · neste espaço', badgeCls:'salao'},
       {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/acervo/full/fln-cerimonia-canto-lagoa-7-colorido.jpg', w:1600, h:1067,
        cap:'A lagoa vista do espaço, com os barcos ao fundo · Canto da Lagoa, Florianópolis/SC',
        badge:'Canto da Lagoa · Florianópolis'},
-      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/acervo/full/fln-ambiente-canto-lagoa-9-branco-verde-dourado.jpg', w:1600, h:1067,
+      {perfil:'social',   /* paredes de flores */
+       url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/acervo/full/fln-ambiente-canto-lagoa-9-branco-verde-dourado.jpg', w:1600, h:1067,
        cap:'Mesas de madeira entre colunas de flores · Canto da Lagoa, Florianópolis/SC',
        badge:'Canto da Lagoa · Florianópolis'},
-      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/acervo/full/fln-ambiente-canto-lagoa-14-branco-verde-dourado.jpg', w:1600, h:1067,
+      {perfil:'social',   /* retrato do casal na parede */
+       url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/acervo/full/fln-ambiente-canto-lagoa-14-branco-verde-dourado.jpg', w:1600, h:1067,
        cap:'O estar com estantes vazadas e cerejeira branca · Canto da Lagoa, Florianópolis/SC',
        badge:'Canto da Lagoa · Florianópolis'},
-      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/acervo/full/fln-ambiente-canto-lagoa-13-branco-verde-dourado.jpg', w:1067, h:1600,
+      {perfil:'social',   /* bolo de casamento */
+       url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/acervo/full/fln-ambiente-canto-lagoa-13-branco-verde-dourado.jpg', w:1067, h:1600,
        cap:'Mesa de bolo entre colunas douradas e orquídeas · Canto da Lagoa, Florianópolis/SC',
        badge:'Canto da Lagoa · Florianópolis'}
     ],
@@ -3854,7 +3864,7 @@ function montarPlanta(){
      se falhar (404/offline), a classe não entra e os círculos continuam na tela */
   const sprite = new Image();
   sprite.onload = ()=>svgPlanta.classList.add('sprite-ok');
-  sprite.src = 'assets/mesa-foto.png';
+  sprite.src = 'assets/mesa-foto.webp';
   /* 8 cadeiras a cada 45° em volta do tampo (coordenadas do símbolo) */
   document.getElementById('cadeirasMesa').innerHTML = Array.from({length:8},(_,i)=>
     `<g transform="rotate(${i*45})"><rect class="mesa__cadeira" x="-8.5" y="-45.5" width="17" height="10.5" rx="4"/></g>`).join('');
@@ -5912,7 +5922,18 @@ $('#btnVideoCurto').addEventListener('click', ()=>{ if(!TOUR.ativo) tourIniciar(
    no grid; são 6 itens, o peso compensa a nitidez). A curadoria de
    cada ambiente vive no registro (AMBIENTES.<id>.galeria, v18.08-21).
    ================================================================= */
-const GALERIA = AMB.galeria;
+/* A GALERIA QUE O CLIENTE VÊ (v18.09-22) — as casas também fazem casamento, e
+   o acervo tem bolo, arco de flores, parede de flores e retrato do casal. Numa
+   proposta corporativa isso dizia ao cliente que ele estava no lugar errado.
+   As fotos marcadas com perfil:'social' ficam guardadas para quando a proposta
+   for de casamento ou de 15 anos; nas outras elas não aparecem. A escolhida
+   para o topo e para o fechamento vem sempre do acervo inteiro (AMB.galeria). */
+const PERFIL_SOCIAL = ['casamento', '15 anos'];
+function galeriaDoEvento(tipoEvento){
+  const social = PERFIL_SOCIAL.includes(chaveDoEvento(tipoEvento));
+  return (AMB.galeria || []).filter(f => social || f.perfil !== 'social');
+}
+let GALERIA = galeriaDoEvento(null);
 /* FOTO SOB MEDIDA (v18.09-2) — as fotos do bucket são as originais do chat
    (uma delas tem 11,6 MB): a página passa a pedir ao Storage a versão do
    tamanho que vai MOSTRAR, pelo endpoint de imagem do Supabase. Medido na
@@ -5941,7 +5962,7 @@ function esperaDaMaquete(ligar){
 /* a foto de destaque do espaço: a escolhida no registro (heroFoto) ou a
    primeira da galeria. Vale para o alto da página e para a espera da maquete. */
 function fotoDestaque(){
-  const g = GALERIA || [];
+  const g = AMB.galeria || [];   /* índice do registro, não da lista filtrada */
   const i = Number.isInteger(AMB.heroFoto) && g[AMB.heroFoto] ? AMB.heroFoto : 0;
   return g[i];
 }
@@ -5957,6 +5978,7 @@ function montarHero(){
 }
 function montarGaleria(){
   const grid = $('#galeriaGrid');
+  grid.classList.toggle('galeria--poucas', GALERIA.length < 3);
   grid.innerHTML = GALERIA.map((f,i)=>`
     <button type="button" class="gfoto" data-i="${i}" style="aspect-ratio:${f.w}/${f.h}"
       aria-label="Ampliar foto: ${esc(f.cap)}">
@@ -6402,12 +6424,17 @@ function filmeDaProposta(){
    tocar (classe .filme-ok), então nada pisca e nada nasce preto. Se o navegador
    barrar o autoplay, se o cliente pediu menos movimento ou se a conexão está
    economizando dados, fica a foto — a capa nunca fica vazia. */
+/* o passeio inteiro (seção 05) e o CORTE DA CAPA, que é o mesmo passeio em
+   720p, 10 s e laço contínuo — 1,4 MB no lugar de 9,8 (ferramentas/
+   enxugar-midia.mjs). A capa pede o corte e, se ele não existir naquela
+   pasta, o próprio navegador cai no passeio pela segunda <source>. */
 function filmeAtual(){
+  const comCapa = v => ({...v, capa: v.src.replace(/passeio.mp4$/, 'capa.mp4')});
   if(ORC_REAL && ORC_NUMERO && PROPOSTAS_COM_FILME.includes(ORC_NUMERO)){
     const base = `assets/propostas/${encodeURIComponent(ORC_NUMERO)}/`;
-    return {src:`${base}passeio.mp4`, poster:`${base}poster.jpg`};
+    return comCapa({src:`${base}passeio.mp4`, poster:`${base}poster.jpg`});
   }
-  return (AMB.filme && AMB.filme.src) ? {src:AMB.filme.src, poster:AMB.filme.poster||''} : null;
+  return (AMB.filme && AMB.filme.src) ? comCapa({src:AMB.filme.src, poster:AMB.filme.poster||''}) : null;
 }
 function filmeDaCapa(){
   const fundo = document.querySelector('.hero__fundo');
@@ -6419,10 +6446,11 @@ function filmeDaCapa(){
   let el = fundo.querySelector('video');
   /* a proposta do cliente chega depois do primeiro desenho: quando o filme
      dela entra no lugar do filme da casa, só a fonte é trocada */
+  const fontes = v => `<source src="${esc(v.capa)}" type="video/mp4"><source src="${esc(v.src)}" type="video/mp4">`;
   if(el){
-    if(el.dataset.src === v.src) return;
-    el.dataset.src = v.src;
-    el.innerHTML = `<source src="${esc(v.src)}" type="video/mp4">`;
+    if(el.dataset.src === v.capa) return;
+    el.dataset.src = v.capa;
+    el.innerHTML = fontes(v);
     el.load(); const t = el.play(); if(t && t.catch) t.catch(()=>{});
     return;
   }
@@ -6430,10 +6458,10 @@ function filmeDaCapa(){
   el.muted = true; el.defaultMuted = true; el.loop = true; el.autoplay = true;
   el.setAttribute('playsinline',''); el.setAttribute('muted','');
   el.setAttribute('aria-hidden','true'); el.tabIndex = -1;
-  el.preload = 'auto'; el.dataset.src = v.src;
+  el.preload = 'auto'; el.dataset.src = v.capa;
   if(v.poster) el.poster = v.poster;
   el.addEventListener('playing', ()=>fundo.classList.add('filme-ok'), {once:true});
-  el.innerHTML = `<source src="${esc(v.src)}" type="video/mp4">`;
+  el.innerHTML = fontes(v);
   fundo.appendChild(el);
   const t = el.play(); if(t && t.catch) t.catch(()=>{});
   /* fora da tela o filme para: nada de dois vídeos decodificando juntos
@@ -6803,7 +6831,12 @@ async function vestirPropostaCRM(){
       montarItens();
     }
     /* a capa fala do tipo de evento do orçamento (corporativo, dinner…) */
-    vestirFrases(o.tipo_evento && o.tipo_evento.nome);
+    const tipoDoEvento = o.tipo_evento && o.tipo_evento.nome;
+    vestirFrases(tipoDoEvento);
+    /* e a galeria também: numa proposta de casamento as fotos de casamento
+       voltam; numa corporativa elas ficam de fora */
+    const gal = galeriaDoEvento(tipoDoEvento);
+    if(gal.length !== GALERIA.length){ GALERIA = gal; montarGaleria(); }
     filmeDaProposta();   /* se a equipe já gerou o vídeo deste evento, é ele que toca */
     filmeDaCapa();       /* e é ele que roda na capa */
     /* a prova social é da CASA do orçamento (o Mediterrâneo 242 e o Solar 915
