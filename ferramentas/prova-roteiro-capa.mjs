@@ -26,9 +26,12 @@ const b = await puppeteer.launch({ headless: 'new', executablePath: 'C:/Program 
 const erros = [];
 const lerRoteiro = p => p.evaluate(() => ({
   oculto: document.getElementById('roteiro').hidden,
+  secao: (document.getElementById('roteiro').closest('section') || {}).id,
+  ordem: [...document.querySelectorAll('main > section[id]')].map(x => x.id),
   passos: [...document.querySelectorAll('.roteiro__passo')].map(l => ({
     num: l.querySelector('.roteiro__num').textContent.trim(),
     nome: l.querySelector('.roteiro__nome').textContent.trim(),
+    aceso: l.classList.contains('roteiro__passo--mudou'),
     txt: l.querySelector('.roteiro__txt').textContent.trim() })),
 }));
 
@@ -41,6 +44,13 @@ await p.goto(`${SITE}?espaco=salao_eventos&proposta=${TOKEN}&api=${CRM}`, { wait
 await espera(3000);
 const r = await lerRoteiro(p);
 ok(!r.oculto && r.passos.length >= 4, `o roteiro aparece com ${r.passos.length} momentos`);
+/* O ROTEIRO FICA DEPOIS DOS CARDÁPIOS (01/10) — ele nasceu na seção 01, ACIMA
+   das escolhas: o cliente trocava um menu e nunca via a sequência mudar, e
+   concluiu que ela não mudava. Agora fecha a seção 03, abaixo de tudo o que
+   descreve. */
+ok(r.ordem.indexOf(r.secao) > r.ordem.indexOf('cardapios'),
+  `e fica depois dos cardápios, em "${r.secao}" (${r.ordem.join(' > ')})`);
+ok(r.passos.every(x => !x.aceso), 'ao chegar, nenhum momento está aceso');
 ok(r.passos[0].nome === 'A casa pronta' && /encerramento/i.test(r.passos.at(-1).nome),
   'começa na montagem e termina no encerramento');
 ok(r.passos.every((x, i) => x.num === String(i + 1).padStart(2, '0')), 'os momentos vêm numerados em ordem');
@@ -62,12 +72,37 @@ await espera(600);
 const depois = await lerRoteiro(p);
 ok(depois.passos.length === antes + 1 && depois.passos.some(x => /Menu Premium/.test(x.txt)),
   `escolher um jantar acrescenta o momento (${antes} → ${depois.passos.length})`);
+/* o toque do cliente ACENDE o momento que mudou — e só ele */
+const cliqueReal = await (async () => {
+  const caixa = await p.evaluate(() => {
+    const c = [...document.querySelectorAll('#cardsOpenbar .nivel')].find(x => x.getAttribute('aria-pressed') !== 'true');
+    c.scrollIntoView({ block: 'center' });
+    const r = c.getBoundingClientRect();
+    return { x: r.x + r.width / 2, y: r.y + 30 };
+  });
+  await espera(500);
+  await p.mouse.click(caixa.x, caixa.y);
+  await espera(600);
+  return lerRoteiro(p);
+})();
+const acesos = cliqueReal.passos.filter(x => x.aceso);
+ok(acesos.length === 1 && /bar/i.test(acesos[0].nome),
+  `trocar o bar acende só aquele momento (${acesos.map(x => x.nome).join(', ') || 'nenhum'})`);
 await p.evaluate(() => tirarDaProposta('menu'));
 await espera(600);
 const semJantar = await lerRoteiro(p);
 ok(semJantar.passos.length === antes, 'e tirar o jantar tira o momento de volta');
+/* tirar um momento empurra os de baixo: comparar por posição acenderia a
+   linha inteira, e a página compara por NOME */
+ok(semJantar.passos.filter(x => x.aceso).length === 0,
+  'e tirar não acende a linha inteira');
 
 /* 3 · o filme da capa é o do cliente, sem som e em laço */
+/* de volta ao topo: fora da tela o filme PAUSA de propósito (para não
+   decodificar dois vídeos junto com o player da seção 05), e os testes acima
+   rolaram a página até os cardápios */
+await p.evaluate(() => scrollTo(0, 0));
+await espera(1200);
 const capa = await p.evaluate(() => {
   const v = document.querySelector('.hero__fundo video');
   return v ? { src: v.dataset.src, mudo: v.muted, laco: v.loop, tocando: !v.paused,

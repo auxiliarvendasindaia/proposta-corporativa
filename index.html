@@ -179,8 +179,8 @@ html.sem-io .reveal{opacity:1;transform:none;}
 /* ---------- resumo do evento ---------- */
 .resumo__grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));align-items:stretch;}
 /* ---------- roteiro do evento ---------- */
-.roteiro{margin-top:clamp(36px,6vh,66px);border-top:1px solid var(--line);
-  padding-top:clamp(26px,4vh,40px);}
+.roteiro{margin-top:clamp(40px,7vh,74px);border-top:1px solid var(--line);
+  padding-top:clamp(30px,4.5vh,46px);}
 .roteiro[hidden]{display:none;}
 .roteiro__head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;
   gap:8px 32px;margin-bottom:clamp(26px,4vh,40px);}
@@ -203,6 +203,14 @@ html.sem-io .reveal{opacity:1;transform:none;}
 .roteiro__nome{font-family:var(--serif);font-weight:600;font-size:1.12rem;line-height:1.25;
   color:var(--brown-deep);margin:0 0 .4rem;}
 .roteiro__txt{font-size:.88rem;line-height:1.65;color:var(--brown);margin:0;max-width:30ch;}
+/* trocou o cardápio? o momento correspondente acende por um instante, para o
+   cliente ver que a sequência acompanhou a escolha dele */
+@keyframes roteiro-acende{
+  0%{background:rgba(176,154,110,.26);}
+  70%{background:rgba(176,154,110,.12);}
+  100%{background:transparent;}}
+.roteiro__passo--mudou{animation:roteiro-acende 2s var(--ease-lux);border-radius:10px;}
+.roteiro__passo--mudou .roteiro__ponto{background:var(--gold-deep);transform:scale(1.5);}
 .rcard{background:var(--cream);border:1px solid var(--line-soft);border-radius:var(--radius);
   padding:24px 24px 22px;box-shadow:var(--sh-1);display:flex;flex-direction:column;gap:6px;}
 .rcard__lbl{font-size:.64rem;letter-spacing:.24em;text-transform:uppercase;color:var(--taupe);margin:0;}
@@ -892,6 +900,7 @@ html.sem-io .reveal{opacity:1;transform:none;}
   html{scroll-behavior:auto;}
   .reveal{opacity:1;transform:none;transition:none;}
   .nivel,.btn,.tierbar{transition:none;}
+  .roteiro__passo--mudou{animation:none;}
   .ph::before{animation:none;}
   .escassez-badge{animation:none;}
 }
@@ -992,19 +1001,6 @@ html.so-layout body{padding-bottom:0;}
       </div>
     </div>
 
-    <!-- O ROTEIRO (v18.09-21) — a sequência do evento, escrita pela página a
-         partir do que a proposta traz: o coquetel, o palco, o jantar e o bar
-         que o cliente escolheu. Sem horário: o orçamento do CRM não tem hora
-         do evento, e hora inventada em proposta é promessa que ninguém fez.
-         A sequência se refaz a cada troca de cardápio (ver montarRoteiro). -->
-    <div class="roteiro reveal" id="roteiro" hidden>
-      <div class="roteiro__head">
-        <h3 class="roteiro__titulo">Como a sua noite <em>acontece</em>.</h3>
-        <p class="roteiro__nota">A sequência é desenhada com você na Reunião de Alinhamento,
-          cerca de 30 dias antes do evento.</p>
-      </div>
-      <ol class="roteiro__linha" id="roteiroLinha"></ol>
-    </div>
   </div>
 </section>
 
@@ -1092,6 +1088,21 @@ html.so-layout body{padding-bottom:0;}
       <p class="extras__micro__txt">Quer incluir algo que não está aqui (decoração, ativações)?
         É só pedir na nossa conversa — a gente desenha junto.</p>
       <button type="button" class="btn btn--ghost" id="btnMaisItens">Incluir mais itens no orçamento</button>
+    </div>
+
+    <!-- O ROTEIRO (v18.09-24) — a sequência do evento, escrita pela página a
+         partir do que a proposta traz: o coquetel, o palco, o jantar e o bar
+         que o cliente escolheu. Sem horário: o orçamento do CRM não tem hora
+         do evento, e hora inventada em proposta é promessa que ninguém fez.
+         A sequência se refaz a cada troca de cardápio, e o momento que
+         mudou acende por um instante (ver montarRoteiro). -->
+    <div class="roteiro reveal" id="roteiro" hidden>
+      <div class="roteiro__head">
+        <h3 class="roteiro__titulo">Como a sua noite <em>acontece</em>.</h3>
+        <p class="roteiro__nota">A sequência é desenhada com você na Reunião de Alinhamento,
+          cerca de 30 dias antes do evento.</p>
+      </div>
+      <ol class="roteiro__linha" id="roteiroLinha"></ol>
     </div>
   </div>
 </section>
@@ -1320,7 +1331,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer — é só pedir na nossa conversa.
-      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-23</span></p>
+      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-24</span></p>
   </div>
 </footer>
 
@@ -3483,6 +3494,13 @@ function pintarTotal(cent){
    social, por exemplo), o índice acompanha sem ninguém lembrar de mexer aqui.
    Ele aparece depois da capa e marca onde o cliente está. */
 let obsIndice = null;
+let roteiroAnterior = null;   /* a sequência da última escrita, para ver o que mudou */
+/* o roteiro é escrito duas vezes no arranque (padrão e depois com o orçamento
+   do CRM): sem esta trava o cliente chegava com um momento já aceso, como se
+   ele tivesse mexido em algo. Só acende depois do primeiro toque dele. */
+let roteiroInterativo = false;
+addEventListener('pointerdown', ()=>{ roteiroInterativo = true; }, {once:true, capture:true});
+addEventListener('keydown', ()=>{ roteiroInterativo = true; }, {once:true, capture:true});
 function montarIndice(){
   if(MODO_LAYOUT) return;
   const secs = [...document.querySelectorAll('main > section.sec[id]')].filter(s=>!s.hidden);
@@ -3551,7 +3569,15 @@ function montarRoteiro(){
   }
   passos.push({nome:'O encerramento', fim:true,
     txt:'A desmontagem é nossa. Do seu lado, fica só o evento entregue.'});
-  box.innerHTML = passos.map((x,i)=>`<li class="roteiro__passo${x.fim?' roteiro__passo--fim':''}">
+  /* o que mudou desde a última escrita: o momento novo ou reescrito acende
+     por um instante. Na primeira vez nada acende — não é mudança, é a página
+     nascendo. */
+  /* a comparação é por NOME do momento, não por posição: tirar o jantar
+     empurra os de baixo, e por posição a linha inteira acenderia */
+  const antes = roteiroAnterior;
+  roteiroAnterior = new Map(passos.map(x=>[x.nome, x.txt]));
+  const mudou = x => roteiroInterativo && !!antes && (!antes.has(x.nome) || antes.get(x.nome) !== x.txt);
+  box.innerHTML = passos.map((x,i)=>`<li class="roteiro__passo${x.fim?' roteiro__passo--fim':''}${mudou(x)?' roteiro__passo--mudou':''}">
       <span class="roteiro__ponto" aria-hidden="true"></span>
       <span class="roteiro__num">${String(i+1).padStart(2,'0')}</span>
       <p class="roteiro__nome">${esc(x.nome)}</p>
