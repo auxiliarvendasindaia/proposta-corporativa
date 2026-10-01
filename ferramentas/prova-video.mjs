@@ -80,13 +80,33 @@ ok(tam > 200000 && tam < 60e6, `${(tam / 1e6).toFixed(1)} MB — cabe num envio`
 /* A PROPOSTA NÃO SE BAIXA (decisão de 18/09: ela tem validade). Sem
    controlsList o menu "⋮" do Chrome oferecia "Baixar vídeo" — achado em
    01/10, depois de o botão de download já ter saído da página. */
-const semDownload = await p.evaluate(() => {
+const player = await p.evaluate(() => {
   const v = document.getElementById('filmeVideo');
   const lista = v ? (v.getAttribute('controlsList') || '') : '';
-  return { tem: !!v, nodownload: /nodownload/.test(lista), lista };
+  return { tem: !!v, nativo: !!v && v.hasAttribute('controls'), nodownload: /nodownload/.test(lista),
+    gigante: !!document.getElementById('filmeGigante'),
+    barra: ['filmeToca','filmeTrilho','filmeTempo','filmeSom','filmeTela'].filter(id => !document.getElementById(id)) };
 });
-ok(semDownload.tem && semDownload.nodownload,
-  `o player não oferece download (controlsList="${semDownload.lista}")`);
+ok(player.tem && !player.nativo, 'o vídeo não usa os controles nativos do navegador');
+ok(player.nodownload, 'e mantém nodownload como rede de segurança na tela cheia');
+ok(player.gigante && player.barra.length === 0,
+  `o player da casa está montado${player.barra.length ? ' — falta ' + player.barra.join(', ') : ''}`);
+/* o botão grande toca, a barra anda e o tempo acompanha */
+const andou = await p.evaluate(async () => {
+  const v = document.getElementById('filmeVideo');
+  const esperar = ms => new Promise(r => setTimeout(r, ms));
+  document.getElementById('filmeGigante').click();
+  await esperar(1500);
+  const tocando = { on: !v.paused, classe: document.getElementById('filmePlayer').classList.contains('tocando'),
+    prog: document.getElementById('filmeProg').style.width, tempo: document.getElementById('filmeTempo').textContent };
+  document.getElementById('filmeToca').click();
+  await esperar(400);
+  return { ...tocando, pausou: v.paused };
+});
+ok(andou.on && andou.classe, 'o botão grande dá play');
+ok(parseFloat(andou.prog) > 0 && /\d+:\d\d \/ \d+:\d\d/.test(andou.tempo),
+  `a barra anda e o tempo acompanha (${andou.prog} · ${andou.tempo})`);
+ok(andou.pausou, 'e o botão da barra pausa');
 ok(erros.length === 0, `sem erros de JS ${erros.slice(0, 2).join(' | ')}`);
 await b.close();
 console.log(falhas ? `\n${falhas} FALHA(S)` : '\nTUDO VERDE');

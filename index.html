@@ -178,6 +178,22 @@ html.sem-io .reveal{opacity:1;transform:none;}
 
 /* ---------- resumo do evento ---------- */
 .resumo__grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));align-items:stretch;}
+/* ---------- o que vem junto (seção 01) ---------- */
+.vemjunto{list-style:none;margin:clamp(26px,4vh,44px) 0 0;padding:0;display:grid;gap:16px 26px;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));}
+.vemjunto li{position:relative;padding-left:18px;font-size:.9rem;line-height:1.65;color:var(--brown);}
+.vemjunto li::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:7px;
+  border-radius:50%;background:var(--gold);}
+.vemjunto b{display:block;font-family:var(--serif);font-weight:600;font-size:1.06rem;
+  color:var(--brown-deep);margin-bottom:.2rem;letter-spacing:-.005em;}
+/* ---------- salão sem maquete ---------- */
+html.sem-maquete .hero__fundo,html.sem-maquete .cta__media{display:none;}
+.semmaquete{border:1px solid var(--line);border-radius:var(--radius);background:var(--cream-2);
+  padding:clamp(26px,4.5vw,46px);text-align:center;}
+.semmaquete__selo{font-size:.68rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-deep);margin:0 0 .8rem;}
+.semmaquete__titulo{font-family:var(--serif);font-weight:600;font-size:clamp(1.7rem,3.6vw,2.5rem);
+  color:var(--brown-deep);margin:0 0 .9rem;letter-spacing:-.01em;}
+.semmaquete__txt{font-size:.98rem;line-height:1.75;color:var(--brown);margin:0 auto 1.6rem;max-width:56ch;}
 /* ---------- roteiro do evento ---------- */
 .roteiro{margin-top:clamp(40px,7vh,74px);border-top:1px solid var(--line);
   padding-top:clamp(30px,4.5vh,46px);}
@@ -700,6 +716,50 @@ html.sem-io .reveal{opacity:1;transform:none;}
   box-shadow:var(--sh-2, var(--sh-1));}
 .filme__player video{width:100%;height:100%;display:block;}
 .filme__cap{margin:.8rem 0 0;font-size:.82rem;color:var(--taupe);line-height:1.6;}
+/* PLAYER DA CASA (v18.09-26) — o player nativo do navegador era a única peça
+   da página sem a identidade do resto, e cada navegador desenha o seu. Este é
+   HTML e CSS puros sobre o mesmo <video>: não pesa nada a mais, não muda a
+   decodificação e no celular toca na própria página (playsinline). */
+.filme__player{position:relative;}
+.filme__player video{cursor:pointer;}
+.filme__gigante{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  border:0;background:linear-gradient(180deg,rgba(20,24,29,.08) 0%,rgba(20,24,29,.42) 100%);
+  cursor:pointer;transition:opacity .4s var(--ease-lux);padding:0;}
+.filme__player.tocando .filme__gigante{opacity:0;pointer-events:none;}
+.filme__gigante span{display:flex;align-items:center;justify-content:center;
+  width:clamp(62px,8vw,84px);height:clamp(62px,8vw,84px);border-radius:50%;
+  background:rgba(247,248,249,.94);box-shadow:0 10px 34px rgba(20,24,29,.34);
+  transition:transform .35s var(--ease-lux);}
+.filme__gigante:hover span{transform:scale(1.07);}
+.filme__gigante svg{width:30%;height:30%;fill:var(--brown-deep);margin-left:8%;}
+.filme__barra{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;
+  gap:12px;padding:10px clamp(12px,2vw,18px) 12px;
+  background:linear-gradient(180deg,rgba(20,24,29,0) 0%,rgba(20,24,29,.72) 60%);
+  opacity:0;transition:opacity .3s;}
+.filme__player:hover .filme__barra,.filme__player.tocando .filme__barra,
+.filme__player:focus-within .filme__barra{opacity:1;}
+.filme__btn{width:38px;height:38px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+  border:0;border-radius:50%;background:transparent;color:var(--cream);cursor:pointer;
+  transition:background .25s;}
+.filme__btn:hover{background:rgba(247,248,249,.16);}
+.filme__btn svg{width:19px;height:19px;fill:currentColor;}
+.filme__trilho{position:relative;flex:1 1 auto;height:18px;display:flex;align-items:center;cursor:pointer;
+  background:none;border:0;padding:0;}
+.filme__trilho::before{content:"";position:absolute;left:0;right:0;height:3px;border-radius:2px;
+  background:rgba(247,248,249,.32);}
+.filme__prog{position:relative;height:3px;border-radius:2px;background:var(--gold-soft);width:0;
+  transition:width .12s linear;}
+.filme__prog::after{content:"";position:absolute;right:-5px;top:50%;transform:translateY(-50%);
+  width:10px;height:10px;border-radius:50%;background:var(--gold-soft);opacity:0;transition:opacity .2s;}
+.filme__trilho:hover .filme__prog::after,.filme__trilho:focus-visible .filme__prog::after{opacity:1;}
+.filme__tempo{flex:0 0 auto;font-size:.72rem;letter-spacing:.06em;color:rgba(247,248,249,.88);
+  font-variant-numeric:tabular-nums;white-space:nowrap;}
+@media (max-width:760px){
+  .filme__barra{opacity:1;gap:8px;padding:8px 10px 10px;}
+  .filme__btn{width:44px;height:44px;}     /* alvo de toque */
+  .filme__tempo{font-size:.68rem;}
+}
+
 
 /* ---------- quem já fez aqui (prova social escolhida a dedo) ---------- */
 .prova__selo{display:inline-flex;align-items:center;gap:14px;margin:0 0 1.8rem;padding:.7em 1.2em;
@@ -1001,6 +1061,15 @@ html.so-layout body{padding-bottom:0;}
       </div>
     </div>
 
+    <!-- O QUE VEM JUNTO (v18.09-26) — a seção 01 ficou com um vão quando o
+         roteiro desceu para a 03. No lugar entra o que a casa entrega em
+         qualquer proposta, sem preço nenhum: é a regra do topo da página. -->
+    <ul class="vemjunto reveal" data-d="2">
+      <li><b>Cozinha própria</b>O que chega à mesa foi feito aqui, no dia, e sai da cozinha na temperatura certa.</li>
+      <li><b>Equipe da casa</b>Maîtres, garçons, copa e cerimonial do Indaiá, do primeiro café ao último brinde.</li>
+      <li><b>Estrutura montada</b>Mobiliário, louça, cristais, enxoval e a montagem do salão — tudo já na proposta.</li>
+      <li><b>Operação conferida</b>A casa entregue pronta antes do primeiro convidado, e desmontada por nós depois.</li>
+    </ul>
   </div>
 </section>
 
@@ -1103,6 +1172,22 @@ html.so-layout body{padding-bottom:0;}
           cerca de 30 dias antes do evento.</p>
       </div>
       <ol class="roteiro__linha" id="roteiroLinha"></ol>
+    </div>
+  </div>
+</section>
+
+<!-- aviso de salão sem maquete (v18.09-26): entra no lugar do editor, do 3D,
+     do filme e das fotos quando o espaço do orçamento não é um dos que a
+     página desenha. Melhor não mostrar nada do que mostrar outro salão. -->
+<section class="sec" id="semMaquete" data-indice="O seu salão" hidden>
+  <div class="wrap">
+    <div class="semmaquete reveal">
+      <p class="semmaquete__selo">O seu salão</p>
+      <h2 class="semmaquete__titulo" id="semMaqueteNome">—</h2>
+      <p class="semmaquete__txt">A planta interativa e a maquete 3D desta casa ainda estão
+        em preparação. Os valores e tudo o mais nesta proposta são do seu evento —
+        a montagem do salão sua consultora envia na nossa conversa.</p>
+      <a class="btn btn--solid" id="semMaqueteCta" href="#contato">Pedir a montagem do salão</a>
     </div>
   </div>
 </section>
@@ -1250,12 +1335,29 @@ html.so-layout body{padding-bottom:0;}
          baixar quando ele dá play (preload="metadata"). A seção some sozinha
          se o ambiente ainda não tiver filme. -->
     <figure class="filme reveal" id="filme" hidden>
-      <div class="filme__player">
-        <!-- nodownload: a decisão de 18/09 é que a proposta NÃO se baixa (ela tem
-             validade). Sem este atributo o menu "⋮" do Chrome ainda oferecia
-             "Baixar vídeo" — achado em 01/10. -->
-        <video id="filmeVideo" controls controlsList="nodownload noplaybackrate"
-               disablePictureInPicture playsinline preload="metadata"></video>
+      <div class="filme__player" id="filmePlayer">
+        <!-- player da casa (v18.09-26): sem os controles nativos, que mudam de
+             navegador para navegador e traziam o menu "baixar". controlsList
+             fica como rede de segurança para a tela cheia. -->
+        <video id="filmeVideo" playsinline preload="metadata"
+               controlsList="nodownload noplaybackrate" disablePictureInPicture></video>
+        <button type="button" class="filme__gigante" id="filmeGigante" aria-label="Assistir ao vídeo">
+          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+        </button>
+        <div class="filme__barra">
+          <button type="button" class="filme__btn" id="filmeToca" aria-label="Pausar o vídeo">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path id="filmeIcone" d="M8 5v14l11-7z"/></svg>
+          </button>
+          <button type="button" class="filme__trilho" id="filmeTrilho"
+                  aria-label="Avançar ou voltar no vídeo"><span class="filme__prog" id="filmeProg"></span></button>
+          <span class="filme__tempo" id="filmeTempo">0:00 / 0:00</span>
+          <button type="button" class="filme__btn" id="filmeSom" aria-label="Tirar o som">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path id="filmeIconeSom" d="M4 9v6h4l5 5V4L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>
+          </button>
+          <button type="button" class="filme__btn" id="filmeTela" aria-label="Tela cheia">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5v2H6v3H4zm11-5h5v5h-2V6h-3V4zM4 15h2v3h3v2H4v-5zm14 0h2v5h-5v-2h3v-3z"/></svg>
+          </button>
+        </div>
       </div>
       <figcaption class="filme__cap" id="filmeCap"></figcaption>
     </figure>
@@ -1335,7 +1437,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer — é só pedir na nossa conversa.
-      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-25</span></p>
+      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-26</span></p>
   </div>
 </footer>
 
@@ -2239,7 +2341,16 @@ const AMBIENTES = {
   }
 };
 /* seleção do ambiente: ?espaco=<id> (inválido/ausente = Salão de Eventos) */
-const ESPACO = (()=>{ const v = new URLSearchParams(location.search).get('espaco'); return AMBIENTES[v] ? v : 'salao_eventos'; })();
+/* SALÃO QUE A PÁGINA NÃO CONHECE (01/10/2026) — o CRM tem 26 maquetes e a
+   página desenha 5. Até aqui qualquer slug de fora (mediterraneo, joinville,
+   cerimonia_*) caía CALADO no Salão de Eventos de Itapema: o cliente de
+   Joinville recebia a proposta dele num salão que não é o dele, sem aviso
+   nenhum. Agora a página marca que não conhece, continua mostrando o
+   orçamento e o nome certo do espaço, e esconde o que seria mentira — a
+   planta, a maquete, o 360°, o filme e as fotos são de OUTRA casa. */
+const ESPACO_PEDIDO = new URLSearchParams(location.search).get('espaco') || '';
+const ESPACO_DESCONHECIDO = !!ESPACO_PEDIDO && !AMBIENTES[ESPACO_PEDIDO];
+const ESPACO = AMBIENTES[ESPACO_PEDIDO] ? ESPACO_PEDIDO : 'salao_eventos';
 const AMB = AMBIENTES[ESPACO];
 
 /* ---- constantes derivadas do ambiente (os nomes de sempre) ---- */
@@ -2888,6 +2999,7 @@ function abrirDia(id){
   for(const t of TIPOS_CARD) PROPOSTA[t] = escolhaDoCliente(t, id);
   TIPOS_CARD.forEach(pintarSelecao);
   atualizarTotais();          /* remonta a lista do dia e as barras */
+  cardConvidadosDoDia((ORC_REAL.dias||[]).find(d=>d.id===id) || null);   /* convidados DO dia */
 }
 function montarDias(){
   if(!ORC_REAL || !ORC_REAL.multiDia) return;
@@ -2920,19 +3032,24 @@ function montarDias(){
   }else aviso.innerHTML = '';
   cardConvidadosDoDia(d);
 }
-/* no multi-dia cada dia tem o seu número de convidados, então o passo a passo
-   do card vira leitura: mudar convidados de um dia é conversa com o consultor */
+/* CONVIDADOS POR DIA (01/10/2026) — cada dia do evento tem o seu número, e o
+   cliente ajusta o do DIA ABERTO no mesmo passo a passo de sempre. Antes isso
+   era só leitura ("mudar é conversa com o consultor"), mas o evento de dois
+   dias quase nunca tem o mesmo público nos dois. O valor fica guardado no
+   link, como as trocas de cardápio. */
 function cardConvidadosDoDia(d){
   const st = document.querySelector('.stepper'); if(!st) return;
-  let leitura = document.getElementById('convDoDia');
-  if(!leitura){
-    leitura = document.createElement('p'); leitura.className = 'rcard__val'; leitura.id = 'convDoDia';
-    st.after(leitura);
-  }
-  st.hidden = true; leitura.hidden = false;
-  leitura.textContent = d ? `${d.conv}` : `${ORC_REAL.conv}`;
+  const leitura = document.getElementById('convDoDia');
+  if(leitura) leitura.hidden = true;
+  st.hidden = false;
+  const campo = document.getElementById('convVal');
+  if(campo) campo.value = d ? d.conv : ORC_REAL.conv;
+  document.getElementById('convMenos').disabled = (d ? d.conv : ORC_REAL.conv) <= 30;
+  document.getElementById('convMais').disabled  = (d ? d.conv : ORC_REAL.conv) >= 500;
   const sub = st.parentElement.querySelector('.rcard__sub');
-  if(sub) sub.textContent = d ? `no dia ${d.numero} · ${ORC_REAL.dias.length} dias de evento` : `${ORC_REAL.dias.length} dias de evento`;
+  if(sub) sub.textContent = d
+    ? `no dia ${d.numero} de ${ORC_REAL.dias.length} · os itens por pessoa acompanham`
+    : `${ORC_REAL.dias.length} dias de evento`;
 }
 /* evento de mais de um dia: o card da data, o subtítulo do topo e o rótulo do
    total passam a falar do evento inteiro (as datas não são editáveis) */
@@ -3505,6 +3622,33 @@ let roteiroAnterior = null;   /* a sequência da última escrita, para ver o que
 let roteiroInterativo = false;
 addEventListener('pointerdown', ()=>{ roteiroInterativo = true; }, {once:true, capture:true});
 addEventListener('keydown', ()=>{ roteiroInterativo = true; }, {once:true, capture:true});
+/* SALÃO SEM MAQUETE (v18.09-26) — a página some com tudo que seria de outra
+   casa (planta, 3D, 360°, filme e fotos) e põe no lugar um aviso com o NOME
+   CERTO do espaço, que vem do orçamento. O resto da proposta — valores,
+   cardápios, roteiro, prova social e investimento — continua inteiro. */
+function vestirSemMaquete(nomeEspaco, cidade){
+  const sec = document.getElementById('semMaquete');
+  if(!sec) return;
+  if(!ESPACO_DESCONHECIDO){ sec.hidden = true; return; }
+  const nome = (nomeEspaco || '').trim();
+  document.getElementById('semMaqueteNome').textContent =
+    nome ? (cidade ? `${nome} · ${cidade}` : nome) : 'A montagem do seu salão';
+  sec.hidden = false;
+  /* o que é do outro salão sai da página */
+  ['planta','galeria'].forEach(id=>{ const el = document.getElementById(id); if(el) el.hidden = true; });
+  /* e os textos que nomeiam a casa passam a usar o espaço do orçamento */
+  if(nome){
+    const rot = cidade ? `${nome} · ${cidade}` : nome;
+    document.querySelectorAll('.js-espaco-rotulo').forEach(el=>el.textContent = rot);
+    const n = document.getElementById('espacoNome'); if(n) n.textContent = nome;
+    const c = document.getElementById('espacoCidade'); if(c) c.textContent = cidade || '';
+    document.querySelectorAll('.js-espaco-em').forEach(el=>el.textContent = 'salão');
+  }
+  /* o fundo da capa e do fechamento é foto de outra casa: fica o fundo liso.
+     Esconde por classe — remover do DOM quebrava o resto do vestir, que ainda
+     troca o src da foto do fechamento. */
+  document.documentElement.classList.add('sem-maquete');
+}
 function montarIndice(){
   if(MODO_LAYOUT) return;
   const secs = [...document.querySelectorAll('main > section.sec[id]')].filter(s=>!s.hidden);
@@ -3517,7 +3661,8 @@ function montarIndice(){
     document.body.appendChild(nav);
   }
   nav.innerHTML = '<ol>' + secs.map(sec=>{
-    const nome = (sec.querySelector('.sec__meta .eyebrow')||{}).textContent || sec.id;
+    const nome = sec.dataset.indice
+      || (sec.querySelector('.sec__meta .eyebrow')||{}).textContent || sec.id;
     return `<li><a href="#${sec.id}" data-sec="${sec.id}">
       <span class="indice__ponto" aria-hidden="true"></span>
       <span class="indice__nome">${esc(nome.trim())}</span></a></li>`;
@@ -3667,15 +3812,39 @@ function atualizarTotais(){
 }
 
 /* ---- stepper de convidados ---- */
+/* no multi-dia o passo a passo mexe no DIA ABERTO; fora dele, no evento todo */
+function convAtual(){
+  if(ORC_REAL && ORC_REAL.multiDia){
+    const d = (ORC_REAL.dias||[]).find(x=>x.id===diaCorrente());
+    if(d) return d.conv;
+  }
+  return PROPOSTA.convidados;
+}
 function mudarConvidados(v){
   const novo = limita(v, 30, 500);
+  if(ORC_REAL && ORC_REAL.multiDia){
+    const d = (ORC_REAL.dias||[]).find(x=>x.id===diaCorrente());
+    if(d){
+      if(novo===d.conv){ $('#convVal').value = novo; return; }
+      d.conv = novo;                                  /* o cálculo lê daqui */
+      PROPOSTA.dias = PROPOSTA.dias || {};
+      PROPOSTA.dias[d.id] = {...(PROPOSTA.dias[d.id]||{}), conv:novo};   /* e o link guarda */
+      salvar(); atualizarTotais();
+      montarDias();                                   /* o chip do dia mostra o novo número */
+      vestirMultiDia();                               /* e a nota do investimento também */
+      $('#convVal').value = novo;
+      $('#convMenos').disabled = novo<=30;
+      $('#convMais').disabled = novo>=500;
+      return;
+    }
+  }
   if(novo===PROPOSTA.convidados){ $('#convVal').value = novo; return; }
   PROPOSTA.convidados = novo; salvar(); atualizarTotais();
   $('#convMenos').disabled = novo<=30;
   $('#convMais').disabled = novo>=500;
 }
-$('#convMenos').addEventListener('click', ()=>mudarConvidados(PROPOSTA.convidados-10));
-$('#convMais').addEventListener('click', ()=>mudarConvidados(PROPOSTA.convidados+10));
+$('#convMenos').addEventListener('click', ()=>mudarConvidados(convAtual()-10));
+$('#convMais').addEventListener('click', ()=>mudarConvidados(convAtual()+10));
 $('#convVal').addEventListener('change', e=>{
   const v = parseInt(e.target.value,10);
   mudarConvidados(Number.isFinite(v)?v:PROPOSTA.convidados);
@@ -6500,6 +6669,67 @@ function cenarioContratado(){
     doOrcamento: true,
   };
 }
+/* PLAYER DA CASA (v18.09-26) — controles próprios sobre o mesmo <video>: só
+   HTML, CSS e estes poucos ouvintes. Nenhuma biblioteca, nenhum peso a mais e
+   a mesma decodificação de antes; no celular toca na própria página. */
+function montarPlayer(){
+  const caixa = document.getElementById('filmePlayer');
+  const v = document.getElementById('filmeVideo');
+  if(!caixa || !v || caixa.dataset.pronto) return;
+  caixa.dataset.pronto = '1';
+  const $ = id => document.getElementById(id);
+  const ICONE_PLAY = 'M8 5v14l11-7z';
+  const ICONE_PAUSA = 'M7 5h3.5v14H7zm6.5 0H17v14h-3.5z';
+  const ICONE_SOM = 'M4 9v6h4l5 5V4L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z';
+  const ICONE_MUDO = 'M4 9v6h4l5 5V4L8 9H4zm15.5 3 2.5 2.5-1.4 1.4L18 13.4 15.4 16 14 14.6l2.6-2.6L14 9.4 15.4 8 18 10.6 20.6 8 22 9.4 19.5 12z';
+  const mmss = t => { t = Math.max(0, Math.floor(t||0)); return `${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`; };
+  const tempos = ()=>{ $('filmeTempo').textContent = `${mmss(v.currentTime)} / ${mmss(v.duration)}`; };
+  const andar = ()=>{ const d = v.duration||0;
+    $('filmeProg').style.width = d ? `${Math.min(100, v.currentTime/d*100)}%` : '0'; tempos(); };
+  const trocar = ()=>{ if(v.paused){ const t = v.play(); if(t && t.catch) t.catch(()=>{}); } else v.pause(); };
+
+  $('filmeGigante').addEventListener('click', trocar);
+  $('filmeToca').addEventListener('click', trocar);
+  v.addEventListener('click', trocar);
+  v.addEventListener('play', ()=>{
+    caixa.classList.add('tocando');
+    $('filmeIcone').setAttribute('d', ICONE_PAUSA);
+    $('filmeToca').setAttribute('aria-label', 'Pausar o vídeo');
+  });
+  const parou = ()=>{
+    caixa.classList.remove('tocando');
+    $('filmeIcone').setAttribute('d', ICONE_PLAY);
+    $('filmeToca').setAttribute('aria-label', 'Assistir ao vídeo');
+  };
+  v.addEventListener('pause', parou);
+  v.addEventListener('ended', ()=>{ parou(); v.currentTime = 0; andar(); });
+  v.addEventListener('timeupdate', andar);
+  v.addEventListener('loadedmetadata', andar);
+  /* clicar (ou tocar) na barra anda no filme */
+  const buscar = ev =>{
+    const r = $('filmeTrilho').getBoundingClientRect();
+    const x = (ev.clientX ?? 0) - r.left;
+    if(v.duration) v.currentTime = Math.max(0, Math.min(1, x/r.width)) * v.duration;
+  };
+  $('filmeTrilho').addEventListener('click', buscar);
+  $('filmeTrilho').addEventListener('keydown', ev=>{
+    if(!v.duration) return;
+    if(ev.key==='ArrowRight'){ v.currentTime = Math.min(v.duration, v.currentTime+5); ev.preventDefault(); }
+    if(ev.key==='ArrowLeft'){ v.currentTime = Math.max(0, v.currentTime-5); ev.preventDefault(); }
+  });
+  $('filmeSom').addEventListener('click', ()=>{
+    v.muted = !v.muted;
+    $('filmeIconeSom').setAttribute('d', v.muted ? ICONE_MUDO : ICONE_SOM);
+    $('filmeSom').setAttribute('aria-label', v.muted ? 'Ligar o som' : 'Tirar o som');
+  });
+  $('filmeTela').addEventListener('click', ()=>{
+    if(document.fullscreenElement){ document.exitFullscreen(); return; }
+    /* no iPhone só o próprio <video> entra em tela cheia */
+    if(caixa.requestFullscreen) caixa.requestFullscreen().catch(()=>{});
+    else if(v.webkitEnterFullscreen) v.webkitEnterFullscreen();
+  });
+  andar();
+}
 /* o filme do espaço: arquivo pronto por ambiente, sem nada gerado na hora */
 function montarFilme(){
   const sec = document.getElementById('filme'); if(!sec) return;
@@ -6512,6 +6742,7 @@ function montarFilme(){
   document.getElementById('filmeCap').textContent = v.cap
     || `Passeio pelo ${AMB.nome} — montagem da casa, em vídeo.`;
   sec.hidden = false;
+  montarPlayer();
 }
 /* FILME DA PROPOSTA (v18.09-14) — quando a equipe gera o vídeo DESTE cliente
    (ferramentas/gerar-filme.mjs --proposta …), ele fica em
@@ -6534,6 +6765,7 @@ function filmeDaProposta(){
   document.getElementById('filmeCap').textContent =
     `O seu evento no ${AMB.nome}, em vídeo — com a sua marca no telão e a montagem desta proposta.`;
   sec.hidden = false;
+  montarPlayer();
 }
 /* a logo do cliente assina o alto e o rodapé; se ela não carregar, o nome
    dele continua lá — a proposta nunca fica sem assinatura */
@@ -6774,6 +7006,7 @@ vestirFrases();     /* a frase da capa, pelo espaço (o tipo vem depois, do CRM)
 $('#btnCompartilhar').addEventListener('click', compartilharProposta);
 montarProva();      /* prova social do espaço (dados fixos, logo acima) */
 montarFilme();      /* o filme do espaço, se este ambiente já tiver um */
+vestirSemMaquete('', '');   /* slug fora da página: esconde o que é de outra casa */
 montarIndice();     /* o fio de seções à esquerda (desktop) */
 /* capa com filme: na demonstração já começa; no link de proposta espera o CRM,
    para nascer com o vídeo do cliente e não com o da casa */
@@ -6930,8 +7163,10 @@ async function vestirPropostaCRM(){
       /* multi-dia: o cardápio de cada dia nasce do que o consultor montou */
       if(ORC_REAL.multiDia){
         PROPOSTA.dias = {};
-        for(const d of ORC_REAL.dias) PROPOSTA.dias[d.id] = Object.fromEntries(
-          TIPOS_CARD.map(t=>[t, d.sel[t] ? d.sel[t].id : null]));
+        for(const d of ORC_REAL.dias) PROPOSTA.dias[d.id] = {
+          ...Object.fromEntries(TIPOS_CARD.map(t=>[t, d.sel[t] ? d.sel[t].id : null])),
+          conv: d.conv,          /* cada dia tem o seu número de convidados */
+        };
       }
       /* ajustes que o cliente já tinha feito NESTE link continuam valendo */
       try{
@@ -6942,6 +7177,11 @@ async function vestirPropostaCRM(){
           if(ORC_REAL.multiDia && meu.dias) for(const d of ORC_REAL.dias){
             const g = meu.dias[d.id]; if(!g) continue;
             for(const t of TIPOS_CARD) if(t in g) PROPOSTA.dias[d.id][t] = g[t];
+            /* o convidado por dia que o cliente ajustou neste link */
+            if(Number.isInteger(g.conv)){
+              PROPOSTA.dias[d.id].conv = limita(g.conv, 30, 500);
+              d.conv = PROPOSTA.dias[d.id].conv;
+            }
           }
         }
       }catch(e){}
@@ -6964,6 +7204,11 @@ async function vestirPropostaCRM(){
     const espacoDoOrc = (o.espaco && o.espaco.nome)
       || (ORC_REAL && ORC_REAL.multiDia && (ORC_REAL.dias[0]||{}).espaco) || '';
     if(espacoDoOrc) montarProva(espacoDoOrc);
+    /* o espaço do orçamento manda no nome — e, se a página não desenha essa
+       casa, o layout e a galeria saem de cena em vez de fingir outro salão */
+    const cidadeOrc = (o.cidade && o.cidade.nome)
+      ? o.cidade.nome + (o.cidade.estado ? '/' + o.cidade.estado : '') : '';
+    vestirSemMaquete(espacoDoOrc, cidadeOrc);
     montarIndice();      /* a prova social pode ter nascido agora */
 
     /* repinta tudo que depende do estado (funções idempotentes do arranque) */

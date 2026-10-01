@@ -122,12 +122,6 @@ ok(!notaSolar.temLink && /deste dia/.test(notaSolar.nota),
   `no Solar, o dia 2 diz que a planta é dele (${notaSolar.nota})`);
 await p2.close();
 
-/* 6 · convidados seguem travados (cada dia tem o seu) */
-const travas = await p.evaluate(() => {
-  const st = document.querySelector('.stepper');
-  return { stepperEscondido: !!st && st.hidden, leitura: document.getElementById('convDoDia')?.textContent };
-});
-ok(travas.stepperEscondido, `sem stepper de convidados no multi-dia (leitura: ${travas.leitura})`);
 
 /* 7 · COMIDA E BEBIDA DE CADA DIA: a troca é individual e o total responde */
 const barraNosCardapios = await p.evaluate(() => {
@@ -208,6 +202,40 @@ ok(/Dia 1/.test(msg) || /Dia 2/.test(msg) || /Total/.test(msg), `a conversa rece
 const corpo = await p.evaluate(() => document.body.innerText);
 ok(!/desconto|cupom/i.test(corpo), 'a página inteira não fala de desconto');
 ok(!/parcela|entrada de|condições de pagamento/i.test(corpo), 'nem de condições de pagamento');
+/* 6 · CONVIDADOS POR DIA (01/10) — era leitura ("mudar é conversa com o
+   consultor"), mas evento de dois dias quase nunca tem o mesmo público nos
+   dois. O passo a passo voltou, mexendo no DIA ABERTO, e o total acompanha. */
+const porDia = await p.evaluate(async () => {
+  const esperar = () => new Promise(r => setTimeout(r, 500));
+  const campo = () => document.getElementById('convVal').value;
+  const convs = () => ORC_REAL.dias.map(d => d.conv);
+  const total = () => document.getElementById('totalGeral').textContent;
+  /* os testes acima já trocaram de dia: quem manda é o dia ABERTO agora */
+  const i = ORC_REAL.dias.findIndex(d => d.id === diaCorrente());
+  const inicio = { campo: campo(), convs: convs(), total: total(), i };
+  document.getElementById('convMais').click();
+  await esperar();
+  const subiu = { campo: campo(), convs: convs(), total: total() };
+  const outro = i === 0 ? 1 : 0;
+  [...document.querySelectorAll('#diasBarra [data-dia]')][outro].click();
+  await esperar();
+  const dia2 = { campo: campo(), convs: convs(), i: outro };
+  document.getElementById('convMenos').click();
+  await esperar();
+  const desceu = { campo: campo(), convs: convs(), total: total() };
+  return { inicio, subiu, dia2, desceu, stepperAberto: !document.querySelector('.stepper').hidden };
+});
+ok(porDia.stepperAberto, 'o passo a passo de convidados fica aberto no multi-dia');
+const soMudou = (antes, depois, idx, delta) => depois.every((v, k) =>
+  k === idx ? v === antes[k] + delta : v === antes[k]);
+ok(soMudou(porDia.inicio.convs, porDia.subiu.convs, porDia.inicio.i, 10),
+  `+10 mexe só no dia aberto (${porDia.inicio.convs.join('/')} → ${porDia.subiu.convs.join('/')})`);
+ok(porDia.subiu.total !== porDia.inicio.total, `e o total acompanha (${porDia.inicio.total} → ${porDia.subiu.total})`);
+ok(porDia.dia2.campo === String(porDia.dia2.convs[porDia.dia2.i]),
+  `trocar de dia leva o campo para o número daquele dia (${porDia.dia2.campo})`);
+ok(soMudou(porDia.dia2.convs, porDia.desceu.convs, porDia.dia2.i, -10),
+  `−10 no outro dia mexe só nele (${porDia.desceu.convs.join('/')})`);
+
 ok(erros.length === 0, `sem erros de JS ${erros.slice(0, 3).join(' | ')}`);
 
 await b.close();

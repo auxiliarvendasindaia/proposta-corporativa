@@ -22,9 +22,27 @@ http.createServer((req, res) => {
   let arquivo = path.join(RAIZ, caminho);
   if (!arquivo.startsWith(RAIZ)) { res.writeHead(403); return res.end('fora da pasta'); }
   if (fs.existsSync(arquivo) && fs.statSync(arquivo).isDirectory()) arquivo = path.join(arquivo, 'index.html');
-  fs.readFile(arquivo, (erro, dados) => {
-    if (erro) { res.writeHead(404); return res.end('404'); }
-    res.writeHead(200, { 'Content-Type': TIPOS[path.extname(arquivo).toLowerCase()] || 'application/octet-stream', 'Cache-Control': 'no-store' });
-    res.end(dados);
-  });
+  const tipo = TIPOS[path.extname(arquivo).toLowerCase()] || 'application/octet-stream';
+  /* PEDIDO POR FAIXA (Range) — sem isto o <video> dizia seekable [0,0] e o
+     player não pulava no filme: arrastar a barra não fazia nada SÓ no servidor
+     de teste (o GitHub Pages responde 206 normalmente). Medido em 01/10. */
+  let info;
+  try { info = fs.statSync(arquivo); } catch (e) { res.writeHead(404); return res.end('404'); }
+  if (!info.isFile()) { res.writeHead(404); return res.end('404'); }
+  const faixa = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || '');
+  if (faixa) {
+    const fim = faixa[2] ? Math.min(Number(faixa[2]), info.size - 1) : info.size - 1;
+    const ini = faixa[1] ? Number(faixa[1]) : Math.max(0, info.size - Number(faixa[2] || 0));
+    if (ini > fim || ini >= info.size) {
+      res.writeHead(416, { 'Content-Range': `bytes */${info.size}` });
+      return res.end();
+    }
+    res.writeHead(206, { 'Content-Type': tipo, 'Cache-Control': 'no-store',
+      'Accept-Ranges': 'bytes', 'Content-Range': `bytes ${ini}-${fim}/${info.size}`,
+      'Content-Length': fim - ini + 1 });
+    return fs.createReadStream(arquivo, { start: ini, end: fim }).pipe(res);
+  }
+  res.writeHead(200, { 'Content-Type': tipo, 'Cache-Control': 'no-store',
+    'Accept-Ranges': 'bytes', 'Content-Length': info.size });
+  fs.createReadStream(arquivo).pipe(res);
 }).listen(PORTA, () => console.log(`proposta em http://localhost:${PORTA}  (pasta: ${RAIZ})`));
