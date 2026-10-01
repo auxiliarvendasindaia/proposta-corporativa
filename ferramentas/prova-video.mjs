@@ -77,6 +77,16 @@ if (/\.webm$/.test(nome)) console.log('   ~  este navegador não grava MP4; no C
 const tam = fs.statSync(path.join(SAIDA, nome)).size;
 ok(tam > 200000 && tam < 60e6, `${(tam / 1e6).toFixed(1)} MB — cabe num envio`);
 
+/* A PROPOSTA NÃO SE BAIXA (decisão de 18/09: ela tem validade). Sem
+   controlsList o menu "⋮" do Chrome oferecia "Baixar vídeo" — achado em
+   01/10, depois de o botão de download já ter saído da página. */
+const semDownload = await p.evaluate(() => {
+  const v = document.getElementById('filmeVideo');
+  const lista = v ? (v.getAttribute('controlsList') || '') : '';
+  return { tem: !!v, nodownload: /nodownload/.test(lista), lista };
+});
+ok(semDownload.tem && semDownload.nodownload,
+  `o player não oferece download (controlsList="${semDownload.lista}")`);
 ok(erros.length === 0, `sem erros de JS ${erros.slice(0, 2).join(' | ')}`);
 await b.close();
 console.log(falhas ? `\n${falhas} FALHA(S)` : '\nTUDO VERDE');

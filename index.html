@@ -1251,7 +1251,11 @@ html.so-layout body{padding-bottom:0;}
          se o ambiente ainda não tiver filme. -->
     <figure class="filme reveal" id="filme" hidden>
       <div class="filme__player">
-        <video id="filmeVideo" controls playsinline preload="metadata"></video>
+        <!-- nodownload: a decisão de 18/09 é que a proposta NÃO se baixa (ela tem
+             validade). Sem este atributo o menu "⋮" do Chrome ainda oferecia
+             "Baixar vídeo" — achado em 01/10. -->
+        <video id="filmeVideo" controls controlsList="nodownload noplaybackrate"
+               disablePictureInPicture playsinline preload="metadata"></video>
       </div>
       <figcaption class="filme__cap" id="filmeCap"></figcaption>
     </figure>
@@ -1331,7 +1335,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer — é só pedir na nossa conversa.
-      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-24</span></p>
+      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-25</span></p>
   </div>
 </footer>
 
