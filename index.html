@@ -178,6 +178,33 @@ html.sem-io .reveal{opacity:1;transform:none;}
 
 /* ---------- resumo do evento ---------- */
 .resumo__grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));align-items:stretch;}
+/* ---------- mobiliário do orçamento na planta ---------- */
+.peca{cursor:grab;touch-action:none;outline:none;}
+.peca--drag{cursor:grabbing;}
+.peca__hit{fill:rgba(255,255,255,0);stroke:none;}
+.peca__corpo{fill:rgba(247,248,249,.94);stroke:#4a545e;stroke-width:1.6;}
+.peca__corpo--led{fill:#242B33;stroke:#0E1114;}
+.peca__apoio{fill:rgba(244,242,238,.92);stroke:rgba(74,84,94,.7);stroke-width:1.1;}
+.peca__txt{font-family:var(--sans);font-size:22px;letter-spacing:.2em;fill:#4a545e;
+  pointer-events:none;}
+.peca__anel{fill:none;stroke:var(--gold);stroke-width:2.4;opacity:0;rx:5;}
+.peca--sel .peca__anel{opacity:1;}
+.peca__x{opacity:0;transition:opacity .2s;pointer-events:none;}
+.peca--sel .peca__x,.peca:hover .peca__x,.peca:focus-visible .peca__x{opacity:1;pointer-events:auto;}
+.peca__x-hit{fill:rgba(255,255,255,0);cursor:pointer;}
+.peca__x-fundo{fill:#C62828;}
+.peca__x-tra{stroke:#fff;stroke-width:2.6;stroke-linecap:round;fill:none;}
+.pecas-barra{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0;}
+.pecas-barra[hidden]{display:none;}
+.pecapill{display:inline-flex;align-items:center;gap:10px;padding:.5em .85em;border-radius:999px;
+  border:1px solid var(--line);background:var(--cream);cursor:pointer;font-family:var(--sans);
+  color:var(--brown-deep);transition:border-color .25s,background .25s;}
+.pecapill:hover{border-color:var(--gold);background:var(--cream-2);}
+.pecapill b{font-weight:500;font-size:.78rem;}
+.pecapill span{font-size:.72rem;color:var(--taupe);font-variant-numeric:tabular-nums;}
+.pecapill span i{font-style:normal;color:var(--gold-deep);font-weight:600;}
+.pecapill em{font-style:normal;font-size:1.1rem;line-height:1;color:var(--gold-deep);}
+@media (max-width:760px){ .pecapill{min-height:44px;} }
 /* ---------- o que vem junto (seção 01) ---------- */
 .vemjunto{list-style:none;margin:clamp(26px,4vh,44px) 0 0;padding:0;display:grid;gap:16px 26px;
   grid-template-columns:repeat(auto-fit,minmax(230px,1fr));}
@@ -1198,7 +1225,7 @@ html.so-layout body{padding-bottom:0;}
     <div class="sec__head reveal">
       <div class="sec__meta"><span class="sec__num">04</span><p class="eyebrow">O espaço</p></div>
       <h2 class="sec__title">O seu evento no <em class="js-espaco-em">salão</em>.</h2>
-      <p class="sec__intro">Arraste as mesas do seu jeito — e veja o seu layout ganhar volume na maquete 3D.</p>
+      <p class="sec__intro">Arraste as mesas e o mobiliário do seu jeito — e veja o seu layout ganhar volume na maquete 3D.</p>
     </div>
     <div class="planta reveal">
       <div class="visoes-pills" role="group" aria-label="Escolha a visão do salão">
@@ -1237,6 +1264,9 @@ html.so-layout body{padding-bottom:0;}
                     </symbol>
                   </defs>
                   <g id="reguaCamada" class="regua" aria-hidden="true"></g>
+                  <!-- mobiliário do orçamento (v18.09-27): palco, telão e bistrôs.
+                       Vem antes das mesas para a mesa ficar POR CIMA do palco. -->
+                  <g id="pecasCamada"></g>
                   <g id="mesasCamada"></g>
                   <!-- rótulos das áreas por cima das mesas (v18.08-24), sem capturar o toque -->
                   <g id="areasCamada" class="areas" aria-hidden="true"></g>
@@ -1254,11 +1284,18 @@ html.so-layout body{padding-bottom:0;}
               <button type="button" class="btn btn--solid" id="btnSalvarLayout">Salvar layout</button>
               <p class="planta__cont" id="plantaCont" aria-live="polite">—</p>
             </div>
+            <!-- um botão por peça contratada: diz quantas estão na planta de
+                 quantas foram contratadas, e acrescenta mais uma no clique -->
+            <div class="pecas-barra" id="pecasBarra" hidden></div>
+            <!-- peça por cima de mesa: um palco de 4 × 4 m não cabe no corredor
+                 do layout padrão sem mexer nas mesas. A página não esconde isso. -->
+            <p class="planta__aviso" id="pecasAviso" hidden></p>
             <p class="planta__aviso" id="plantaAviso" hidden>
               <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4 2.8 20h18.4Z"/><path d="M12 10v5m0 2.6v.4"/></svg>
               Mesas muito próximas: deixe ao menos 30 cm entre elas.
             </p>
             <p class="planta__nota">Mesa redonda: tampo de 1,60 m · 8 lugares · footprint de 2,60 m com cadeiras.
+              Mesa bistrô: tampo de 80 cm com duas banquetas · palco modular de 4 × 4 m.
               Layout final validado pela nossa equipe de operações.</p>
           </div>
         </div>
@@ -1437,7 +1474,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer — é só pedir na nossa conversa.
-      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-26</span></p>
+      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-27</span></p>
   </div>
 </footer>
 
@@ -1738,6 +1775,9 @@ const DIAS = [['seg-qui','Seg–Qui'],['sexta','Sexta'],['sabado','Sábado'],['d
    Receita para cadastrar um espaço novo: assets/ambientes/README-pipeline.md
    ================================================================= */
 const MESA     = { tampo:1.6, footprint:2.6, lugares:8 };   // igual nos dois ambientes
+/* tipos de mobiliário que a planta sabe desenhar (o catálogo PECAS fica junto
+   do editor; aqui ficam só os ids, que o carregar() usa para filtrar) */
+const PECAS_IDS = ['palco','telao','bistro'];
 const CORREDOR = 1.5;                                       // corredor da distribuição automática (m)
 const MID = 'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/';
 
@@ -2741,6 +2781,13 @@ function carregar(){
             .filter(m=>m && Number.isFinite(m.x) && Number.isFinite(m.y))
             .map(m=>clampMesa(m.x, m.y, m.p|0))
         : (LAYOUT_SUGERIDO || MESAS_PADRAO).map(m=>({...m})),
+      /* mobiliário do orçamento (v18.09-27): array mesmo vazio = escolha do
+         cliente (ele tirou todos); sem o campo = ainda não foi posto */
+      pecas: Array.isArray(s.pecas)
+        ? s.pecas.slice(0,60)
+            .filter(x=>x && PECAS_IDS.includes(x.t) && Number.isFinite(x.x) && Number.isFinite(x.y))
+            .map(x=>({t:x.t, ...clampMesa(x.x, x.y, x.p|0)}))
+        : undefined,
       /* versão do layout: contador que a legenda do 3D e o nome do vídeo exibem */
       rev: Number.isInteger(s.rev) && s.rev>0 ? s.rev : 1
     };
@@ -4163,12 +4210,231 @@ function pintarPisos(){
 function trocarPiso(i){
   if(!PISOS[i] || i===PISO_I) return;
   PISO_I = i; PISO = PISOS[i]; mesaSel = -1; dragMesa = null;
-  montarPlanta(); renderMesas();
+  montarPlanta(); renderMesas(); renderPecas();
 }
 document.addEventListener('click', ev=>{
   const b = ev.target.closest('#pisosSel [data-piso]');
   if(b) trocarPiso(+b.dataset.piso);
 });
+
+/* ===================================================================
+   MOBILIÁRIO DO ORÇAMENTO NA PLANTA (v18.09-27)
+   Até aqui o editor 2D só desenhava a mesa redonda de 8 lugares. Mas uma
+   proposta de coquetel não tem mesa de jantar nenhuma — tem bistrô, tem
+   palco, tem telão —, e o cliente olhava uma planta que não era a dele.
+   Agora cada peça contratada vira um desenho que ele arrasta, tira e põe
+   de volta, como já fazia com as mesas. O que a página sabe desenhar está
+   neste catálogo; o que não está continua só na lista de extras.
+   =================================================================== */
+const PECAS = {
+  bistro: {
+    nome:'Mesa bistrô', um:'bistrô', plural:'bistrôs',
+    casa:/bistr[oô]|banqueta|cocktail/,
+    larg:1.60, fund:0.80,                      /* footprint com as duas banquetas */
+    desenho(){                                  /* desenhado na medida real */
+      const r = 0.40*pxm, rb = 0.175*pxm, d = 0.58*pxm;
+      return `<circle class="peca__apoio" cx="${(-d).toFixed(1)}" cy="0" r="${rb.toFixed(1)}"/>
+        <circle class="peca__apoio" cx="${d.toFixed(1)}" cy="0" r="${rb.toFixed(1)}"/>
+        <circle class="peca__corpo" cx="0" cy="0" r="${r.toFixed(1)}"/>`;
+    },
+  },
+  palco: {
+    nome:'Palco', um:'módulo de palco', plural:'módulos de palco',
+    casa:/\bpalco\b|tablado|praticavel|praticável/,
+    larg:4, fund:4,
+    desenho(w, h){
+      return `<rect class="peca__corpo" x="${(-w/2).toFixed(1)}" y="${(-h/2).toFixed(1)}"
+        width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="4"/>
+        <text class="peca__txt" x="0" y="0" text-anchor="middle" dominant-baseline="central">PALCO</text>`;
+    },
+  },
+  telao: {
+    nome:'Telão de LED', um:'telão', plural:'telões',
+    casa:/\bled\b|tel[aã]o|painel|audiovisual|projec|datashow/,
+    larg:4, fund:0.5,
+    desenho(w, h){
+      return `<rect class="peca__corpo peca__corpo--led" x="${(-w/2).toFixed(1)}" y="${(-h/2).toFixed(1)}"
+        width="${w.toFixed(1)}" height="${Math.max(h, 10).toFixed(1)}" rx="3"/>`;
+    },
+  },
+};
+const ORDEM_PECAS = ['palco','telao','bistro'];
+const pecaPx = t => ({ w: PECAS[t].larg*pxm, h: PECAS[t].fund*pxm });
+
+/* o que o orçamento contratou, por tipo — sem orçamento, nada: a casa não
+   põe mobiliário por conta (mesma regra que já valia para o 3D) */
+function pecasContratadas(){
+  const fora = {};
+  if(typeof ORC_REAL === 'undefined' || !ORC_REAL) return fora;
+  for(const l of ORC_REAL.linhas){
+    const nome = normNome(l.nome);
+    for(const t of ORDEM_PECAS){
+      if(!PECAS[t].casa.test(nome)) continue;
+      const q = Math.min(parseInt(l.qtd, 10) || 0, 40);
+      if(q > 0) fora[t] = (fora[t]||0) + q;
+      break;                                    /* cada linha conta uma vez */
+    }
+  }
+  return fora;
+}
+/* POSIÇÃO INICIAL — cada peça procura uma vaga de verdade: palco e telão
+   partem da cabeceira da área principal, os bistrôs das laterais, e dali
+   andam em espiral até caírem num pedaço de piso livre de mesa e de outra
+   peça. Sem isso o palco nascia POR CIMA das mesas do layout padrão. */
+function vagaDePeca(tipo, x0, y0, postas){
+  const {w, h} = pecaPx(tipo);
+  /* FOLGA REAL — a mesa é um círculo (raio do footprint) e a peça é um
+     retângulo: medir de centro a centro reprovava o palco que estava no
+     corredor, sem encostar em ninguém. Aqui a conta é a distância do centro
+     da mesa até o RETÂNGULO da peça. */
+  const folga = q => {
+    let menor = Infinity;
+    for(const m of PROPOSTA.mesas){
+      if(pisoDe(m)!==0) continue;
+      const dx = Math.max(0, Math.abs(m.x-q.x) - w/2);
+      const dy = Math.max(0, Math.abs(m.y-q.y) - h/2);
+      menor = Math.min(menor, Math.hypot(dx, dy) - MESA_R);
+    }
+    for(const o of postas){
+      const d = pecaPx(o.t);
+      menor = Math.min(menor,
+        Math.max(Math.abs(o.x-q.x) - (w+d.w)/2, Math.abs(o.y-q.y) - (h+d.h)/2) - 4);
+    }
+    return menor;
+  };
+  /* a peça fica DENTRO do salão principal: a espiral larga achava "vaga" no
+     braço da entrada, e o palco aparecia fora do salão (achado em 01/10) */
+  const A = SALAO_PRINCIPAL;
+  const dentro = q => q.x > A.x0 + w/2 - 4 && q.x < A.x1 - w/2 + 4
+                   && q.y > A.y0 + h/2 - 4 && q.y < A.y1 - h/2 + 4;
+  let q = clampMesa(x0, y0, 0);
+  let melhor = {q, f: dentro(q) ? folga(q) : -1e6};
+  for(let k=1; melhor.f < 0 && k<=1500; k++){
+    const ang = k*2.399, raio = 9*Math.sqrt(k);
+    const c = clampMesa(x0 + raio*Math.cos(ang), y0 + raio*Math.sin(ang), 0);
+    if(!dentro(c)) continue;
+    const f = folga(c);
+    if(f > melhor.f) melhor = {q:c, f};
+  }
+  return {t:tipo, ...melhor.q};
+}
+function pecasPadrao(){
+  const A = SALAO_PRINCIPAL, contratadas = pecasContratadas(), fora = [];
+  const cx = (A.x0+A.x1)/2, larg = A.x1-A.x0, fund = A.y1-A.y0;
+  const pp = pecaPx('palco'), pt = pecaPx('telao'), pb = pecaPx('bistro');
+  const nPalco = contratadas.palco || 0;
+  for(let i=0;i<nPalco;i++){
+    const x = cx + (i - (nPalco-1)/2) * (pp.w + 6);
+    fora.push(vagaDePeca('palco', x, A.y0 + pp.h*0.8, fora));
+  }
+  for(let i=0;i<(contratadas.telao||0);i++){
+    const x = cx + (i - ((contratadas.telao||1)-1)/2) * (pt.w + 8);
+    fora.push(vagaDePeca('telao', x, A.y0 + pt.h*1.2, fora));
+  }
+  const nb = contratadas.bistro || 0;
+  for(let i=0;i<nb;i++){
+    /* duas colunas encostadas nas laterais, de cima para baixo */
+    const lado = i % 2 === 0 ? A.x0 + pb.w*0.7 : A.x1 - pb.w*0.7;
+    const y = A.y0 + fund*0.25 + Math.floor(i/2) * (pb.h + 0.9*pxm);
+    fora.push(vagaDePeca('bistro', lado, Math.min(y, A.y1 - pb.h), fora));
+  }
+  return fora;
+}
+function pecasNaPlanta(){ return Array.isArray(PROPOSTA.pecas) ? PROPOSTA.pecas : (PROPOSTA.pecas = []); }
+let pecaSel = -1;
+
+function renderPecas(){
+  const camada = document.getElementById('pecasCamada');
+  if(!camada) return;
+  camada.innerHTML = pecasNaPlanta().map((pc,i)=>{
+    const cfg = PECAS[pc.t]; if(!cfg || pisoDe(pc)!==PISO_I) return '';
+    const {w, h} = pecaPx(pc.t);
+    const bx = (w/2).toFixed(1), by = (-h/2).toFixed(1);
+    return `<g class="peca" data-i="${i}" data-t="${pc.t}" tabindex="0" role="button"
+        aria-label="${esc(cfg.nome)} ${i+1}. Arraste ou use as setas; Delete remove."
+        transform="translate(${pc.x},${pc.y})">
+        <rect class="peca__hit" x="${(-w/2-4).toFixed(1)}" y="${(-h/2-4).toFixed(1)}"
+          width="${(w+8).toFixed(1)}" height="${(h+8).toFixed(1)}"/>
+        ${cfg.desenho(w, h)}
+        <rect class="peca__anel" x="${(-w/2-5).toFixed(1)}" y="${(-h/2-5).toFixed(1)}"
+          width="${(w+10).toFixed(1)}" height="${(h+10).toFixed(1)}" rx="5"/>
+        <g class="peca__x" aria-hidden="true">
+          <circle class="peca__x-hit" cx="${bx}" cy="${by}" r="20"/>
+          <circle class="peca__x-fundo" cx="${bx}" cy="${by}" r="15"/>
+          <path class="peca__x-tra" d="M${(+bx-5).toFixed(1)} ${(+by-5).toFixed(1)} l10 10 M${(+bx+5).toFixed(1)} ${(+by-5).toFixed(1)} l-10 10"/>
+        </g>
+      </g>`;
+  }).join('');
+  pintarPecas();
+}
+/* peça que está por cima de mesa: a mesa é um círculo (footprint com cadeiras)
+   e a peça é um retângulo */
+function pecasSobreMesa(){
+  const fora = [];
+  for(const pc of pecasNaPlanta()){
+    const cfg = PECAS[pc.t]; if(!cfg) continue;
+    const {w, h} = pecaPx(pc.t);
+    const n = PROPOSTA.mesas.filter(m=>{
+      if(pisoDe(m)!==pisoDe(pc)) return false;
+      const dx = Math.max(0, Math.abs(m.x-pc.x) - w/2), dy = Math.max(0, Math.abs(m.y-pc.y) - h/2);
+      return Math.hypot(dx, dy) < MESA_R - 4;
+    }).length;
+    if(n) fora.push({t:pc.t, n});
+  }
+  return fora;
+}
+function pintarPecas(){
+  const camada = document.getElementById('pecasCamada');
+  if(!camada) return;
+  [...camada.children].forEach(g=>g.classList.toggle('peca--sel', +g.dataset.i===pecaSel));
+  const av = document.getElementById('pecasAviso');
+  if(av){
+    const chocando = pecasSobreMesa();
+    av.hidden = chocando.length === 0;
+    if(chocando.length){
+      const nomes = [...new Set(chocando.map(x=>PECAS[x.t].nome.toLowerCase()))].join(' e ');
+      const mesas = chocando.reduce((a,x)=>a+x.n, 0);
+      av.innerHTML = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4 2.8 20h18.4Z"/><path d="M12 10v5m0 2.6v.4"/></svg>
+        O ${esc(nomes)} está sobre ${mesas===1?'uma mesa':mesas+' mesas'}: arraste a peça ou as mesas para abrir espaço.`;
+    }
+  }
+  const barra = document.getElementById('pecasBarra');
+  if(!barra) return;
+  const contratadas = pecasContratadas();
+  const tipos = ORDEM_PECAS.filter(t=>contratadas[t]);
+  barra.hidden = tipos.length === 0;
+  if(!tipos.length) return;
+  const naPlanta = t => pecasNaPlanta().filter(p=>p.t===t).length;
+  barra.innerHTML = tipos.map(t=>{
+    const n = naPlanta(t), c = contratadas[t];
+    const dif = n > c ? ` <i>+${n-c}</i>` : (n < c ? ` <i>−${c-n}</i>` : '');
+    return `<button type="button" class="pecapill" data-add="${t}"
+      aria-label="Acrescentar ${esc(PECAS[t].um)} na planta">
+      <b>${esc(PECAS[t].nome)}</b><span>${n} de ${c}${dif}</span><em>+</em></button>`;
+  }).join('');
+}
+function removerPeca(i){
+  pecasNaPlanta().splice(i, 1);
+  pecaSel = -1;
+  salvarMesas(); renderPecas(); tresMesasSePronto();
+}
+function addPeca(t){
+  if(!PECAS[t]) return;
+  const A = PISO.areas[PISO.principal] || SALAO_PRINCIPAL;
+  const {w, h} = pecaPx(t);
+  const c = clampMesa((A.x0+A.x1)/2, (A.y0+A.y1)/2, PISO_I);
+  const livre = p => !pecasNaPlanta().some(o=>pisoDe(o)===PISO_I && Math.abs(o.x-p.x) < w && Math.abs(o.y-p.y) < h);
+  let m = {...c};
+  for(let k=1; !livre(m) && k<=200; k++){
+    const ang = k*2.4, raio = 12*Math.sqrt(k);
+    m = clampMesa(c.x+raio*Math.cos(ang), c.y+raio*Math.sin(ang), PISO_I);
+  }
+  pecasNaPlanta().push({t, ...m});
+  pecaSel = pecasNaPlanta().length-1;
+  salvarMesas(); renderPecas(); tresMesasSePronto();
+}
+/* a maquete 3D acompanha o 2D quando já estiver carregada */
+function tresMesasSePronto(){ try{ if(typeof T3 !== 'undefined' && T3.pronto) tresMesas(); }catch(e){} }
 
 function renderMesas(){
   const bx = (MESA_R*0.72).toFixed(1), by = (-MESA_R*0.72).toFixed(1);
@@ -4224,16 +4490,30 @@ function selecionarMesa(i){ mesaSel = i; pintarPlanta(); }
 function removerMesa(i){
   PROPOSTA.mesas.splice(i,1);
   mesaSel = -1;
-  salvarMesas(); renderMesas(); atualizarTotais();
+  salvarMesas(); renderMesas(); renderPecas(); atualizarTotais();
 }
 function svgPonto(ev){
   const pt = svgPlanta.createSVGPoint();
   pt.x = ev.clientX; pt.y = ev.clientY;
   return pt.matrixTransform(svgPlanta.getScreenCTM().inverse());
 }
+let dragPeca = null;
 svgPlanta.addEventListener('pointerdown', ev=>{
+  /* peça do orçamento (palco, telão, bistrô): mesmo gesto da mesa */
+  const pc = ev.target.closest('.peca');
+  if(pc){
+    const j = +pc.dataset.i;
+    if(ev.target.closest('.peca__x')){ removerPeca(j); return; }
+    pecaSel = j; selecionarMesa(-1); pintarPecas();
+    pc.focus({preventScroll:true});
+    const q = svgPonto(ev);
+    dragPeca = {i:j, el:pc, dx:pecasNaPlanta()[j].x-q.x, dy:pecasNaPlanta()[j].y-q.y};
+    pc.setPointerCapture(ev.pointerId);
+    pc.classList.add('peca--drag');
+    return;
+  }
   const alvo = ev.target.closest('.mesa');
-  if(!alvo){ selecionarMesa(-1); return; }
+  if(!alvo){ selecionarMesa(-1); pecaSel = -1; pintarPecas(); return; }
   const i = +alvo.dataset.i;
   if(ev.target.closest('.mesa__x')){ removerMesa(i); return; }
   selecionarMesa(i);
@@ -4244,6 +4524,14 @@ svgPlanta.addEventListener('pointerdown', ev=>{
   alvo.classList.add('mesa--drag');
 });
 svgPlanta.addEventListener('pointermove', ev=>{
+  if(dragPeca){
+    const q = svgPonto(ev);
+    const lista = pecasNaPlanta();
+    const m = clampMesa(q.x+dragPeca.dx, q.y+dragPeca.dy, pisoDe(lista[dragPeca.i]));
+    lista[dragPeca.i] = {...lista[dragPeca.i], ...m};
+    dragPeca.el.setAttribute('transform', `translate(${m.x},${m.y})`);
+    return;
+  }
   if(!dragMesa) return;
   const p = svgPonto(ev);
   const m = clampMesa(p.x+dragMesa.dx, p.y+dragMesa.dy, pisoDe(PROPOSTA.mesas[dragMesa.i]));
@@ -4251,7 +4539,14 @@ svgPlanta.addEventListener('pointermove', ev=>{
   dragMesa.el.setAttribute('transform', `translate(${m.x},${m.y})`);
   pintarPlanta();
 });
+function fimDragPeca(){
+  if(!dragPeca) return;
+  dragPeca.el.classList.remove('peca--drag');
+  dragPeca = null;
+  salvarMesas(); tresMesasSePronto();
+}
 function fimDragMesa(){
+  fimDragPeca();
   if(!dragMesa) return;
   dragMesa.el.classList.remove('mesa--drag');
   dragMesa = null;
@@ -4262,6 +4557,21 @@ svgPlanta.addEventListener('pointercancel', fimDragMesa);
 
 /* teclado: setas movem 0,25 m; Delete remove */
 svgPlanta.addEventListener('keydown', ev=>{
+  const pc = ev.target.closest('.peca');
+  if(pc){
+    const j = +pc.dataset.i, lista = pecasNaPlanta();
+    if(ev.key==='Delete' || ev.key==='Backspace'){ ev.preventDefault(); removerPeca(j); return; }
+    const passo = 0.25*pxm;
+    const dir = {ArrowUp:[0,-passo], ArrowDown:[0,passo], ArrowLeft:[-passo,0], ArrowRight:[passo,0]}[ev.key];
+    if(!dir) return;
+    ev.preventDefault();
+    const m = clampMesa(lista[j].x+dir[0], lista[j].y+dir[1], pisoDe(lista[j]));
+    lista[j] = {...lista[j], ...m};
+    pecaSel = j;
+    pc.setAttribute('transform', `translate(${m.x},${m.y})`);
+    salvarMesas(); tresMesasSePronto();
+    return;
+  }
   const alvo = ev.target.closest('.mesa'); if(!alvo) return;
   const i = +alvo.dataset.i;
   if(ev.key==='Delete' || ev.key==='Backspace'){ ev.preventDefault(); removerMesa(i); return; }
@@ -4276,6 +4586,10 @@ svgPlanta.addEventListener('keydown', ev=>{
   pintarPlanta(); salvarMesas(); atualizarTotais();
 });
 
+document.getElementById('pecasBarra').addEventListener('click', ev=>{
+  const b = ev.target.closest('[data-add]');
+  if(b) addPeca(b.dataset.add);
+});
 $('#btnAddMesa').addEventListener('click', ()=>{
   /* nasce no centro do salão principal; se ocupado, procura vaga em espiral */
   const AP = PISO.areas[PISO.principal] || SALAO_PRINCIPAL;   /* área principal do PISO em edição */
@@ -4288,7 +4602,7 @@ $('#btnAddMesa').addEventListener('click', ()=>{
   }
   PROPOSTA.mesas.push(m);
   mesaSel = PROPOSTA.mesas.length-1;
-  salvarMesas(); renderMesas(); atualizarTotais();
+  salvarMesas(); renderMesas(); renderPecas(); atualizarTotais();
 });
 $('#btnDistribuir').addEventListener('click', ()=>{
   const a = PISO.areas[PISO.principal] || SALAO_PRINCIPAL;   /* área principal do PISO em edição */
@@ -4320,18 +4634,18 @@ $('#btnDistribuir').addEventListener('click', ()=>{
   }
   PROPOSTA.mesas = PROPOSTA.mesas.filter(m=>pisoDe(m)!==PISO_I).concat(mesas);   /* só troca o piso em edição */
   mesaSel = -1;
-  salvarMesas(); renderMesas(); atualizarTotais();
+  salvarMesas(); renderMesas(); renderPecas(); atualizarTotais();
 });
 $('#btnLimparMesas').addEventListener('click', ()=>{
   PROPOSTA.mesas = PISOS.length>1 ? PROPOSTA.mesas.filter(m=>pisoDe(m)!==PISO_I) : [];
   mesaSel = -1;
-  salvarMesas(); renderMesas(); atualizarTotais();
+  salvarMesas(); renderMesas(); renderPecas(); atualizarTotais();
 });
 /* com layout sugerido no link, o botão restaura PARA ELE (e o rótulo avisa) */
 $('#btnPadrao').addEventListener('click', ()=>{
   PROPOSTA.mesas = (LAYOUT_SUGERIDO || MESAS_PADRAO).map(m=>({...m}));
   mesaSel = -1;
-  salvarMesas(); renderMesas(); atualizarTotais();
+  salvarMesas(); renderMesas(); renderPecas(); atualizarTotais();
 });
 $('#btnRemoverSel').addEventListener('click', ()=>{
   if(mesaSel>=0) removerMesa(mesaSel);
@@ -5000,7 +5314,12 @@ function tresIniciar(){
      de 1,10 m e duas banquetas cada, encostadas na parede de vidro, do lado
      da pista. Quantidade = a do orçamento (o cliente contratou 10, a cena
      mostra 10). Sem orçamento, nenhuma: a casa não põe bistrô por conta. */
-  if(CEN.bistros > 0 && AMB.telao){
+  /* v18.09-27: a posição vem do EDITOR 2D — o cliente arrasta o bistrô na
+     planta e a maquete mostra onde ele pôs. Enquanto não houver peça na
+     planta (link antigo), cai nas duas fileiras de antes. */
+  const bistrosDoPlano = (Array.isArray(PROPOSTA.pecas) ? PROPOSTA.pecas : [])
+    .filter(x=>x && x.t==='bistro' && (x.p|0)===0);
+  if((bistrosDoPlano.length || CEN.bistros > 0) && AMB.telao){
     const matTampo = new TH.MeshStandardMaterial({color:0xE8E2D6, roughness:.5});
     const matPe = new TH.MeshStandardMaterial({color:0x2A2E33, roughness:.6, metalness:.35});
     const matBanco = new TH.MeshStandardMaterial({color:0x6B4B2E, roughness:.75});
@@ -5009,11 +5328,12 @@ function tresIniciar(){
     const geoAssento = new TH.CylinderGeometry(.16, .16, .05, 16);
     const geoPeBanco = new TH.CylinderGeometry(.03, .06, .72, 10);
     /* duas fileiras ao longo do vidro, alternando os lados da pista */
-    for(let i=0;i<CEN.bistros;i++){
-      const lado = i % 2 === 0 ? 505 : 690;               /* y na planta */
-      const px = 900 + Math.floor(i/2) * 150;             /* espaçados 150 px */
-      if(px > 1640) break;                                /* não invade o palco */
-      const c = pxParaM(px, lado);
+    const postos = bistrosDoPlano.length
+      ? bistrosDoPlano.map(x=>({x:x.x, y:x.y}))
+      : Array.from({length:CEN.bistros}, (_,i)=>({x:900 + Math.floor(i/2)*150, y:i%2===0 ? 505 : 690}))
+          .filter(q=>q.x <= 1640);
+    for(let i=0;i<postos.length;i++){
+      const c = pxParaM(postos[i].x, postos[i].y);
       const g = new TH.Group();
       const tampo = new TH.Mesh(geoTampo, matTampo);
       tampo.position.y = 1.08; tampo.castShadow = true;
@@ -5029,6 +5349,7 @@ function tresIniciar(){
         pb.position.set(0, .36, dz);
         g.add(assento, pb);
       }
+      g.name = 'bistro';
       g.position.set(c.x, PISO_Y, c.z);
       T3.cena.add(g);
     }
@@ -6343,7 +6664,8 @@ $('#btnReset').addEventListener('click', ()=>{
   try{ localStorage.removeItem(CHAVE); }catch(e){}
   Object.keys(GRUPOS).forEach(pintarSelecao);
   pintarPills();
-  renderMesas();
+  PROPOSTA.pecas = pecasPadrao();   /* o mobiliário do orçamento volta ao lugar */
+  renderMesas(); renderPecas();
   atualizarTotais();
   if(visaoAtual==='v3d' && T3.pronto) tresAbrir(); /* maquete acompanha o reset */
 });
@@ -6381,6 +6703,10 @@ if(LAYOUT_SUGERIDO) $('#btnPadrao').textContent = 'Restaurar layout sugerido';
 Object.keys(GRUPOS).forEach(pintarSelecao);
 pintarPills();
 renderMesas();
+/* mobiliário do orçamento: na primeira abertura deste link ele nasce posto;
+   depois vale o que o cliente deixou salvo */
+if(!Array.isArray(PROPOSTA.pecas)) PROPOSTA.pecas = [];
+renderPecas();
 $('#convMenos').disabled = PROPOSTA.convidados<=30;
 $('#convMais').disabled = PROPOSTA.convidados>=500;
 atualizarTotais();
@@ -7185,6 +7511,14 @@ async function vestirPropostaCRM(){
           }
         }
       }catch(e){}
+      /* MOBILIÁRIO DO ORÇAMENTO (v18.09-27) — na primeira abertura deste link o
+         palco, o telão e os bistrôs contratados já nascem postos na planta; a
+         partir daí vale onde o cliente deixou cada um. */
+      if(!Array.isArray(PROPOSTA.pecas) || !PROPOSTA.pecas.length){
+        PROPOSTA.pecas = pecasPadrao();
+        salvar();
+      }
+      renderPecas();
       /* o dia aberto é o espelho: os cards e a vitrine leem de PROPOSTA[tipo] */
       if(ORC_REAL.multiDia) for(const t of TIPOS_CARD) PROPOSTA[t] = escolhaDoCliente(t, ORC_REAL.diaAtivo);
       if(ORC_REAL.multiDia) vestirMultiDia();
