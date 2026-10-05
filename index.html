@@ -1497,7 +1497,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer: é só pedir na nossa conversa.
-      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-33</span></p>
+      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-34</span></p>
   </div>
 </footer>
 
@@ -2401,6 +2401,35 @@ const AMBIENTES = {
     ],
     /* CTA: recorte 16:9 da foto chat-0828 (salão montado) */
     cta:'assets/ambientes/canto_lagoa/cta-lagoa.jpg'
+  },
+  /* MEDITERRÂNEO (05/10/2026) — ficha SÓ de curadoria: a geometria inteira
+     (planta, máscara, zonas, maquete) vem do pacote do CRM; aqui entram as
+     fotos reais, que o pacote não traz. São fotos de um evento montado na
+     casa, cedidas pela equipe em 03/10/2026 — a casa é a mesma, a montagem
+     é que muda, e por isso nenhuma legenda promete evento corporativo. */
+  mediterraneo: {
+    galeriaIntro:'Fotos reais do Mediterrâneo Indaiá, na Praia da Joaquina: o deck sobre a areia, os lounges com vista para o mar e o salão de teto ripado.',
+    /* faixa do topo: a do deck com o mar ao fundo — a deitada do lounge tem
+       mais pixels, mas a vista é o que vende a casa */
+    heroFoto:1,
+    galeria:[
+      {url:'assets/ambientes/mediterraneo/fotos/lounges.webp', w:1448, h:1086,
+       cap:'Os lounges da recepção, com o deck branco e a vista aberta para o mar',
+       badge:'Lounge da recepção'},
+      {url:'assets/ambientes/mediterraneo/fotos/lounge-mar.webp', w:1086, h:1448,
+       cap:'O deck montado para receber, com a praia logo à frente',
+       badge:'Deck sobre a areia'},
+      {url:'assets/ambientes/mediterraneo/fotos/auditorio.webp', w:1448, h:1086,
+       cap:'Cadeiras em fileira voltadas para o mar, no fim da tarde',
+       badge:'Montagem em auditório'},
+      {url:'assets/ambientes/mediterraneo/fotos/salao-mesas.webp', w:1448, h:1086,
+       cap:'O salão de teto ripado montado com mesas redondas',
+       badge:'Salão · mesas redondas'},
+      {url:'assets/ambientes/mediterraneo/fotos/fachada-noite.webp', w:1086, h:1448,
+       cap:'A casa vista da areia, ao anoitecer',
+       badge:'Mediterrâneo Indaiá · Joaquina'}
+    ],
+    cta:'assets/ambientes/mediterraneo/fotos/fachada-noite.webp'
   }
 };
 /* seleção do ambiente: ?espaco=<id> (inválido/ausente = Salão de Eventos) */
@@ -3250,7 +3279,11 @@ function espacoPorNome(nome){
     ? window.__AMBS_CRM__ : [];
   const catalogo = {};
   for(const a of doIndice) catalogo[a.slug] = a.nome;
-  for(const k of Object.keys(AMBIENTES)) catalogo[k] = AMBIENTES[k].nome;
+  /* ficha de curadoria sem nome (o Mediterrâneo só traz fotos; o nome vem do
+     pacote do CRM) não pode apagar o nome do índice: com o nome vazio, o
+     casamento frouxo dava CERTO para qualquer orçamento e a página podia
+     desenhar a casa errada calada. */
+  for(const k of Object.keys(AMBIENTES)) if(AMBIENTES[k].nome) catalogo[k] = AMBIENTES[k].nome;
   const AMBIENTES_NOME = catalogo;
   const chaves = Object.keys(AMBIENTES_NOME);
   const exato = chaves.find(k=>normNome(AMBIENTES_NOME[k])===n);
@@ -3260,7 +3293,7 @@ function espacoPorNome(nome){
      podia desenhar a casa errada (02/10/2026) */
   const perto = chaves.filter(k=>{
     const a = normNome(AMBIENTES_NOME[k]);
-    return n.includes(a) || a.includes(n);
+    return !!a && (n.includes(a) || a.includes(n));
   });
   return perto.length === 1 ? perto[0] : null;
 }
@@ -7499,7 +7532,7 @@ function montarFilme(){
    entra quando a proposta está ABERTA naquele salão: mostrar o passeio do
    Salão de Eventos numa proposta do Mediterrâneo é mostrar a casa errada
    (apontado pelo dono em 05/10/2026). Escrito por gerar-filme.mjs. */
-const PROPOSTAS_COM_FILME = {'ORC-2026-02412':'salao_eventos'};
+const PROPOSTAS_COM_FILME = {'ORC-2026-02412':'mediterraneo'};
 function filmeDaProposta(){
   if(!ORC_REAL || !ORC_NUMERO) return;
   if(PROPOSTAS_COM_FILME[ORC_NUMERO] !== ESPACO) return;

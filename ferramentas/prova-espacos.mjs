@@ -93,8 +93,13 @@ for (const amb of lista) {
   console.log('   2D:', JSON.stringify(d2));
   ok(d2.planta > 0, `planta 2D carregou (${d2.src}, ${d2.planta}px)`);
   ok(d2.mascara && d2.mascaraBytes > 100, `máscara do piso decodificada (${d2.mascaraBytes} células)`);
-  ok(d2.mesas > 0 && d2.fora === 0, `${d2.mesas} mesas do layout padrão, todas em piso válido`);
-  ok(d2.desenhadas > 0, `mesas desenhadas na planta (${d2.desenhadas} no piso aberto)`);
+  /* CASA DE COQUETEL (05/10/2026) — nem todo salão traz layout de mesas no
+     pacote do CRM: o Mediterrâneo é coquetel e abre com ZERO mesas, de
+     propósito. Exigir mesa no arranque reprovava a casa por estar certa. O
+     que não pode é mesa fora do piso, e o distribuir tem que funcionar. */
+  const semMesas = d2.mesas === 0;
+  ok(d2.fora === 0, `${d2.mesas} mesa(s) do layout padrão, nenhuma fora do piso`);
+  ok(semMesas || d2.desenhadas > 0, `mesas desenhadas na planta (${d2.desenhadas} no piso aberto)`);
 
   /* botões do editor */
   const botoes = await p.evaluate(async () => {
@@ -108,7 +113,7 @@ for (const amb of lista) {
     document.querySelector('#btnPadrao').click(); r.padrao = n();
     return r;
   });
-  ok(botoes.add === 1 && botoes.distribuir > 0 && botoes.validas && botoes.limpou === 0 && botoes.padrao > 0,
+  ok(botoes.add === 1 && botoes.distribuir > 0 && botoes.validas && botoes.limpou === 0 && (semMesas || botoes.padrao > 0),
     `adicionar / distribuir (${botoes.distribuir} mesas válidas) / limpar / restaurar (${botoes.padrao})`);
 
   /* arrasto real: joga a mesa para fora e ela tem que voltar para o piso */
@@ -121,6 +126,9 @@ for (const amb of lista) {
     const svg = document.querySelector('#plantaSvg'); const pt = svg.createSVGPoint();
     pt.x = ix; pt.y = iy; const m = pt.matrixTransform(svg.getScreenCTM()); return { x: m.x, y: m.y };
   }, ix, iy);
+  /* sem layout padrão, o restaurar devolve a planta vazia: o arrasto precisa
+     de mesa na tela, então distribui uma vez antes */
+  if(semMesas) await p.evaluate(() => document.querySelector('#btnDistribuir').click());
   const anc = await p.evaluate(() => ({ ...PROPOSTA.mesas[0] }));
   const de = await tela(anc.x, anc.y), para = await tela(5, 5);
   await p.mouse.move(de.x, de.y); await p.mouse.down();
