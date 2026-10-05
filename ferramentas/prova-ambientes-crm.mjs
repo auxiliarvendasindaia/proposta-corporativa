@@ -78,6 +78,28 @@ if (!pedidos) {
   }
 }
 
+
+/* O SALÃO DO ORÇAMENTO MANDA (02/10/2026) — o CRM só põe `espaco=` no link
+   quando aquele espaço tem maquete (25 de 34). Sem isso a página abria o
+   orçamento de uma casa mostrando a planta de outra, calada. */
+const CRM_FALSO = process.env.CRM_FALSO || 'http://localhost:8141';
+const TOKEN_FALSO = 'b'.repeat(40);
+const abrir = async (url) => { await p.goto(url, { waitUntil: 'networkidle2' }); await espera(3800); };
+const estado = () => p.evaluate(() => ({
+  espaco: ESPACO, nome: document.getElementById('espacoNome').textContent.trim(),
+  aviso: !document.getElementById('semMaquete').hidden,
+  planta: !document.getElementById('planta').hidden,
+}));
+
+/* 1 · link sem salão, orçamento de uma casa que a página NÃO reconhece pelo
+   nome: o nome certo na tela e o aviso honesto, nunca a planta de Itapema */
+erros.length = 0;
+await abrir(`${SITE}?proposta=${TOKEN_FALSO}&api=${CRM_FALSO}`);
+const semSlug = await estado();
+ok(semSlug.aviso && !semSlug.planta && /Mediterr/i.test(semSlug.nome),
+  `link sem salão: mostra "${semSlug.nome}" e esconde a planta de outra casa`);
+ok(erros.length === 0, `e sem erro de JS ${erros.slice(0, 1).join('')}`);
+
 await b.close();
 console.log(falhas ? `\n${falhas} FALHA(S)` : `\nTODOS OS SALÕES OK`);
 process.exit(falhas ? 1 : 0);

@@ -99,7 +99,15 @@ for (const [slug, dados] of Object.entries(ambientes)) {
   if (r) r.kb = (corpo.length / 1024).toFixed(0);
 }
 
-/* o índice é LEVE: serve às ferramentas e à bateria, não à página */
+/* ÍNDICE PARA A PÁGINA — slug + nome dos 25, 3 KB. A página carrega SEMPRE
+   (é leve) para saber reconhecer pelo nome o salão que o orçamento traz: sem
+   isso, link sem `espaco=` de uma casa que não é a desenhada não tinha como
+   achar a certa. */
+fs.writeFileSync(path.join(RAIZ, 'dados', 'ambientes-index.js'),
+  'window.__AMBS_CRM__=' + JSON.stringify(resumo.map(r => ({ slug: r.slug, nome: r.nome }))) + ';' + '
+');
+
+/* o índice completo é LEVE: serve às ferramentas e à bateria, não à página */
 fs.mkdirSync(path.dirname(SAIDA), { recursive: true });
 const pacoteFinal = {
   gerado_em: new Date().toISOString().slice(0, 10),

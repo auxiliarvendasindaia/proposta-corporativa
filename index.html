@@ -26,6 +26,9 @@
   try{
     var s = new URLSearchParams(location.search).get('espaco') || 'salao_eventos';
     if(!/^[a-z0-9_-]{1,100}$/.test(s)) return;
+    /* o índice (slug + nome dos 25, 1,4 KB) entra SEMPRE: é com ele que a
+       página reconhece, pelo nome que vem no orçamento, o salão certo */
+    document.write('<scr' + 'ipt src="dados/ambientes-index.js"></scr' + 'ipt>');
     document.write('<scr' + 'ipt src="dados/ambientes/' + s + '.js"></scr' + 'ipt>');
   }catch(e){}
 })();
@@ -1489,7 +1492,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer — é só pedir na nossa conversa.
-      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-28</span></p>
+      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-29</span></p>
   </div>
 </footer>
 
@@ -3214,11 +3217,25 @@ function vestirMultiDia(){
 function espacoPorNome(nome){
   const n = normNome(nome);
   if(!n) return null;
-  const achado = Object.keys(AMBIENTES).find(k=>{
-    const a = AMBIENTES[k];
-    return normNome(a.nome)===n || n.includes(normNome(a.nome)) || normNome(a.nome).includes(n);
+  /* o catálogo é o do índice do CRM (25 salões) mais os escritos à mão: a
+     página só carrega a ficha de UM salão, mas precisa reconhecer todos */
+  const doIndice = (typeof window !== 'undefined' && Array.isArray(window.__AMBS_CRM__))
+    ? window.__AMBS_CRM__ : [];
+  const catalogo = {};
+  for(const a of doIndice) catalogo[a.slug] = a.nome;
+  for(const k of Object.keys(AMBIENTES)) catalogo[k] = AMBIENTES[k].nome;
+  const AMBIENTES_NOME = catalogo;
+  const chaves = Object.keys(AMBIENTES_NOME);
+  const exato = chaves.find(k=>normNome(AMBIENTES_NOME[k])===n);
+  if(exato) return exato;
+  /* frouxo só vale quando aponta para UM salão: com 25 ambientes, "Salão de
+     Eventos" casava também com "Salão de Eventos Nova Veneza" e a página
+     podia desenhar a casa errada (02/10/2026) */
+  const perto = chaves.filter(k=>{
+    const a = normNome(AMBIENTES_NOME[k]);
+    return n.includes(a) || a.includes(n);
   });
-  return achado || null;
+  return perto.length === 1 ? perto[0] : null;
 }
 /* serviços: enquanto nada muda, valem os valores do orçamento. Mexeu, os que
    dependem do evento acompanham (Equipe no percentual do próprio orçamento;
@@ -3757,10 +3774,10 @@ addEventListener('keydown', ()=>{ roteiroInterativo = true; }, {once:true, captu
    casa (planta, 3D, 360°, filme e fotos) e põe no lugar um aviso com o NOME
    CERTO do espaço, que vem do orçamento. O resto da proposta — valores,
    cardápios, roteiro, prova social e investimento — continua inteiro. */
-function vestirSemMaquete(nomeEspaco, cidade){
+function vestirSemMaquete(nomeEspaco, cidade, forcar){
   const sec = document.getElementById('semMaquete');
   if(!sec) return;
-  if(!ESPACO_DESCONHECIDO){ sec.hidden = true; return; }
+  if(!ESPACO_DESCONHECIDO && !forcar){ sec.hidden = true; return; }
   const nome = (nomeEspaco || '').trim();
   document.getElementById('semMaqueteNome').textContent =
     nome ? (cidade ? `${nome} · ${cidade}` : nome) : 'A montagem do seu salão';
@@ -7629,11 +7646,30 @@ async function vestirPropostaCRM(){
     const espacoDoOrc = (o.espaco && o.espaco.nome)
       || (ORC_REAL && ORC_REAL.multiDia && (ORC_REAL.dias[0]||{}).espaco) || '';
     if(espacoDoOrc) montarProva(espacoDoOrc);
-    /* o espaço do orçamento manda no nome — e, se a página não desenha essa
-       casa, o layout e a galeria saem de cena em vez de fingir outro salão */
+    /* O SALÃO DO ORÇAMENTO MANDA (02/10/2026) — o CRM só põe o salão no link
+       quando aquele espaço tem maquete (25 de 34). Para os outros 9 o link vem
+       SEM salão nenhum, e a página abria o orçamento do Mediterrâneo 242
+       mostrando "Salão de Eventos · Itapema/SC", com a planta de Itapema e sem
+       aviso. Agora:
+       · link sem salão e orçamento de uma casa que a página desenha → volta
+         uma vez com o salão certo na URL (é o único jeito: a ficha do salão
+         precisa estar carregada antes do script montar o registro);
+       · qualquer outro desencontro → o aviso honesto, com o nome certo. */
     const cidadeOrc = (o.cidade && o.cidade.nome)
       ? o.cidade.nome + (o.cidade.estado ? '/' + o.cidade.estado : '') : '';
-    vestirSemMaquete(espacoDoOrc, cidadeOrc);
+    const slugDoOrc = espacoDoOrc ? espacoPorNome(espacoDoOrc) : null;
+    if(slugDoOrc && slugDoOrc !== ESPACO && !ESPACO_PEDIDO){
+      const u = new URL(location.href);
+      u.searchParams.set('espaco', slugDoOrc);
+      location.replace(u.href);   /* sem laço: a URL passa a ter espaco= */
+      return;
+    }
+    /* o salão ESCRITO NO LINK continua mandando quando existe: foi a atendente
+       que o escolheu, e é a decisão de 29/09 (a proposta aberta no Salão de
+       Eventos mostra Itapema mesmo com o orçamento de outra casa). O que a
+       página não pode é CHUTAR um salão quando o link não diz nenhum. */
+    const casaCerta = !!ESPACO_PEDIDO || !espacoDoOrc || slugDoOrc === ESPACO;
+    vestirSemMaquete(casaCerta ? '' : espacoDoOrc, casaCerta ? '' : cidadeOrc, !casaCerta);
     montarIndice();      /* a prova social pode ter nascido agora */
 
     /* repinta tudo que depende do estado (funções idempotentes do arranque) */
