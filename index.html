@@ -1497,7 +1497,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer: é só pedir na nossa conversa.
-      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-32</span></p>
+      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-33</span></p>
   </div>
 </footer>
 
@@ -2466,6 +2466,20 @@ const ESPACO_PEDIDO = new URLSearchParams(location.search).get('espaco') || '';
 const ESPACO_DESCONHECIDO = !!ESPACO_PEDIDO && !AMBIENTES[ESPACO_PEDIDO];
 const ESPACO = AMBIENTES[ESPACO_PEDIDO] ? ESPACO_PEDIDO : 'salao_eventos';
 const AMB = AMBIENTES[ESPACO];
+/* FILME DE UM SALÃO DO CRM (05/10/2026) — o pacote do CRM traz a geometria,
+   não traz vídeo. Quando ferramentas/gerar-filme.mjs grava o passeio de um
+   desses salões, ele anota o slug aqui e a seção 05 (e o fundo da capa)
+   passam a mostrá-lo sozinhos, pelo caminho de sempre. */
+/* o Mediterrâneo está GRAVADO (assets/ambientes/mediterraneo/video/) e fora
+   da lista de propósito: a maquete dele é um estudo de massa, sem textura e
+   sem telhado, e o sobrevoo sai parecendo desenho técnico ao lado do filme
+   do Salão de Eventos. Para ligá-lo, basta pôr o slug aqui. */
+const FILMES_CRM = [];
+if(!AMB.filme && FILMES_CRM.includes(ESPACO)){
+  const base = `assets/ambientes/${ESPACO}/video/`;
+  AMB.filme = {src:`${base}passeio.mp4`, poster:`${base}poster.jpg`,
+    cap:`O ${AMB.nome} em vídeo, visto de cima, com a montagem desta proposta.`};
+}
 
 /* ---- constantes derivadas do ambiente (os nomes de sempre) ---- */
 const pxm        = AMB.pxm;                            // px por metro da planta
@@ -6397,7 +6411,83 @@ function easeInOut(k){ return k<.5 ? 2*k*k : 1 - Math.pow(-2*k+2, 2)/2; }
 /* v18.08-21: roteiro autoral do Salão (tour:'salao') ou o genérico por
    ambiente (Solar) — os dois devolvem a mesma lista de trechos */
 function tourMontarRoteiro(){
+  if(SOBREVOO) return tourRoteiroSobrevoo();
   return AMB.tour==='salao' ? tourRoteiroSalao() : tourRoteiroGenerico();
+}
+/* SOBREVOO (05/10/2026) — casa cuja maquete tem o corte do telhado BAIXO
+   (corteY a menos de 1,9 m do piso: Mediterrâneo, Mirante, Cristal e Canto
+   da Lagoa) não aceita passeio por dentro. A câmera na altura do olhar já
+   fica acima do corte: as paredes somem na frente dela e o passeio sai num
+   salão sem parede nenhuma. Nessas casas o filme é um SOBREVOO:
+   a câmera fica sempre ACIMA do corte, o telhado some e o salão aparece
+   aberto, em casa de bonecas, com o layout do cliente lá dentro. */
+const SOBREVOO = (() => {
+  if(AMB.tour === 'sobrevoo') return true;
+  const g = AMB.glb || {};
+  return g.corteY != null && g.pisoY != null && (g.corteY - g.pisoY) < 1.9;
+})();
+function tourRoteiroSobrevoo(){
+  const TH = window.THREE;
+  const g = AMB.glb || {}, base = g.pisoY || 0;
+  const corte = (g.corteY != null) ? g.corteY : base + 1.3;
+  /* a casa inteira: caixa que cobre as áreas de todas as zonas */
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  for(const P of PISOS) for(const A of (P.areas || [])){
+    x0 = Math.min(x0, A.x0); y0 = Math.min(y0, A.y0);
+    x1 = Math.max(x1, A.x1); y1 = Math.max(y1, A.y1);
+  }
+  if(!isFinite(x0)){ const A = SALAO_PRINCIPAL; x0 = A.x0; y0 = A.y0; x1 = A.x1; y1 = A.y1; }
+  const Cpx = {x:(x0+x1)/2, y:(y0+y1)/2};
+  const C = pxParaM(Cpx.x, Cpx.y);
+  const LARG = Math.max(x1-x0, y1-y0) / pxm;                  /* maior lado, em metros */
+  const raio = Math.max(LARG * 0.8, 20);
+  /* ALTURA: sempre bem acima do corte, senão o telhado volta no meio do
+     plano e o filme pisca entre aberto e fechado */
+  const alt = Math.max(corte + LARG * 0.42, corte + 11);
+  const olhar = new TH.Vector3(C.x, base + 1.2, C.z);
+  const ponto = (ang, r, h)=>new TH.Vector3(C.x + r*Math.cos(ang), h, C.z + r*Math.sin(ang));
+  const curvaOrb = (a0, a1, r0, r1, h0, h1)=>k=>ponto(a0 + (a1-a0)*k, r0 + (r1-r0)*k, h0 + (h1-h0)*k);
+  const fixo = A=>()=>A.clone();
+  const linear = (A,B)=>k=>new TH.Vector3().lerpVectors(A, B, k);
+  /* começa do mesmo ângulo da vista de abertura da maquete: quem viu o 3D
+     reconhece a casa no primeiro quadro */
+  const a0 = (AMB.camera && AMB.camera.orb && AMB.camera.orb.theta != null)
+    ? AMB.camera.orb.theta : Math.PI * 0.6;
+  const zonaNome = i => nomeLimpo((PISOS[i] || {}).nome || AMB.nome || '');
+  const principal = Math.max(0, PISOS.findIndex(P=>(P.areas||[]).length));
+  const planos = [];
+  /* 1 · CHEGADA: de longe e de cima, descendo para a casa */
+  planos.push({dur:7, legenda:AMB.nome || '', fusao:true,
+    pos:curvaOrb(a0 - .35, a0, raio*1.75, raio*1.05, alt*1.85, alt*1.1),
+    look:fixo(olhar)});
+  /* 2 · VOLTA pela frente: a casa girando devagar, telhado aberto */
+  planos.push({dur:9, legenda:zonaNome(principal), fusao:true,
+    pos:curvaOrb(a0, a0 + Math.PI*.62, raio*1.05, raio*.92, alt*1.1, alt*.92),
+    look:fixo(olhar)});
+  /* 3 · PASSAGEM rasante sobre a zona principal: atravessa o salão pelo eixo
+     maior, baixo (mas acima do corte), olhando o layout logo à frente */
+  const A = (PISOS[principal] && PISOS[principal].areas &&
+    (PISOS[principal].areas[PISOS[principal].principal||0] || PISOS[principal].areas[0])) || SALAO_PRINCIPAL;
+  const horiz = (A.x1-A.x0) >= (A.y1-A.y0);
+  const folgaPx = Math.max(A.x1-A.x0, A.y1-A.y0) * .75;
+  const p0 = horiz ? {x:A.x0 - folgaPx, y:(A.y0+A.y1)/2} : {x:(A.x0+A.x1)/2, y:A.y0 - folgaPx};
+  const p1 = horiz ? {x:A.x1 + folgaPx, y:(A.y0+A.y1)/2} : {x:(A.x0+A.x1)/2, y:A.y1 + folgaPx};
+  const M0 = pxParaM(p0.x, p0.y), M1 = pxParaM(p1.x, p1.y);
+  const ACm = pxParaM((A.x0+A.x1)/2, (A.y0+A.y1)/2);
+  const hRas = Math.max(corte + 5, alt * .55);
+  planos.push({dur:8, legenda:zonaNome(principal), fusao:true,
+    pos:linear(new TH.Vector3(M0.x, hRas, M0.z), new TH.Vector3(M1.x, hRas, M1.z)),
+    look:linear(new TH.Vector3(ACm.x, base + .9, ACm.z), new TH.Vector3(ACm.x, base + .9, ACm.z))});
+  /* 4 · A OUTRA METADE: continua a volta pelo lado de trás, subindo */
+  const outra = PISOS.length > 1 ? (principal + 1) % PISOS.length : principal;
+  planos.push({dur:9, legenda:zonaNome(outra), fusao:true,
+    pos:curvaOrb(a0 + Math.PI*.62, a0 + Math.PI*1.35, raio*.95, raio*1.1, alt*.95, alt*1.25),
+    look:fixo(olhar)});
+  /* 5 · VISTA GERAL: afasta e segura o quadro, a casa inteira na tela */
+  planos.push({dur:6, legenda:'Vista geral', fusao:true,
+    pos:curvaOrb(a0 + Math.PI*1.35, a0 + Math.PI*1.55, raio*1.1, raio*1.6, alt*1.25, alt*1.7),
+    look:fixo(olhar)});
+  return planos;
 }
 /* TOUR GENÉRICO (v18.08-22) — SEQUÊNCIA DE PLANOS por área, emendados
    por FUSÃO em preto (~0,4 s): nada de caminho contínuo atravessando porta

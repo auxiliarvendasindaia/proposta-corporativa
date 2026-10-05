@@ -38,7 +38,10 @@ const b = await puppeteer.launch({ headless: 'new',
 
 const p0 = await b.newPage();
 await p0.goto(SITE, { waitUntil: 'networkidle2' });
-const TODOS = await p0.evaluate(() => Object.keys(AMBIENTES));
+/* os 25 salões do pacote do CRM contam como ambiente: a página os desenha
+   igual aos cinco do registro, só não traz filme para eles ainda */
+const TODOS = await p0.evaluate(() => [...new Set([
+  ...Object.keys(AMBIENTES), ...((window.__AMBS_CRM__ || []).map(a => a.slug))])]);
 await p0.close();
 
 /* --proposta <token> --api <base>: o filme deixa de ser da casa e passa a ser
