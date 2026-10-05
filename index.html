@@ -1497,7 +1497,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer: é só pedir na nossa conversa.
-      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-34</span></p>
+      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-35</span></p>
   </div>
 </footer>
 
@@ -2429,6 +2429,10 @@ const AMBIENTES = {
        cap:'A casa vista da areia, ao anoitecer',
        badge:'Mediterrâneo Indaiá · Joaquina'}
     ],
+    /* FUNDO DA CAPA — vídeo real da casa, feito pela equipe no celular. Fica
+       atrás do véu da capa, em laço de ida e volta, sem som. A seção 05 segue
+       mostrando a maquete desta proposta: foto no topo, maquete no layout. */
+    capaFilme:'assets/ambientes/mediterraneo/video/capa.mp4',
     cta:'assets/ambientes/mediterraneo/fotos/fachada-noite.webp'
   }
 };
@@ -2477,7 +2481,7 @@ const CRM_AMB = (()=>{
   /* o roteiro do tour tambem e curadoria: o Salao de Eventos tem um roteiro
      autoral (tour:'salao') que o pacote do CRM nao guarda — de la vem so o
      generico {entradaFrac}, que e o certo para quem ainda nao tem roteiro */
-  const CURADORIA = ['galeria','galeriaIntro','filme','cta','heroFoto','ctaFoto','panos','descricao','tour','tourOrdem','telao','envMap'];
+  const CURADORIA = ['galeria','galeriaIntro','filme','capaFilme','cta','heroFoto','ctaFoto','panos','descricao','tour','tourOrdem','telao','envMap'];
   const curado = AMBIENTES[p.slug];
   if(curado) for(const k of CURADORIA) if(curado[k] !== undefined) d[k] = curado[k];
   AMBIENTES[p.slug] = d;
@@ -7560,7 +7564,7 @@ function filmeDaProposta(){
    enxugar-midia.mjs). A capa pede o corte e, se ele não existir naquela
    pasta, o próprio navegador cai no passeio pela segunda <source>. */
 function filmeAtual(){
-  const comCapa = v => ({...v, capa: v.src.replace(/passeio.mp4$/, 'capa.mp4')});
+  const comCapa = v => ({...v, capa: AMB.capaFilme || v.src.replace(/passeio.mp4$/, 'capa.mp4')});
   /* o corte da capa também só vale no salão em que o filme foi gravado */
   if(ORC_REAL && ORC_NUMERO && PROPOSTAS_COM_FILME[ORC_NUMERO] === ESPACO){
     const base = `assets/propostas/${encodeURIComponent(ORC_NUMERO)}/`;
