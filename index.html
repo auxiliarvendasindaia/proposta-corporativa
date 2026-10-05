@@ -493,6 +493,9 @@ html.sem-maquete .hero__fundo,html.sem-maquete .cta__media{display:none;}
 .areas{pointer-events:none;}
 .ambs3d{position:absolute;top:12px;left:12px;z-index:6;display:flex;gap:8px;flex-wrap:wrap;max-width:calc(100% - 24px);}
 .ambs3d .pill{font-size:.74rem;padding:5px 13px;background:rgba(247,248,249,.94);box-shadow:0 2px 8px rgba(20,24,29,.12);}
+/* a aba escolhida estava com texto creme sobre fundo claro (a regra do .ambs3d
+   vinha depois e ganhava o fundo, mas não a cor): ficava invisível */
+.ambs3d .pill[aria-pressed="true"]{background:var(--brown-deep);border-color:var(--brown-deep);color:var(--cream);}
 .pisos{display:flex;gap:8px;flex-wrap:wrap;padding:10px 12px 8px;background:var(--cream-2);border-bottom:1px solid var(--line);}
 .pisos .pill{font-size:.78rem;padding:6px 14px;}
 .area__sub{font-family:var(--sans);font-size:18px;letter-spacing:.14em;fill:var(--taupe);}
@@ -1030,7 +1033,7 @@ html.so-layout body{padding-bottom:0;}
 </style>
 <header class="topbar" id="topbar">
   <div class="wrap topbar__inner">
-    <a class="brand" href="#topo" aria-label="DIMY — voltar ao início da proposta">
+    <a class="brand" href="#topo" aria-label="DIMY · voltar ao início da proposta">
       <span class="brand__mono">DIMY</span>
     </a>
     <span class="topbar__by">Proposta · <b>Indaiá Eventos</b></span>
@@ -1048,7 +1051,7 @@ html.so-layout body{padding-bottom:0;}
   <div class="wrap hero__inner">
     <p class="eyebrow reveal">Proposta corporativa · DIMY · Setembro 2026</p>
     <h1 class="hero__title reveal" data-d="1">Uma noite à altura<br>da sua <em>equipe</em>.</h1>
-    <p class="hero__sub reveal" data-d="2"><span class="js-espaco-rotulo">Salão de Eventos · Itapema/SC</span> — 24 de setembro de 2026.</p>
+    <p class="hero__sub reveal" data-d="2"><span class="js-espaco-rotulo">Salão de Eventos · Itapema/SC</span> · 24 de setembro de 2026.</p>
     <!-- a frase da casa: o que só acontece neste espaço, escrita pela página
          conforme o ambiente e o tipo de evento (ver FRASES no script) -->
     <p class="hero__frase reveal" data-d="2" id="heroFrase"></p>
@@ -1102,7 +1105,7 @@ html.so-layout body{padding-bottom:0;}
         <p class="rcard__lbl">Simule o dia da semana</p>
         <div class="pills" role="group" aria-label="Simular dia da semana" id="pillsDia"></div>
         <p class="rcard__nota" id="notaDia">Neste espaço, o investimento é o mesmo em qualquer dia da semana.</p>
-        <p class="rcard__aviso">Mudança de data sujeita a disponibilidade — confirme com seu consultor.</p>
+        <p class="rcard__aviso">Mudança de data sujeita a disponibilidade; confirme com seu consultor.</p>
       </div>
     </div>
 
@@ -1112,7 +1115,7 @@ html.so-layout body{padding-bottom:0;}
     <ul class="vemjunto reveal" data-d="2">
       <li><b>Cozinha própria</b>O que chega à mesa foi feito aqui, no dia, e sai da cozinha na temperatura certa.</li>
       <li><b>Equipe da casa</b>Maîtres, garçons, copa e cerimonial do Indaiá, do primeiro café ao último brinde.</li>
-      <li><b>Estrutura montada</b>Mobiliário, louça, cristais, enxoval e a montagem do salão — tudo já na proposta.</li>
+      <li><b>Estrutura montada</b>Mobiliário, louça, cristais, enxoval e a montagem do salão: tudo já na proposta.</li>
       <li><b>Operação conferida</b>A casa entregue pronta antes do primeiro convidado, e desmontada por nós depois.</li>
     </ul>
   </div>
@@ -1124,7 +1127,7 @@ html.so-layout body{padding-bottom:0;}
     <div class="sec__head reveal">
       <div class="sec__meta"><span class="sec__num">02</span><p class="eyebrow">Gastronomia &amp; bar</p></div>
       <h2 class="sec__title">A mesa que <em>conduz</em> a noite.</h2>
-      <p class="sec__intro">Três escolhas, todas suas: o coquetel de chegada, o jantar e o bar. Troque à vontade — o orçamento atualiza na hora.</p>
+      <p class="sec__intro">Três escolhas, todas suas: o coquetel de chegada, o jantar e o bar. Troque à vontade: o orçamento atualiza na hora.</p>
     </div>
 
     <div class="gbloco reveal" id="bloco-coquetel">
@@ -1200,7 +1203,7 @@ html.so-layout body{padding-bottom:0;}
     <ul class="itens reveal" id="listaItens"></ul>
     <div class="extras__micro reveal" data-d="1">
       <p class="extras__micro__txt">Quer incluir algo que não está aqui (decoração, ativações)?
-        É só pedir na nossa conversa — a gente desenha junto.</p>
+        É só pedir na nossa conversa: a gente desenha junto.</p>
       <button type="button" class="btn btn--ghost" id="btnMaisItens">Incluir mais itens no orçamento</button>
     </div>
 
@@ -1230,7 +1233,7 @@ html.so-layout body{padding-bottom:0;}
       <p class="semmaquete__selo">O seu salão</p>
       <h2 class="semmaquete__titulo" id="semMaqueteNome">—</h2>
       <p class="semmaquete__txt">A planta interativa e a maquete 3D desta casa ainda estão
-        em preparação. Os valores e tudo o mais nesta proposta são do seu evento —
+        em preparação. Os valores e tudo o mais nesta proposta são do seu evento;
         a montagem do salão sua consultora envia na nossa conversa.</p>
       <a class="btn btn--solid" id="semMaqueteCta" href="#contato">Pedir a montagem do salão</a>
     </div>
@@ -1243,7 +1246,7 @@ html.so-layout body{padding-bottom:0;}
     <div class="sec__head reveal">
       <div class="sec__meta"><span class="sec__num">04</span><p class="eyebrow">O espaço</p></div>
       <h2 class="sec__title">O seu evento no <em class="js-espaco-em">salão</em>.</h2>
-      <p class="sec__intro">Arraste as mesas e o mobiliário do seu jeito — e veja o seu layout ganhar volume na maquete 3D.</p>
+      <p class="sec__intro">Arraste as mesas e o mobiliário do seu jeito e veja o seu layout ganhar volume na maquete 3D.</p>
     </div>
     <div class="planta reveal">
       <div class="visoes-pills" role="group" aria-label="Escolha a visão do salão">
@@ -1491,8 +1494,8 @@ html.so-layout body{padding-bottom:0;}
     <span class="brand__mono">DIMY</span>
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
-      com prazer — é só pedir na nossa conversa.
-      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-30</span></p>
+      com prazer: é só pedir na nossa conversa.
+      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-31</span></p>
   </div>
 </footer>
 
@@ -1778,7 +1781,7 @@ function calcularServicos(s, baseTaxaCent, baseReajusteCent){
   if(reajuste > 0) lista.push(['Reajuste temporal', reajuste]);
   return {lista, total: lista.reduce((a,x)=>a+x[1], 0)};
 }
-const DIAS = [['seg-qui','Seg–Qui'],['sexta','Sexta'],['sabado','Sábado'],['domingo','Domingo']];
+const DIAS = [['seg-qui','Seg a Qui'],['sexta','Sexta'],['sabado','Sábado'],['domingo','Domingo']];
 
 /* =================================================================
    AMBIENTES (v18.08-21) — a página é parametrizada por ESPAÇO.
@@ -1853,7 +1856,7 @@ const AMBIENTES = {
     rotulo:'Salão de Eventos · Itapema/SC', curto:'Salão de Eventos, Itapema',
     cidadeLonga:'Itapema · Santa Catarina', emTitulo:'salão',
     descricao:'Proposta interativa corporativa — DIMY · 24/09/2026 · Salão de Eventos, Itapema/SC.',
-    galeriaIntro:'O layout padrão da casa em render — e fotos reais do Salão de Eventos de Itapema, incluindo um evento corporativo entregue nele.',
+    galeriaIntro:'O layout padrão da casa em render, com fotos reais do Salão de Eventos de Itapema, incluindo um evento corporativo entregue nele.',
     /* foto do alto da página: o salão inteiro montado para recepção (a foto
        do "evento corporativo" é a tela de uma apresentação, não o salão) */
     heroFoto:3,
@@ -1862,7 +1865,7 @@ const AMBIENTES = {
     ctaFoto:4,
     /* o filme do espaço (gerado por ferramentas/gerar-filme.mjs) */
     filme:{src:'assets/ambientes/salao_eventos/video/passeio.mp4', poster:'assets/ambientes/salao_eventos/video/poster.jpg',
-      cap:'Um passeio pelo Salão de Eventos, com a montagem da casa — 25 segundos.'},
+      cap:'Um passeio pelo Salão de Eventos, com a montagem da casa, em 25 segundos.'},
     planta:{src:'assets/planta-salao-eventos.jpg', w:1920, h:1080,
       alt:'Planta vazia do Salão de Eventos de Itapema vista de cima'},
     pxm:(1832-765)/24.5,                                  // ≈ 43,55 px por metro (eixo X oficial)
@@ -1901,7 +1904,7 @@ const AMBIENTES = {
        e o deck da figueira). chat-0180 fora (treliça no quadro); chat-0679 404. */
     galeria:[
       {url:'assets/planta-layout-padrao.jpg', w:1422, h:1106,
-       cap:'Render do salão no layout padrão da casa — 19 mesas de 8 lugares',
+       cap:'Render do salão no layout padrão da casa, 19 mesas de 8 lugares',
        selo:'Render da maquete', badge:'Layout padrão · 19 mesas', badgeCls:'salao'},
       {url:`${MID}chat-1101.jpg`, w:3000, h:2000,
        cap:'Evento corporativo realizado neste salão · B. Fabbriani, 2022',
@@ -1952,7 +1955,7 @@ const AMBIENTES = {
     heroFoto:0,
     /* o filme do espaço (gerado por ferramentas/gerar-filme.mjs) */
     filme:{src:'assets/ambientes/solar/video/passeio.mp4', poster:'assets/ambientes/solar/video/poster.jpg',
-      cap:'Um passeio pelo Solar, com a montagem da casa — 25 segundos.'},
+      cap:'Um passeio pelo Solar, com a montagem da casa, em 25 segundos.'},
     planta:{src:'assets/ambientes/solar/planta.jpg', w:1920, h:864,
       alt:'Planta vazia do Solar, em Florianópolis, vista de cima'},
     pxm:36.4,
@@ -2114,7 +2117,7 @@ const AMBIENTES = {
     heroFoto:0,
     /* o filme do espaço (gerado por ferramentas/gerar-filme.mjs) */
     filme:{src:'assets/ambientes/mezanino/video/passeio.mp4', poster:'assets/ambientes/mezanino/video/poster.jpg',
-      cap:'Um passeio pelo Mezanino, com a montagem da casa — 25 segundos.'},
+      cap:'Um passeio pelo Mezanino, com a montagem da casa, em 25 segundos.'},
     planta:{src:'assets/ambientes/mezanino/planta.jpg', w:1920, h:1080,
       alt:'Planta vazia do térreo do Mezanino, em Itapema, vista de cima',
       recorte:{x:450, y:20, w:1020, h:1020}},                  /* o espaço ocupa px 508..1412 × 89..991 */
@@ -2211,7 +2214,7 @@ const AMBIENTES = {
     heroFoto:4,
     /* o filme do espaço (gerado por ferramentas/gerar-filme.mjs) */
     filme:{src:'assets/ambientes/mirante/video/passeio.mp4', poster:'assets/ambientes/mirante/video/poster.jpg',
-      cap:'Um passeio pelo Mirante da Lagoa, com a montagem da casa — 25 segundos.'},
+      cap:'Um passeio pelo Mirante da Lagoa, com a montagem da casa, em 25 segundos.'},
     planta:{src:'assets/ambientes/mirante/planta.jpg', w:1920, h:1080,
       alt:'Planta vazia do térreo do Mirante da Lagoa vista de cima'},
     pxm:40,
@@ -2311,7 +2314,7 @@ const AMBIENTES = {
     heroFoto:0,
     /* o filme do espaço (gerado por ferramentas/gerar-filme.mjs) */
     filme:{src:'assets/ambientes/canto_lagoa/video/passeio.mp4', poster:'assets/ambientes/canto_lagoa/video/poster.jpg',
-      cap:'Um passeio pelo Canto da Lagoa, com a montagem da casa — 25 segundos.'},
+      cap:'Um passeio pelo Canto da Lagoa, com a montagem da casa, em 25 segundos.'},
     planta:{src:'assets/ambientes/canto_lagoa/planta.jpg', w:1920, h:1080,
       alt:'Planta vazia do Salão Principal do Canto da Lagoa vista de cima'},
     pxm:23,
@@ -3205,11 +3208,11 @@ function vestirMultiDia(){
   const subData = document.querySelector('#cardData .rcard__sub');
   if(subData) subData.textContent = `${ds.length} dias de evento · ${ds.map(d=>d.diaSemana).filter(Boolean).join(' e ')}`;
   const heroSub = document.querySelector('.hero__sub');
-  if(heroSub) heroSub.innerHTML = `<span class="js-espaco-rotulo">${esc(AMB.rotulo)}</span> — ${esc(texto)}, ${ds.length} dias.`;
+  if(heroSub) heroSub.innerHTML = `<span class="js-espaco-rotulo">${esc(AMB.rotulo)}</span> · ${esc(texto)}, ${ds.length} dias.`;
   const intro1 = document.querySelector('#resumo .sec__intro');
   if(intro1) intro1.textContent = `São ${ds.length} dias de evento — escolha o dia na lista de itens para ver o que está em cada um.`;
   const intro2 = document.querySelector('#cardapios .sec__intro');
-  if(intro2) intro2.textContent = 'Cada dia tem o seu cardápio: escolha o dia e troque o coquetel, o jantar e o bar dele à vontade — o orçamento atualiza na hora.';
+  if(intro2) intro2.textContent = 'Cada dia tem o seu cardápio: escolha o dia e troque o coquetel, o jantar e o bar dele à vontade: o orçamento atualiza na hora.';
   const rotTotal = document.querySelector('.inv__total span');
   if(rotTotal) rotTotal.textContent = `Total do investimento · ${ds.length} dias`;
   const nota = document.querySelector('#invCard .inv__nota');
@@ -3317,7 +3320,7 @@ function avisoReal(){
   }
   av.innerHTML = mexeuNoOrcamento()
     ? `<b>Valor estimado dos seus ajustes</b> — sujeito a confirmação do consultor. O orçamento enviado é de ${fmt(ORC_REAL.total)} para ${ORC_REAL.conv} convidados.`
-    : `Valores do seu orçamento ${esc(ORC_NUMERO)} — sujeito a confirmação do consultor: a proposta tem validade, e depois dela os valores podem mudar.`;
+    : `Valores do seu orçamento ${esc(ORC_NUMERO)}, sujeitos a confirmação do consultor: a proposta tem validade, e depois dela os valores podem mudar.`;
 }
 /* link com token que o CRM não entrega (expirado, removido, fora do ar):
    a página NUNCA cai na demo DIMY — material de um cliente jamais aparece
@@ -4302,6 +4305,9 @@ function montarPlanta(){
 }
 /* seletor de piso (v18.08-24): só aparece quando o ambiente tem mais de um
    nível editável; cada pill mostra quantas mesas há naquele piso */
+/* nome que vem do CRM pode trazer travessão ("Luau — faixa superior"): na
+   tela da proposta não entra travessão nenhum (decisão do dono) */
+const nomeLimpo = t => String(t||'').replace(/\s*[—–]\s*/g, ' · ');
 function pintarPisos(){
   const box = $('#pisosSel'); if(!box) return;
   box.hidden = PISOS.length<2;
@@ -4310,7 +4316,7 @@ function pintarPisos(){
   if(box.hidden) return;
   box.innerHTML = PISOS.map((P,i)=>{
     const n = PROPOSTA.mesas.filter(m=>pisoDe(m)===i).length;
-    return `<button type="button" class="pill" role="tab" data-piso="${i}" aria-selected="${i===PISO_I}" aria-pressed="${i===PISO_I}">${P.nome} · ${n} ${n===1?'mesa':'mesas'}</button>`;
+    return `<button type="button" class="pill" role="tab" data-piso="${i}" aria-selected="${i===PISO_I}" aria-pressed="${i===PISO_I}">${esc(nomeLimpo(P.nome))} · ${n} ${n===1?'mesa':'mesas'}</button>`;
   }).join('');
 }
 function trocarPiso(i){
@@ -4459,6 +4465,7 @@ function renderPecas(){
     return `<g class="peca" data-i="${i}" data-t="${pc.t}" tabindex="0" role="button"
         aria-label="${esc(cfg.nome)} ${i+1}. Arraste ou use as setas; Delete remove."
         transform="translate(${pc.x},${pc.y})">
+        <title>${esc(cfg.nome)}</title>
         <rect class="peca__hit" x="${(-w/2-4).toFixed(1)}" y="${(-h/2-4).toFixed(1)}"
           width="${(w+8).toFixed(1)}" height="${(h+8).toFixed(1)}"/>
         ${cfg.desenho(w, h)}
@@ -4548,6 +4555,7 @@ function renderMesas(){
     <g class="mesa" data-i="${i}" tabindex="0" role="button"
       aria-label="Mesa ${i+1}, ${MESA.lugares} lugares. Arraste ou use as setas; Delete remove."
       transform="translate(${m.x},${m.y})">
+      <title>Mesa redonda · ${MESA.lugares} lugares</title>
       <circle class="mesa__hit" r="${(MESA_R+2).toFixed(1)}"/>
       <use href="#simboloMesa" x="${(-MESA_R).toFixed(1)}" y="${(-MESA_R).toFixed(1)}"
         width="${(2*MESA_R).toFixed(1)}" height="${(2*MESA_R).toFixed(1)}"/>
@@ -4578,9 +4586,9 @@ function pintarPlanta(){
   const n = PROPOSTA.mesas.length, lug = n*MESA.lugares, conv = PROPOSTA.convidados;
   const el = $('#plantaCont');
   el.textContent = n===0
-    ? 'Nenhuma mesa ainda — comece pelo distribuir automático.'
+    ? 'Nenhuma mesa ainda. Comece pelo distribuir automático.'
     : `${n} ${n===1?'mesa':'mesas'} · ${n}×${MESA.lugares} = ${lug} lugares sentados` +
-      (MODO_LAYOUT ? '' : ' — ' + (lug>=conv ? `atende os ${conv} convidados` : `${conv} convidados no evento`)) +
+      (MODO_LAYOUT ? '' : ' · ' + (lug>=conv ? `atende os ${conv} convidados` : `${conv} convidados no evento`)) +
       (PISOS.length>1 ? ' · ' + PISOS.map((P,i)=>`${P.nome} ${PROPOSTA.mesas.filter(m=>pisoDe(m)===i).length}`).join(' · ') : '');
   el.classList.toggle('ok', n>0 && lug>=conv);
   pintarPisos();
@@ -5466,6 +5474,74 @@ function tresIniciar(){
     }
   }
 
+  /* MOBILIÁRIO DO ORÇAMENTO NA MAQUETE (05/10/2026) — nos salões que não têm
+     o cenário autoral do Salão de Eventos (palco e telão postos à mão na
+     calibração dele), as peças vêm do EDITOR 2D: o que o cliente arrastou na
+     planta é o que a maquete mostra. Sem isto, o Mediterrâneo abria a maquete
+     vazia mesmo com palco, telão e dez bistrôs no orçamento. */
+  if(!AMB.telao){
+    const pecas = Array.isArray(PROPOSTA.pecas) ? PROPOSTA.pecas : [];
+    const matPalco = new TH.MeshStandardMaterial({color:0x23282E, roughness:.85});
+    const matBorda = new TH.MeshStandardMaterial({color:0x171B20, roughness:.55});
+    const matTampo = new TH.MeshStandardMaterial({color:0xE8E2D6, roughness:.5});
+    const matPe = new TH.MeshStandardMaterial({color:0x2A2E33, roughness:.6, metalness:.35});
+    const matBanco = new TH.MeshStandardMaterial({color:0x6B4B2E, roughness:.75});
+    const geoTampo = new TH.CylinderGeometry(.35, .35, .05, 24);
+    const geoPe = new TH.CylinderGeometry(.045, .09, 1.05, 12);
+    const geoAssento = new TH.CylinderGeometry(.16, .16, .05, 16);
+    const geoPeBanco = new TH.CylinderGeometry(.03, .06, .72, 10);
+    const alturaDoPiso = pc => {
+      const P = PISOS[pc.p|0];
+      return (P && P.pisoY != null) ? P.pisoY : pisoYEm(pc.x, pc.y, pc.p|0);
+    };
+    for(const pc of pecas){
+      const cfg = PECAS[pc.t]; if(!cfg) continue;
+      const c = pxParaM(pc.x, pc.y), y0 = alturaDoPiso(pc);
+      if(pc.t === 'palco'){
+        const p = new TH.Mesh(new TH.BoxGeometry(cfg.larg, .4, cfg.fund), matPalco);
+        p.position.set(c.x, y0 + .2, c.z);
+        p.castShadow = p.receiveShadow = true;
+        p.name = 'palco';
+        T3.cena.add(p);
+      }else if(pc.t === 'telao'){
+        const W = cfg.larg, H = 2.2;
+        const g = new TH.Group();
+        const moldura = new TH.Mesh(new TH.BoxGeometry(W + .12, H + .12, .07), matBorda);
+        moldura.castShadow = true;
+        const tela = new TH.Mesh(new TH.PlaneGeometry(W, H), telaoMaterial(TH));
+        tela.position.z = .041;
+        g.add(moldura, tela);
+        /* dois pés curtos, para o painel não nascer flutuando */
+        for(const dx of [-W/2 + .35, W/2 - .35]){
+          const pe = new TH.Mesh(new TH.BoxGeometry(.12, .34, .07), matBorda);
+          pe.position.set(dx, -(H/2) - .17, 0);
+          g.add(pe);
+        }
+        g.position.set(c.x, y0 + .34 + H/2, c.z);
+        g.name = 'telao';
+        T3.cena.add(g);
+      }else if(pc.t === 'bistro'){
+        const g = new TH.Group();
+        const tampo = new TH.Mesh(geoTampo, matTampo);
+        tampo.position.y = 1.08; tampo.castShadow = true;
+        const pe = new TH.Mesh(geoPe, matPe); pe.position.y = .53;
+        const base = new TH.Mesh(new TH.CylinderGeometry(.24, .24, .03, 16), matPe);
+        base.position.y = .015;
+        g.add(tampo, pe, base);
+        for(const dz of [-.62, .62]){
+          const assento = new TH.Mesh(geoAssento, matBanco);
+          assento.position.set(0, .74, dz); assento.castShadow = true;
+          const pb = new TH.Mesh(geoPeBanco, matPe);
+          pb.position.set(0, .36, dz);
+          g.add(assento, pb);
+        }
+        g.name = 'bistro';
+        g.position.set(c.x, y0, c.z);
+        T3.cena.add(g);
+      }
+    }
+  }
+
   /* luz de fim de tarde: ambiente + direcional bem âmbar, sombra suave.
      v18.08-21: ambiente longe da origem do GLB (Solar) recebe a luz e a
      caixa de sombra centradas na área principal; o Salão fica como estava */
@@ -5586,7 +5662,7 @@ function pintarAmbs3d(){
   box.hidden = PISOS.length<2;
   if(box.hidden) return;
   box.innerHTML = ['<button type="button" class="pill" data-amb3d="-1" aria-pressed="true">Espaço inteiro</button>']
-    .concat(PISOS.map((P,i)=>`<button type="button" class="pill" data-amb3d="${i}" aria-pressed="false">${P.nome}</button>`)).join('');
+    .concat(PISOS.map((P,i)=>`<button type="button" class="pill" data-amb3d="${i}" aria-pressed="false">${esc(nomeLimpo(P.nome))}</button>`)).join('');
 }
 function olharAmbiente3d(i){
   if(!T3.pronto || (typeof TOUR!=='undefined' && TOUR.ativo)) return;
@@ -5806,13 +5882,35 @@ const PANOS = {};
    seletor — no Solar ele repetia a foto do hall/pátio; o Salão mantém */
 /* salão do pacote do CRM pode não ter panorâmica nenhuma (duas cerimônias não
    têm): sem este || a página quebrava no arranque e abria sem planta */
-const PANOS_LISTA = (AMB.panos||[]).filter(p=>!(p.vazio && AMB.panoInterno===false));
+/* UMA VISTA POR ZONA (05/10/2026) — salão com várias zonas (o Mediterrâneo tem
+   coffee, palestra, lounges e dois luaus) traz no pacote do CRM uma câmera
+   interna para cada uma, com olho e alvo em metros. Sem isso o 360° abria do
+   centro calculado e saía um quadro vazio: era o "em 360 não aparece nada". */
+const PANOS_INTERNOS = (() => {
+  const ins = (AMB.camera && Array.isArray(AMB.camera.internas)) ? AMB.camera.internas : [];
+  if(ins.length < 2) return [];
+  return ins.map((v, i) => {
+    const o = v.olho || [0,0,0], a = v.alvo || [0,0,0];
+    const nome = (PISOS[v.piso|0] || {}).nome || `Ambiente ${i+1}`;
+    return { id:'zona'+i, rotulo:nomeLimpo(nome), dinamico:true, interna:i,
+      olhoM:o, alvoM:a,
+      lon: Math.round(Math.atan2(a[2]-o[2], a[0]-o[0])*180/Math.PI),
+      lat: Math.round(Math.atan2(a[1]-o[1], Math.hypot(a[0]-o[0], a[2]-o[2]))*180/Math.PI),
+      legenda:`Vista de dentro · ${nomeLimpo(nome)}.` };
+  });
+})();
+const PANOS_LISTA = PANOS_INTERNOS.length
+  ? PANOS_INTERNOS
+  : (AMB.panos||[]).filter(p=>!(p.vazio && AMB.panoInterno===false));
+/* o primeiro da lista é o que o 360° abre, e vale de reserva quando pedem um
+   id que não existe: com as vistas por zona não há mais um pano "layout" */
+const PANO_PRIMEIRO = (PANOS_LISTA[0] || {}).id || 'layout';
 PANOS_LISTA.forEach(p=>{ PANOS[p.id] = {...p, tx:null, legenda:p.legenda||''}; });
 document.querySelector('.pano__ambientes').innerHTML = PANOS_LISTA.map((p,i)=>
   `<button type="button" class="pill" data-pano="${p.id}" aria-pressed="${i===0?'true':'false'}">${esc(p.rotulo)}</button>`).join('');
 const PANOL = { rev:0 };   /* versão do layout que o panorama dinâmico retrata */
 const P360 = {
-  pronto:false, falhou:false, raf:0, ambiente:'layout', pedido:null, emVoo:null,
+  pronto:false, falhou:false, raf:0, ambiente:PANO_PRIMEIRO, pedido:null, emVoo:null,
   cena:null, cam:null, renderer:null, mat:null,
   lon:356, lat:-2, fov:70, fov0:70, vLon:0, vLat:0, arrasto:false,
   ponteiros:new Map(), pinca:0
@@ -5922,10 +6020,14 @@ function panoMostrar(id){
    Cache por PROPOSTA.rev (PANOL): layout mudou → regenera ao entrar
    (ou no botão ↻). Sem WebGL o ambiente nem aparece no seletor.
    ================================================================= */
+/* olhoPx: ponto na planta (px). Com {m:[x,y,z]} o olho vem em METROS — é o
+   caso das vistas internas que o CRM traz prontas por zona (camera.internas),
+   feitas à mão por quem calibrou a maquete. */
 function layoutRenderizarPanorama(olhoPx){
   const TH = window.THREE, rd = T3.renderer;
-  const olho = pxParaM(olhoPx.x, olhoPx.y);
-  const olhoY = pisoYEm(olhoPx.x, olhoPx.y) + 1.60;
+  const emM = olhoPx && Array.isArray(olhoPx.m);
+  const olho = emM ? {x:olhoPx.m[0], z:olhoPx.m[2]} : pxParaM(olhoPx.x, olhoPx.y);
+  const olhoY = emM ? (olhoPx.m[1] + 1.60) : (pisoYEm(olhoPx.x, olhoPx.y) + 1.60);
   const fazer = (lado, tipo)=>{
     const cubo = new TH.WebGLCubeRenderTarget(lado, {type:tipo});
     const cam = new TH.CubeCamera(.1, 300, cubo);
@@ -5994,7 +6096,7 @@ function layoutRenderizarPanorama(olhoPx){
    id='interno' → o salão VAZIO: zera a lista de mesas só durante o render e
    restaura em finally (cache estático — não depende de rev). */
 function panoGerarLayout(id){
-  const amb = PANOS[id] || PANOS.layout;
+  const amb = PANOS[id] || PANOS[PANO_PRIMEIRO];
   return carregarThree()
     .then(carregarMaquete)
     .then(()=>{
@@ -6019,20 +6121,22 @@ function panoGerarLayout(id){
         const o = pxParaM(olho.x, olho.y), al = pxParaM(alvoPx.x, alvoPx.y);
         amb.lon = Math.round(Math.atan2(al.z - o.z, al.x - o.x)*180/Math.PI);
       }
+      /* zona com vista interna própria: o olho vem em metros, do pacote */
+      const olhoDaVez = (amb.interna != null && Array.isArray(amb.olhoM)) ? {m:amb.olhoM} : olho;
       let tx;
       if(amb.vazio){
         const guarda = PROPOSTA.mesas;
         try{
           PROPOSTA.mesas = [];
           tresMesas();                 /* cena sem nenhuma mesa */
-          tx = layoutRenderizarPanorama(olho);
+          tx = layoutRenderizarPanorama(olhoDaVez);
         }finally{
           PROPOSTA.mesas = guarda;     /* a maquete volta ao estado do cliente */
           tresMesas();
         }
       }else{
         tresMesas();                   /* a cena SEMPRE nasce do estado salvo */
-        tx = layoutRenderizarPanorama(olho);
+        tx = layoutRenderizarPanorama(olhoDaVez);
         PANOL.rev = PROPOSTA.rev;
       }
       if(amb.tx) amb.tx.dispose();     /* só o pano mais novo fica em memória */
@@ -6042,7 +6146,7 @@ function panoGerarLayout(id){
 $('#btnPanoAtualizar').addEventListener('click', ()=>{
   if(P360.falhou) return;
   PANOL.rev = -1;                      /* força regenerar mesmo sem rev nova */
-  panoMostrar('layout');
+  panoMostrar(PANO_PRIMEIRO);
 });
 /* sem WebGL não há maquete para renderizar: os ambientes GERADOS somem do seletor */
 if(!tresTemWebGL()){
@@ -6090,14 +6194,14 @@ function panoAtivar(){
   /* v18.08-20: a visão SEMPRE abre no "Seu layout" (mesmo que o cliente
      tivesse trocado de ambiente antes de sair); regenera quando a rev
      avançou, como sempre */
-  const amb = PANOS.layout;
+  const amb = PANOS[PANO_PRIMEIRO];
   if(P360.pronto && amb.tx && PANOL.rev === PROPOSTA.rev){
-    P360.ambiente = 'layout'; P360.pedido = 'layout';
-    panoAplicar('layout');
+    P360.ambiente = PANO_PRIMEIRO; P360.pedido = PANO_PRIMEIRO;
+    panoAplicar(PANO_PRIMEIRO);
     panoAbrir();
     return;
   }
-  panoMostrar('layout');
+  panoMostrar(PANO_PRIMEIRO);
 }
 document.querySelectorAll('[data-pano]').forEach(b=>b.addEventListener('click', ()=>{
   if(!P360.falhou) panoMostrar(b.dataset.pano);
@@ -6875,12 +6979,12 @@ const DIFERENCIAL = {
 const TEXTOS_EVENTO = {
   corporativo:{
     resumo:['Tudo <em>combinado</em>, num olhar.','Data, lugar e tamanho do evento. O número de participantes é seu: mexa nele e veja a proposta atualizar.'],
-    cardapios:['A mesa que sustenta o <em>encontro</em>.','Três escolhas, todas suas: o coquetel de chegada, o jantar e o bar. Troque à vontade — o orçamento atualiza na hora.'],
-    extras:['A <em>estrutura</em> que o seu evento pede.','O que já está na proposta. Ajuste as quantidades do que é ajustável — o que acompanha o número de participantes se ajusta sozinho.'],
+    cardapios:['A mesa que sustenta o <em>encontro</em>.','Três escolhas, todas suas: o coquetel de chegada, o jantar e o bar. Troque à vontade: o orçamento atualiza na hora.'],
+    extras:['A <em>estrutura</em> que o seu evento pede.','O que já está na proposta. Ajuste as quantidades do que é ajustável; o que acompanha o número de participantes se ajusta sozinho.'],
     galeria:['Onde o seu <em>evento</em> acontece.',''],
   },
   dinner:{
-    cardapios:['A mesa que <em>conduz</em> o jantar.','Três escolhas, todas suas: o coquetel de chegada, o jantar e o bar. Troque à vontade — o orçamento atualiza na hora.'],
+    cardapios:['A mesa que <em>conduz</em> o jantar.','Três escolhas, todas suas: o coquetel de chegada, o jantar e o bar. Troque à vontade: o orçamento atualiza na hora.'],
     extras:['Os <em>detalhes</em> que sustentam o jantar.',''],
     galeria:['Onde o seu <em>jantar</em> acontece.',''],
   },
@@ -7080,8 +7184,8 @@ function montarProva(nomeDoCRM){
   document.getElementById('provaIntro').textContent = !p.depoimentos.length
     ? 'A média das casas do Indaiá no Google, somando todas as unidades.'
     : cidade
-      ? `O que quem esteve nas nossas casas de ${p.onde} escreveu — direto do Google.`
-      : `O que quem esteve ${AMB.emTitulo==='salão' ? 'no salão' : `no ${p.onde}`} escreveu — direto do Google.`;
+      ? `O que quem esteve nas nossas casas de ${p.onde} escreveu, direto do Google.`
+      : `O que quem esteve ${AMB.emTitulo==='salão' ? 'no salão' : `no ${p.onde}`} escreveu, direto do Google.`;
   document.getElementById('provaGrid').innerHTML = p.depoimentos.map(d=>`
     <figure class="prova__card">
       <span class="prova__aspas" aria-hidden="true">“</span>
@@ -7179,7 +7283,7 @@ function montarFilme(){
   video.innerHTML = `<source src="${esc(v.src)}" type="video/mp4">`;
   video.setAttribute('aria-label', v.cap || `Passeio pelo ${AMB.nome}`);
   document.getElementById('filmeCap').textContent = v.cap
-    || `Passeio pelo ${AMB.nome} — montagem da casa, em vídeo.`;
+    || `Passeio pelo ${AMB.nome}: a montagem da casa, em vídeo.`;
   sec.hidden = false;
   montarPlayer();
 }
@@ -7191,10 +7295,14 @@ function montarFilme(){
 /* a lista abaixo é escrita pelo próprio ferramentas/gerar-filme.mjs quando
    grava o vídeo de uma proposta — sem ela a página sairia tentando um arquivo
    que quase nunca existe e enchendo o console de 404 */
-const PROPOSTAS_COM_FILME = ['ORC-2026-02412'];
+/* número da proposta → slug do salão em que o filme foi gravado. O filme só
+   entra quando a proposta está ABERTA naquele salão: mostrar o passeio do
+   Salão de Eventos numa proposta do Mediterrâneo é mostrar a casa errada
+   (apontado pelo dono em 05/10/2026). Escrito por gerar-filme.mjs. */
+const PROPOSTAS_COM_FILME = {'ORC-2026-02412':'salao_eventos'};
 function filmeDaProposta(){
   if(!ORC_REAL || !ORC_NUMERO) return;
-  if(!PROPOSTAS_COM_FILME.includes(ORC_NUMERO)) return;
+  if(PROPOSTAS_COM_FILME[ORC_NUMERO] !== ESPACO) return;
   const base = `assets/propostas/${encodeURIComponent(ORC_NUMERO)}/`;
   const sec = document.getElementById('filme'), video = document.getElementById('filmeVideo');
   if(!sec || !video) return;
@@ -7202,7 +7310,7 @@ function filmeDaProposta(){
   video.innerHTML = `<source src="${base}passeio.mp4" type="video/mp4">`;
   video.load();
   document.getElementById('filmeCap').textContent =
-    `O seu evento no ${AMB.nome}, em vídeo — com a sua marca no telão e a montagem desta proposta.`;
+    `O seu evento no ${AMB.nome}, em vídeo, com a sua marca no telão e a montagem desta proposta.`;
   sec.hidden = false;
   montarPlayer();
 }
@@ -7220,7 +7328,8 @@ function filmeDaProposta(){
    pasta, o próprio navegador cai no passeio pela segunda <source>. */
 function filmeAtual(){
   const comCapa = v => ({...v, capa: v.src.replace(/passeio.mp4$/, 'capa.mp4')});
-  if(ORC_REAL && ORC_NUMERO && PROPOSTAS_COM_FILME.includes(ORC_NUMERO)){
+  /* o corte da capa também só vale no salão em que o filme foi gravado */
+  if(ORC_REAL && ORC_NUMERO && PROPOSTAS_COM_FILME[ORC_NUMERO] === ESPACO){
     const base = `assets/propostas/${encodeURIComponent(ORC_NUMERO)}/`;
     return comCapa({src:`${base}passeio.mp4`, poster:`${base}poster.jpg`});
   }
@@ -7354,7 +7463,7 @@ function aplicarValidade(){
     av.classList.toggle('is-final', resta>0 && frac<=.25);
     av.classList.toggle('is-vencida', resta<=0);
     if(resta<=0){
-      txt.innerHTML = `Esta proposta venceu em <b>${dataBR(VALIDADE_ISO)} às ${hora}</b> — os valores podem ter mudado. `
+      txt.innerHTML = `Esta proposta venceu em <b>${dataBR(VALIDADE_ISO)} às ${hora}</b> · os valores podem ter mudado. `
         + '<button type="button" class="expirada__falar js-falar-equipe">Falar com a equipe para renovar</button>';
       marcarVencida();
       clearInterval(validadeTimer); validadeTimer = 0; return;
@@ -7555,7 +7664,7 @@ async function vestirPropostaCRM(){
       }
       const heroSub = document.querySelector('.hero__sub');
       if(heroSub && dataLonga) heroSub.innerHTML =
-        `<span class="js-espaco-rotulo">${esc(AMB.rotulo)}</span> — ${esc(dataLonga)}.`;
+        `<span class="js-espaco-rotulo">${esc(AMB.rotulo)}</span> · ${esc(dataLonga)}.`;
       const cardData = document.querySelector('#cardData .rcard__val');
       if(cardData) cardData.textContent = DATA_EVENTO_BR;
       /* o dia da semana vinha impresso e ficava errado: 06/11/2026 é sexta e
@@ -7567,7 +7676,7 @@ async function vestirPropostaCRM(){
         cardSub.textContent = tipo ? `${diaSem} · ${tipo}` : diaSem;
       }
       const brandLink = document.querySelector('a.brand');
-      if(brandLink) brandLink.setAttribute('aria-label', `${nomeCli} — voltar ao início da proposta`);
+      if(brandLink) brandLink.setAttribute('aria-label', `${nomeCli} · voltar ao início da proposta`);
 
       /* material da DIMY nunca vai na proposta de outro cliente (regra 09/09):
          · telão de LED do 3D: desenha o NOME deste cliente (a logo em imagem

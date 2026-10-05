@@ -63,16 +63,22 @@ if (TOKEN) {
   if (!numero) { console.error('✗ o link não trouxe orçamento nenhum — confira o token e a api'); await b.close(); process.exit(1); }
   console.log(`\n=== proposta ${numero} · ${espaco} ===`);
   await gravar(url, path.join(RAIZ, 'assets', 'propostas', numero), `proposta ${numero}`);
-  /* a página só procura o filme de quem está nesta lista */
+  /* a lista guarda o SALÃO de cada filme: a página só mostra o passeio quando
+     a proposta está aberta no mesmo salão em que ele foi gravado (05/10/2026) */
   const indexHtml = path.join(RAIZ, 'index.html');
   let html = fs.readFileSync(indexHtml, 'utf8');
-  const re = /const PROPOSTAS_COM_FILME = \[([^\]]*)\];/;
-  const atual = (re.exec(html)?.[1] || '').split(',').map(s => s.trim().replace(/^['"]|['"]$/g, '')).filter(Boolean);
-  if (!atual.includes(numero)) {
-    atual.push(numero);
-    html = html.replace(re, `const PROPOSTAS_COM_FILME = [${atual.map(n => `'${n}'`).join(', ')}];`);
+  const re = /const PROPOSTAS_COM_FILME = \{([^}]*)\};/;
+  const atual = {};
+  for (const par of (re.exec(html)?.[1] || '').split(',')) {
+    const m = /'([^']+)'\s*:\s*'([^']+)'/.exec(par);
+    if (m) atual[m[1]] = m[2];
+  }
+  if (atual[numero] !== espaco) {
+    atual[numero] = espaco;
+    const corpo = Object.entries(atual).map(([n, e]) => `'${n}':'${e}'`).join(', ');
+    html = html.replace(re, `const PROPOSTAS_COM_FILME = {${corpo}};`);
     fs.writeFileSync(indexHtml, html);
-    console.log(`  · ${numero} anotado na lista de propostas com filme`);
+    console.log(`  · ${numero} anotado com o salão ${espaco}`);
   }
   await b.close();
   console.log('\nA proposta mostra este vídeo sozinha quando o orçamento for o mesmo.');

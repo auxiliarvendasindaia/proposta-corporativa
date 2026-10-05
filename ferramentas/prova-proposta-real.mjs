@@ -54,7 +54,9 @@ ok(cent(r.total) === 12378295, `total igual ao do CRM (${r.total})`);
 ok(r.itens.length === 10 && r.serv.length === 6, `10 linhas e 6 serviços do orçamento (${r.itens.length}/${r.serv.length})`);
 ok(!/Coffee Superior|DJ - Essencial|Crédito - Audiovisual|Sousplat/.test(r.itens.join('|')), 'nenhum item da demo sobrando');
 ok(!/desconto|cupom/i.test(r.corpo), 'nenhuma menção a desconto ou cupom');
-ok(/sujeito a confirmação/i.test(r.aviso || ''), 'aviso de confirmação presente');
+/* "Valores … sujeitos a confirmação": o plural entrou junto com a limpeza dos
+   travessões (05/10); o teste aceita as duas concordâncias */
+ok(/sujeit[oa]s? a confirmação/i.test(r.aviso || ''), 'aviso de confirmação presente');
 ok(r.conv === 300 && /SEBRAE/i.test(r.titulo), `cliente e convidados do orçamento (${r.titulo})`);
 
 /* RETIRAR DA PROPOSTA — o cliente tira o que não quer pelo botão do card, mas
