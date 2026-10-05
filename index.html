@@ -491,6 +491,8 @@ html.sem-maquete .hero__fundo,html.sem-maquete .cta__media{display:none;}
 .area__fundo{fill:rgba(247,248,249,.82);stroke:rgba(36,43,51,.18);stroke-width:1.5;}
 .area__txt{font-family:var(--serif);font-weight:600;font-size:34px;fill:var(--brown-deep);letter-spacing:.02em;}
 .areas{pointer-events:none;}
+/* o resto da planta escurece; a zona aberta fica acesa */
+.zona__foco{fill:rgba(20,24,29,.42);}
 .ambs3d{position:absolute;top:12px;left:12px;z-index:6;display:flex;gap:8px;flex-wrap:wrap;max-width:calc(100% - 24px);}
 .ambs3d .pill{font-size:.74rem;padding:5px 13px;background:rgba(247,248,249,.94);box-shadow:0 2px 8px rgba(20,24,29,.12);}
 /* a aba escolhida estava com texto creme sobre fundo claro (a regra do .ambs3d
@@ -1495,7 +1497,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer: é só pedir na nossa conversa.
-      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-31</span></p>
+      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-32</span></p>
   </div>
 </footer>
 
@@ -2494,14 +2496,17 @@ const MASCARA = decodificarMascara(AMB.mascara.b64);
    `p`. Array vazio é "truthy", então o || escolhia o vazio e o Solar abria com
    ZERO mesas. Agora a lista do piso só vale quando tem mesa; senão, a geral é
    repartida pelo `p` de cada mesa. */
+/* nome que vem do CRM pode trazer travessão ("Luau — faixa superior"): na
+   tela da proposta não entra travessão nenhum (decisão do dono) */
+const nomeLimpo = t => String(t||'').replace(/\s*[—–]\s*/g, ' · ');
 const mesasDoPiso = (p, i) => (p.mesasPadrao && p.mesasPadrao.length)
   ? p.mesasPadrao
   : (AMB.mesasPadrao||[]).filter(m=>(m.p|0)===i).map(m=>({...m}));
 const PISOS = ((AMB.pisos && AMB.pisos.length) ? AMB.pisos : [{id:'terreo', nome:'Térreo'}]).map((p,i)=> i===0
-  ? {...p, id:p.id||'terreo', nome:p.nome||'Térreo', planta:p.planta||AMB.planta, mascara:p.mascara||AMB.mascara,
+  ? {...p, id:p.id||'terreo', nome:nomeLimpo(p.nome)||'Térreo', planta:p.planta||AMB.planta, mascara:p.mascara||AMB.mascara,
      areas:p.areas||AMB.areas, principal:p.principal!=null ? p.principal : AMB.principal,
      mesasPadrao:mesasDoPiso(p, 0), pisoY:p.pisoY!=null ? p.pisoY : AMB.glb.pisoY}
-  : {...p, areas:p.areas||[], principal:p.principal||0, mesasPadrao:mesasDoPiso(p, i)});
+  : {...p, nome:nomeLimpo(p.nome||('Piso '+(i+1))), areas:p.areas||[], principal:p.principal||0, mesasPadrao:mesasDoPiso(p, i)});
 let PISO_I = 0, PISO = PISOS[0];
 const pisoDe = m=>{ const p = m ? (m.p|0) : 0; return (p>0 && p<PISOS.length) ? p : 0; };
 function mascaraDoPiso(p){
@@ -4254,7 +4259,34 @@ function montarPlanta(){
      só o retângulo `recorte` (px absolutos), sem mudar nenhuma coordenada:
      a <img> vira só o gabarito de proporção (escondida) e o fundo passa a
      ser um <image> dentro do SVG, que o viewBox recorta */
-  const R = PISO.recorte || PL.recorte;   /* recorte da ABA (Solar) ou da planta (Mezanino) */
+  let R = PISO.recorte || PL.recorte;   /* recorte da ABA (Solar) ou da planta (Mezanino) */
+  /* ZONA EM FOCO (05/10/2026) — no pacote do CRM as zonas de uma mesma casa
+     dividem a planta E o recorte (o Mediterrâneo tem cinco zonas e um recorte
+     só, o do coffee). Trocar de aba não mexia no desenho e as peças da zona
+     caíam fora do quadro: parecia que a aba não fazia nada. Com várias zonas,
+     o recorte passa a ser o retângulo DA ZONA, com uma folga em volta. */
+  if(PISOS.length > 1){
+    const Az = (PISO.areas && (PISO.areas[PISO.principal||0] || PISO.areas[0])) || null;
+    if(Az){
+      const folga = Math.max(60, Math.min(Az.x1-Az.x0, Az.y1-Az.y0) * 0.25);
+      let x = Math.max(0, Az.x0 - folga), y = Math.max(0, Az.y0 - folga);
+      let w = Math.min(PL.w - x, (Az.x1 - Az.x0) + folga*2);
+      let h = Math.min(PL.h - y, (Az.y1 - Az.y0) + folga*2);
+      /* MESMO QUADRO EM TODAS AS ABAS — sem igualar a proporção, a zona
+         estreita saía com duas tarjas brancas dos lados e o quadro mudava de
+         tamanho a cada aba. Aqui o recorte cresce pelo lado curto até 16:10,
+         sem passar da planta. */
+      const ALVO = 16/10;
+      if(w/h < ALVO){
+        const nw = Math.min(PL.w, h*ALVO);
+        x = Math.max(0, Math.min(PL.w - nw, x - (nw - w)/2)); w = nw;
+      }else if(w/h > ALVO){
+        const nh = Math.min(PL.h, w/ALVO);
+        y = Math.max(0, Math.min(PL.h - nh, y - (nh - h)/2)); h = nh;
+      }
+      R = {x: Math.round(x), y: Math.round(y), w: Math.round(w), h: Math.round(h)};
+    }
+  }
   /* quadro do editor: com recorte ou seletor de pisos, a altura passa a ser a
      do conteúdo (barra de pisos + planta inteira) em vez do 16:10 fixo — senão
      a planta quadrada do Mezanino sai cortada em cima e embaixo. Salão e
@@ -4294,7 +4326,22 @@ function montarPlanta(){
   /* régua de escala: 5 m na escala calibrada, canto inferior esquerdo do piso */
   /* v18.08-26 (decisão do dono): a identificação do ambiente é a ABA —
      nenhum título desenhado dentro da planta */
-  $('#areasCamada').innerHTML = '';
+  /* ZONA EM FOCO (05/10/2026) — numa casa de várias zonas (o Mediterrâneo tem
+     coffee, palestra, lounges e dois luaus) todas dividem a MESMA imagem de
+     planta: trocar de aba não mudava nada na tela e parecia defeito. Agora o
+     resto do desenho escurece e só a zona aberta fica acesa. */
+  const camadaAreas = $('#areasCamada');
+  if(PISOS.length > 1){
+    const Az = (PISO.areas && (PISO.areas[PISO.principal||0] || PISO.areas[0])) || null;
+    const PL2 = PISO.planta || AMB.planta;
+    if(Az){
+      const furo = Az.poligono && Az.poligono.length > 2
+        ? 'M' + Az.poligono.map(pt=>`${Math.round(pt[0])},${Math.round(pt[1])}`).join(' L') + ' Z'
+        : `M${Az.x0},${Az.y0} L${Az.x1},${Az.y0} L${Az.x1},${Az.y1} L${Az.x0},${Az.y1} Z`;
+      camadaAreas.innerHTML = `<path class="zona__foco" fill-rule="evenodd"
+        d="M0,0 L${PL2.w},0 L${PL2.w},${PL2.h} L0,${PL2.h} Z ${furo}"/>`;
+    }else camadaAreas.innerHTML = '';
+  }else camadaAreas.innerHTML = '';
   const L = Math.round(5*pxm*10)/10;
   const regua = $('#reguaCamada');
   const AP = PISO.areas[PISO.principal] || SALAO_PRINCIPAL;
@@ -4305,9 +4352,6 @@ function montarPlanta(){
 }
 /* seletor de piso (v18.08-24): só aparece quando o ambiente tem mais de um
    nível editável; cada pill mostra quantas mesas há naquele piso */
-/* nome que vem do CRM pode trazer travessão ("Luau — faixa superior"): na
-   tela da proposta não entra travessão nenhum (decisão do dono) */
-const nomeLimpo = t => String(t||'').replace(/\s*[—–]\s*/g, ' · ');
 function pintarPisos(){
   const box = $('#pisosSel'); if(!box) return;
   box.hidden = PISOS.length<2;
@@ -4362,7 +4406,9 @@ const PECAS = {
   },
   telao: {
     nome:'Telão de LED', um:'telão', plural:'telões',
-    casa:/\bled\b|tel[aã]o|painel|audiovisual|projec|datashow/,
+    /* "audiovisual" sozinho pegava pacote de som e transmissão, que não são
+       painel: no ORC-2026-02412 virava TRÊS telões em vez de um (05/10) */
+    casa:/\bled\b|tel[aã]o|painel|projec|datashow/,
     larg:4, fund:0.5,
     desenho(w, h){
       return `<rect class="peca__corpo peca__corpo--led" x="${(-w/2).toFixed(1)}" y="${(-h/2).toFixed(1)}"
@@ -4393,7 +4439,15 @@ function pecasContratadas(){
    partem da cabeceira da área principal, os bistrôs das laterais, e dali
    andam em espiral até caírem num pedaço de piso livre de mesa e de outra
    peça. Sem isso o palco nascia POR CIMA das mesas do layout padrão. */
-function vagaDePeca(tipo, x0, y0, postas){
+/* ÁREA DE UMA ZONA — num salão de várias zonas (o Mediterrâneo tem coffee,
+   palestra, lounges e dois luaus) cada uma tem a sua área e o seu mapa de
+   piso. Numa casa de zona única, continua sendo o salão principal. */
+function areaDoPiso(i){
+  const P = PISOS[i] || PISOS[0];
+  return (P.areas && (P.areas[P.principal||0] || P.areas[0])) || SALAO_PRINCIPAL;
+}
+function vagaDePeca(tipo, x0, y0, postas, piso){
+  const z = piso|0;
   const {w, h} = pecaPx(tipo);
   /* FOLGA REAL — a mesa é um círculo (raio do footprint) e a peça é um
      retângulo: medir de centro a centro reprovava o palco que estava no
@@ -4402,53 +4456,74 @@ function vagaDePeca(tipo, x0, y0, postas){
   const folga = q => {
     let menor = Infinity;
     for(const m of PROPOSTA.mesas){
-      if(pisoDe(m)!==0) continue;
+      if(pisoDe(m)!==z) continue;
       const dx = Math.max(0, Math.abs(m.x-q.x) - w/2);
       const dy = Math.max(0, Math.abs(m.y-q.y) - h/2);
       menor = Math.min(menor, Math.hypot(dx, dy) - MESA_R);
     }
     for(const o of postas){
+      if((o.p|0) !== z) continue;
       const d = pecaPx(o.t);
       menor = Math.min(menor,
         Math.max(Math.abs(o.x-q.x) - (w+d.w)/2, Math.abs(o.y-q.y) - (h+d.h)/2) - 4);
     }
     return menor;
   };
-  /* a peça fica DENTRO do salão principal: a espiral larga achava "vaga" no
+  /* a peça fica DENTRO da área da zona: a espiral larga achava "vaga" no
      braço da entrada, e o palco aparecia fora do salão (achado em 01/10) */
-  const A = SALAO_PRINCIPAL;
+  const A = areaDoPiso(z);
   const dentro = q => q.x > A.x0 + w/2 - 4 && q.x < A.x1 - w/2 + 4
                    && q.y > A.y0 + h/2 - 4 && q.y < A.y1 - h/2 + 4;
-  let q = clampMesa(x0, y0, 0);
+  let q = clampMesa(x0, y0, z);
   let melhor = {q, f: dentro(q) ? folga(q) : -1e6};
   for(let k=1; melhor.f < 0 && k<=1500; k++){
     const ang = k*2.399, raio = 9*Math.sqrt(k);
-    const c = clampMesa(x0 + raio*Math.cos(ang), y0 + raio*Math.sin(ang), 0);
+    const c = clampMesa(x0 + raio*Math.cos(ang), y0 + raio*Math.sin(ang), z);
     if(!dentro(c)) continue;
     const f = folga(c);
     if(f > melhor.f) melhor = {q:c, f};
   }
-  return {t:tipo, ...melhor.q};
+  return {t:tipo, ...melhor.q, p:z};
+}
+/* CADA PEÇA NA SUA ZONA (05/10/2026) — numa casa de várias zonas, jogar tudo
+   na primeira deixava as outras abas vazias (o cliente trocava de aba e não
+   via nada). O palco e o telão vão para a zona de palestra; os bistrôs se
+   espalham pelas zonas de estar (lounge, coffee, bar). Sem zona com esse
+   nome, vale a primeira — e numa casa de zona única nada muda. */
+function zonaPara(tipo){
+  if(PISOS.length < 2) return [0];
+  const casa = re => PISOS.map((P,i)=>[i, normNome(P.nome||'')])
+    .filter(([,n])=>re.test(n)).map(([i])=>i);
+  if(tipo === 'palco' || tipo === 'telao'){
+    const z = casa(/palestra|apresenta|auditorio|principal|salao|salão/);
+    return z.length ? [z[0]] : [0];
+  }
+  const z = casa(/lounge|coffee|recep|bar|estar/);
+  return z.length ? z : [0];
 }
 function pecasPadrao(){
-  const A = SALAO_PRINCIPAL, contratadas = pecasContratadas(), fora = [];
-  const cx = (A.x0+A.x1)/2, larg = A.x1-A.x0, fund = A.y1-A.y0;
+  const contratadas = pecasContratadas(), fora = [];
   const pp = pecaPx('palco'), pt = pecaPx('telao'), pb = pecaPx('bistro');
+  const zPalco = zonaPara('palco')[0];
+  const Ap = areaDoPiso(zPalco);
   const nPalco = contratadas.palco || 0;
   for(let i=0;i<nPalco;i++){
-    const x = cx + (i - (nPalco-1)/2) * (pp.w + 6);
-    fora.push(vagaDePeca('palco', x, A.y0 + pp.h*0.8, fora));
+    const x = (Ap.x0+Ap.x1)/2 + (i - (nPalco-1)/2) * (pp.w + 6);
+    fora.push(vagaDePeca('palco', x, Ap.y0 + pp.h*0.8, fora, zPalco));
   }
+  const zTelao = zonaPara('telao')[0], At = areaDoPiso(zTelao);
   for(let i=0;i<(contratadas.telao||0);i++){
-    const x = cx + (i - ((contratadas.telao||1)-1)/2) * (pt.w + 8);
-    fora.push(vagaDePeca('telao', x, A.y0 + pt.h*1.2, fora));
+    const x = (At.x0+At.x1)/2 + (i - ((contratadas.telao||1)-1)/2) * (pt.w + 8);
+    fora.push(vagaDePeca('telao', x, At.y0 + pt.h*1.2, fora, zTelao));
   }
-  const nb = contratadas.bistro || 0;
+  const zonasB = zonaPara('bistro'), nb = contratadas.bistro || 0;
   for(let i=0;i<nb;i++){
-    /* duas colunas encostadas nas laterais, de cima para baixo */
-    const lado = i % 2 === 0 ? A.x0 + pb.w*0.7 : A.x1 - pb.w*0.7;
-    const y = A.y0 + fund*0.25 + Math.floor(i/2) * (pb.h + 0.9*pxm);
-    fora.push(vagaDePeca('bistro', lado, Math.min(y, A.y1 - pb.h), fora));
+    const z = zonasB[i % zonasB.length], A = areaDoPiso(z);
+    const porZona = Math.ceil(nb / zonasB.length);
+    const k = Math.floor(i / zonasB.length);                 /* posição dentro da zona */
+    const lado = k % 2 === 0 ? A.x0 + pb.w*0.7 : A.x1 - pb.w*0.7;
+    const y = A.y0 + (A.y1-A.y0)*0.25 + Math.floor(k/2) * (pb.h + 0.9*pxm);
+    fora.push(vagaDePeca('bistro', lado, Math.min(y, A.y1 - pb.h), fora, z));
   }
   return fora;
 }
@@ -5948,6 +6023,39 @@ function panoIniciar(){
   P360.cam = new TH.PerspectiveCamera(P360.fov, 1, .1, 100);
   P360.pronto = true;
 }
+/* 360° QUE SAI VAZIO (05/10/2026) — a panorâmica "Seu layout" é renderizada
+   da maquete, de dentro. Em casa cujo modelo é de MASSA (bonito de cima, sem
+   interior construído — o Mediterrâneo é assim), o quadro sai liso: uma cor
+   só. Mostrar uma tela vazia é pior do que não oferecer, então a aba "Ver em
+   360°" some e quem já estava nela volta para o 3D. A medida é feita uma vez,
+   no primeiro quadro depois de aplicar a panorâmica. */
+let pano360Medido = false, pano360Pendente = false;
+function pano360TemImagem(){
+  try{
+    const c = P360.renderer && P360.renderer.domElement;
+    if(!c || !c.width) return true;                 /* sem o que medir: não condena */
+    const g = document.createElement('canvas');
+    g.width = 96; g.height = 54;
+    const x = g.getContext('2d', {willReadFrequently:true});
+    x.drawImage(c, 0, 0, 96, 54);
+    const d = x.getImageData(0, 0, 96, 54).data;
+    const tons = new Set();
+    for(let i = 0; i < d.length; i += 4) tons.add((d[i]>>4) + '-' + (d[i+1]>>4) + '-' + (d[i+2]>>4));
+    return tons.size > 3;
+  }catch(e){ return true; }
+}
+function pano360Julgar(){
+  if(pano360TemImagem()) return;
+  const aba = document.querySelector('[data-visao="v360"]');
+  if(aba) aba.hidden = true;
+  if(typeof visaoAtual !== 'undefined' && visaoAtual === 'v360') trocarVisao('v3d');
+}
+function pano360Conferir(){
+  if(pano360Medido) return;
+  pano360Medido = true;
+  /* o laço mede logo depois de desenhar, dentro do mesmo quadro */
+  pano360Pendente = true;
+}
 function panoAplicar(id){
   const amb = PANOS[id];
   amb.tx.anisotropy = Math.min(8, P360.renderer.capabilities.getMaxAnisotropy());
@@ -5965,6 +6073,7 @@ function panoAplicar(id){
   /* o botão ↻ só faz sentido no ambiente que acompanha o layout */
   $('#btnPanoAtualizar').hidden = !(amb.dinamico && !amb.vazio);
   document.querySelectorAll('[data-pano]').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.pano===id)));
+  pano360Conferir();   /* quadro liso = esta casa não tem 360° para mostrar */
 }
 /* troca de ambiente: fade curto se a textura já está aqui; senão spinner +
    download/geração — e o ÚLTIMO clique sempre vence (P360.pedido, como nas
@@ -6176,6 +6285,7 @@ function panoLaco(){
     panoCamera();
   }
   P360.renderer.render(P360.cena, P360.cam);
+  if(pano360Pendente){ pano360Pendente = false; pano360Julgar(); }
 }
 function panoAbrir(){
   panoDimensionar();

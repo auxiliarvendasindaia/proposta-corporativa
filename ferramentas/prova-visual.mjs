@@ -13,11 +13,18 @@ let falhas = 0; const ok = (c, m) => { console.log((c ? 'OK   ' : 'FALHOU ✗ ')
 
 /* celular: peso e linha de item */
 const p = await b.newPage(); await p.setViewport({ width: 400, height: 820, isMobile: true, deviceScaleFactor: 2 });
-let bytes = 0, originais = 0;
-p.on('response', r => { const l = +(r.headers()['content-length'] || 0); bytes += l; if (/midias\/chat\/full/.test(r.url()) && !/render\/image/.test(r.url())) originais++; });
+let originais = 0;
+p.on('response', r => { if (/midias\/chat\/full/.test(r.url()) && !/render\/image/.test(r.url())) originais++; });
+/* PESO DE VERDADE (05/10/2026) — somar o content-length declarado contava os
+   10 MB do filme inteiro: o <video> pede a faixa, o servidor responde 206 com
+   o tamanho do arquivo e o Chrome lê só o começo. O que conta para o cliente
+   é o que desce pelo fio: o encodedDataLength de cada pedido. */
+const cdp = await p.createCDPSession(); await cdp.send('Network.enable');
+let bytes = 0;
+cdp.on('Network.loadingFinished', e => { bytes += e.encodedDataLength; });
 const erros = []; p.on('pageerror', e => erros.push(String(e).slice(0, 130)));
 await p.goto(`${BASE}/`, { waitUntil: 'networkidle2' });
-await p.evaluate(() => { try { localStorage.clear(); } catch (e) {} }); await p.reload({ waitUntil: 'networkidle2' }); await espera(1200);
+await p.evaluate(() => { try { localStorage.clear(); } catch (e) {} }); bytes = 0; await p.reload({ waitUntil: 'networkidle2' }); await espera(1200);
 await p.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 600) { window.scrollTo(0, y); await new Promise(r => setTimeout(r, 120)); } });
 await espera(3000);
 console.log(`\npeso no celular (página inteira): ${(bytes / 1e6).toFixed(1)} MB`);
