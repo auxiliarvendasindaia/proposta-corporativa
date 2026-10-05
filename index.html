@@ -1492,7 +1492,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer — é só pedir na nossa conversa.
-      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-29</span></p>
+      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-30</span></p>
   </div>
 </footer>
 
@@ -2699,7 +2699,12 @@ const MODO_LAYOUT = new URLSearchParams(location.search).get('modo')==='layout';
 const QS_PROPOSTA = new URLSearchParams(location.search);
 const PROPOSTA_TOKEN = /^[0-9a-f]{32,128}$/i.test(QS_PROPOSTA.get('proposta')||'')
   ? QS_PROPOSTA.get('proposta') : null;
-const API_CRM_OFICIAL = '';   /* base pública oficial do CRM — entra no deploy da Fase 4 */
+/* A BASE OFICIAL DO CRM (05/10/2026) — com ela o link que o CRM gera abre com
+   o orçamento DE VERDADE; sem ela a página só mostrava a demonstração. É só
+   LEITURA: a página faz uma única chamada, GET /api/public/proposta/<token>,
+   e não existe rota de escrita em lugar nenhum (o cliente nunca cria nada).
+   Esvaziar esta linha devolve a página para a demonstração na hora. */
+const API_CRM_OFICIAL = 'https://comercial-api.squareweb.app';
 const API_CRM = (()=>{
   const emLocalhost = ['localhost','127.0.0.1'].includes(location.hostname);
   const a = QS_PROPOSTA.get('api')||'';
@@ -7657,6 +7662,21 @@ async function vestirPropostaCRM(){
        · qualquer outro desencontro → o aviso honesto, com o nome certo. */
     const cidadeOrc = (o.cidade && o.cidade.nome)
       ? o.cidade.nome + (o.cidade.estado ? '/' + o.cidade.estado : '') : '';
+    /* o nome que o cliente conhece é o do ORÇAMENTO ("Mediterrâneo 242"), não o
+       da maquete ("Mediterrâneo Indaiá"); a cidade também vem do orçamento */
+    /* vale quando o link nomeou o salão (a atendente escolheu, e o orçamento
+       descreve a MESMA casa) ou quando o nome bate com o ambiente desenhado.
+       No evento de VÁRIOS DIAS não vale: cada dia tem o seu espaço e o link
+       pode abrir a planta de qualquer um deles, não a do espaço principal. */
+    if(espacoDoOrc && !(ORC_REAL && ORC_REAL.multiDia)
+       && (!!ESPACO_PEDIDO || espacoPorNome(espacoDoOrc) === ESPACO)){
+      const cid = (o.cidade && o.cidade.nome) ? `${o.cidade.nome}/${o.cidade.estado||''}`.replace(/\/$/, '') : '';
+      const n = document.getElementById('espacoNome'); if(n) n.textContent = espacoDoOrc;
+      const c = document.getElementById('espacoCidade');
+      if(c && o.cidade && o.cidade.nome) c.textContent = `${o.cidade.nome} · ${o.cidade.estado||''}`.trim();
+      document.querySelectorAll('.js-espaco-rotulo').forEach(el=>
+        el.textContent = cid ? `${espacoDoOrc} · ${cid}` : espacoDoOrc);
+    }
     const slugDoOrc = espacoDoOrc ? espacoPorNome(espacoDoOrc) : null;
     if(slugDoOrc && slugDoOrc !== ESPACO && !ESPACO_PEDIDO){
       const u = new URL(location.href);
