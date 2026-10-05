@@ -160,11 +160,14 @@ for (const amb of lista) {
     /* atalhos de câmera por ambiente: o último ambiente é o mais distante */
     if (tres.pills.length > 1) {
       const mudou = await p.evaluate(async () => {
-        const a0 = [T3.alvo.x, T3.alvo.z];
+        /* a ALTURA conta: no Mezanino os dois pisos ficam um sobre o outro e
+           têm o mesmo centro em planta — medir só x/z dizia que a câmera não
+           tinha mexido (02/10/2026, com as áreas do pacote do CRM). */
+        const a0 = [T3.alvo.x, T3.alvo.y, T3.alvo.z];
         const bs = [...document.querySelectorAll('#tresAmbs [data-amb3d]')];
         bs[bs.length - 1].click();
         await new Promise(r => setTimeout(r, 700));
-        return Math.abs(T3.alvo.x - a0[0]) + Math.abs(T3.alvo.z - a0[1]);
+        return Math.abs(T3.alvo.x - a0[0]) + Math.abs(T3.alvo.y - a0[1]) + Math.abs(T3.alvo.z - a0[2]);
       });
       ok(mudou > 0.5, `atalhos de câmera mexem a vista (${tres.pills.length} ambientes: ${tres.pills.join(' · ')})`);
     }

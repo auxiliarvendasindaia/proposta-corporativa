@@ -15,6 +15,21 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex,nofollow,noai">
+<!-- SALÃO DO CRM (v18.09-28): a ficha do salão pedido no link é carregada aqui,
+     antes de tudo, porque o registro da página precisa dela já montada.
+     document.write é o único jeito de um <script> entrar SÍNCRONO a partir de
+     um nome que só se conhece em tempo de execução; é um arquivo da própria
+     pasta (30 a 150 KB) e, se não existir, a página segue com o registro
+     escrito à mão. Gerado por ferramentas/gerar-ambientes.mjs. -->
+<script>
+(function(){
+  try{
+    var s = new URLSearchParams(location.search).get('espaco') || 'salao_eventos';
+    if(!/^[a-z0-9_-]{1,100}$/.test(s)) return;
+    document.write('<scr' + 'ipt src="dados/ambientes/' + s + '.js"></scr' + 'ipt>');
+  }catch(e){}
+})();
+</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23242B33'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-style='italic' font-size='16' fill='%23B09A6E' text-anchor='middle'%3Ein%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1474,7 +1489,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer — é só pedir na nossa conversa.
-      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-27</span></p>
+      Protótipo de proposta interativa — este material não substitui o contrato. <span id="versaoBuild">v18.09-28</span></p>
   </div>
 </footer>
 
@@ -2381,6 +2396,57 @@ const AMBIENTES = {
   }
 };
 /* seleção do ambiente: ?espaco=<id> (inválido/ausente = Salão de Eventos) */
+/* ===================================================================
+   O SALÃO VEM DO CRM (v18.09-28)
+   O registro acima nasceu escrito à mão, com a calibração medida a dedo, e
+   por isso só tem cinco salões. O CRM mantém VINTE E CINCO maquetes
+   publicadas (Operacional › Layouts) com a MESMA ficha — e com a planta
+   refeita em vista reta e as colunas marcadas como obstáculo.
+
+   `ferramentas/gerar-ambientes.mjs` grava uma fotografia de cada uma em
+   `dados/ambientes/<slug>.js`, e o bloco no <head> carrega a do salão que o
+   link pediu ANTES deste script rodar. Aqui a ficha do CRM entra no lugar da
+   escrita à mão:
+
+   · a GEOMETRIA vem inteira do CRM (planta, máscara, escala, áreas, pisos,
+     montagem padrão, modelo 3D, câmera) — nunca misturada com a antiga, que
+     tem outra escala;
+   · a CURADORIA continua da página (fotos da galeria, panorâmicas
+     fotográficas, filme, foto do fechamento) — isso o CRM não tem.
+
+   Se o arquivo não carregar, nada acontece: fica a ficha escrita à mão, e um
+   salão que a página não conhece continua caindo no aviso honesto.
+   =================================================================== */
+const CRM_AMB = (()=>{
+  const p = typeof window !== 'undefined' ? window.__AMB_CRM__ : null;
+  if(!p || !p.slug || !p.dados || !p.dados.mascara) return null;
+  const base = String(p.base||'').replace(/\/+$/, '') + '/';
+  /* caminho do pacote → URL do bucket público. ATENÇÃO: os caminhos do CRM
+     TAMBÉM começam com "assets/", então aqui tudo que não for http/data vira
+     URL do bucket. O que a página cura entra depois e não passa por aqui. */
+  const abs = v => (typeof v === 'string' && v && !/^(https?:|data:)/i.test(v))
+    ? base + v.replace(/^\/+/, '') : v;
+  const d = JSON.parse(JSON.stringify(p.dados));
+  if(d.planta && d.planta.src) d.planta.src = abs(d.planta.src);
+  if(d.glb && d.glb.src) d.glb.src = abs(d.glb.src);
+  if(d.envMap) d.envMap = abs(d.envMap);
+  (d.props||[]).forEach(x=>{ if(x.glb) x.glb = abs(x.glb); });
+  (d.panos||[]).forEach(x=>{ if(x.arquivo) x.arquivo = abs(x.arquivo); });
+  (d.pisos||[]).forEach(P=>{
+    if(P.glb) P.glb = abs(P.glb);
+    if(P.planta && P.planta.src) P.planta.src = abs(P.planta.src);
+  });
+  /* o que a página cura e o CRM não guarda */
+  /* o roteiro do tour tambem e curadoria: o Salao de Eventos tem um roteiro
+     autoral (tour:'salao') que o pacote do CRM nao guarda — de la vem so o
+     generico {entradaFrac}, que e o certo para quem ainda nao tem roteiro */
+  const CURADORIA = ['galeria','galeriaIntro','filme','cta','heroFoto','ctaFoto','panos','descricao','tour','tourOrdem','telao','envMap'];
+  const curado = AMBIENTES[p.slug];
+  if(curado) for(const k of CURADORIA) if(curado[k] !== undefined) d[k] = curado[k];
+  AMBIENTES[p.slug] = d;
+  return {slug:p.slug, versao:p.versao||'', novo:!curado};
+})();
+
 /* SALÃO QUE A PÁGINA NÃO CONHECE (01/10/2026) — o CRM tem 26 maquetes e a
    página desenha 5. Até aqui qualquer slug de fora (mediterraneo, joinville,
    cerimonia_*) caía CALADO no Salão de Eventos de Itapema: o cliente de
@@ -2417,11 +2483,19 @@ const MASCARA = decodificarMascara(AMB.mascara.b64);
    O editor 2D mostra um piso por vez (PISO_I); a maquete, o total de lugares
    e o link levam todos. Tudo o que é 3D/tour/360 continua ancorado no térreo
    (AREA, SALAO_PRINCIPAL, AMB.areas) — o piso só muda o que o cliente edita. */
+/* MESAS DE CADA PISO (corrigido em 02/10/2026) — no pacote do CRM os pisos vêm
+   com `mesasPadrao: []` e a montagem inteira fica na lista geral, marcada com
+   `p`. Array vazio é "truthy", então o || escolhia o vazio e o Solar abria com
+   ZERO mesas. Agora a lista do piso só vale quando tem mesa; senão, a geral é
+   repartida pelo `p` de cada mesa. */
+const mesasDoPiso = (p, i) => (p.mesasPadrao && p.mesasPadrao.length)
+  ? p.mesasPadrao
+  : (AMB.mesasPadrao||[]).filter(m=>(m.p|0)===i).map(m=>({...m}));
 const PISOS = ((AMB.pisos && AMB.pisos.length) ? AMB.pisos : [{id:'terreo', nome:'Térreo'}]).map((p,i)=> i===0
   ? {...p, id:p.id||'terreo', nome:p.nome||'Térreo', planta:p.planta||AMB.planta, mascara:p.mascara||AMB.mascara,
      areas:p.areas||AMB.areas, principal:p.principal!=null ? p.principal : AMB.principal,
-     mesasPadrao:p.mesasPadrao||AMB.mesasPadrao||[], pisoY:p.pisoY!=null ? p.pisoY : AMB.glb.pisoY}
-  : {...p, areas:p.areas||[], principal:p.principal||0, mesasPadrao:p.mesasPadrao||[]});
+     mesasPadrao:mesasDoPiso(p, 0), pisoY:p.pisoY!=null ? p.pisoY : AMB.glb.pisoY}
+  : {...p, areas:p.areas||[], principal:p.principal||0, mesasPadrao:mesasDoPiso(p, i)});
 let PISO_I = 0, PISO = PISOS[0];
 const pisoDe = m=>{ const p = m ? (m.p|0) : 0; return (p>0 && p<PISOS.length) ? p : 0; };
 function mascaraDoPiso(p){
@@ -2553,7 +2627,14 @@ function distribuirNaArea(a, need){
   }
   return melhor.mesas.slice(0, need);
 }
-const MESAS_PADRAO = PISOS.flatMap((P,i)=>P.mesasPadrao.map(m=>i ? {...m, p:i} : {...m}));   /* v18.08-24: todos os pisos */
+/* a montagem oficial passa pelo clampMesa: no pacote do CRM uma ou outra mesa
+   fica fora do mapa do piso (medido no Panorâmico, 2 de 13), e mesa dentro da
+   parede é pior do que mesa 30 cm ao lado */
+const MESAS_PADRAO = PISOS.flatMap((P,i)=>P.mesasPadrao.map(m=>{
+  const base = i ? {...m, p:i} : {...m};
+  const c = clampMesa(base.x, base.y, i);
+  return {...base, x:c.x, y:c.y, p:i};
+}));
 
 /* =================================================================
    LINK PREPARADO PELA EQUIPE — hash #L=…&V=…&R=…&C=…&E=…
@@ -2746,7 +2827,10 @@ let ROLE_DEMO = 'consultor';
 /* v18.08-21: estado por AMBIENTE — as mesas são px da planta de cada
    espaço; o Salão de Eventos mantém a chave de sempre */
 const CHAVE = 'proposta_dimy_prototipo' + (ESPACO==='salao_eventos' ? '' : '_'+ESPACO)
-  + (PROPOSTA_TOKEN ? '_t'+PROPOSTA_TOKEN.slice(0,10) : '');   /* cada link real tem o próprio estado salvo */
+  + (PROPOSTA_TOKEN ? '_t'+PROPOSTA_TOKEN.slice(0,10) : '')
+  /* a versão da maquete entra na chave: a planta nova tem OUTRA escala, e o
+     layout salvo na antiga voltaria com as mesas em lugares sem sentido */
+  + (CRM_AMB && CRM_AMB.versao ? '_'+CRM_AMB.versao.replace(/[^a-z0-9]/gi,'').slice(0,14) : '');
 const PADRAO = {convidados:200, dia:'seg-qui', coquetel:'c4', menu:'m2', openbar:'b1',
   extras:Object.fromEntries(ITENS_EDITAVEIS.map(it=>[it.id, it.equipeOnly ? valorEquipe(it) : it.padrao])),
   mesas:LAYOUT_SUGERIDO || MESAS_PADRAO, rev:1};
@@ -4632,6 +4716,11 @@ $('#btnDistribuir').addEventListener('click', ()=>{
       }
     }
   }
+  /* nenhuma mesa fica onde não há piso: com as máscaras novas do CRM (mais
+     precisas, com colunas e vãos) o clampMesa nem sempre acha vaga, e a grade
+     deixava uma ou outra dentro da parede. Melhor 15 mesas certas que 17 com
+     duas no vão (02/10/2026). */
+  mesas = mesas.filter(m=>pisoValido(m.x, m.y, m.p|0));
   PROPOSTA.mesas = PROPOSTA.mesas.filter(m=>pisoDe(m)!==PISO_I).concat(mesas);   /* só troca o piso em edição */
   mesaSel = -1;
   salvarMesas(); renderMesas(); renderPecas(); atualizarTotais();
@@ -5693,7 +5782,9 @@ const panoBox = $('#panoBox');
 const PANOS = {};
 /* v18.08-22: panoInterno:false tira o "<espaço> interno" (gerado, vazio) do
    seletor — no Solar ele repetia a foto do hall/pátio; o Salão mantém */
-const PANOS_LISTA = AMB.panos.filter(p=>!(p.vazio && AMB.panoInterno===false));
+/* salão do pacote do CRM pode não ter panorâmica nenhuma (duas cerimônias não
+   têm): sem este || a página quebrava no arranque e abria sem planta */
+const PANOS_LISTA = (AMB.panos||[]).filter(p=>!(p.vazio && AMB.panoInterno===false));
 PANOS_LISTA.forEach(p=>{ PANOS[p.id] = {...p, tx:null, legenda:p.legenda||''}; });
 document.querySelector('.pano__ambientes').innerHTML = PANOS_LISTA.map((p,i)=>
   `<button type="button" class="pill" data-pano="${p.id}" aria-pressed="${i===0?'true':'false'}">${esc(p.rotulo)}</button>`).join('');

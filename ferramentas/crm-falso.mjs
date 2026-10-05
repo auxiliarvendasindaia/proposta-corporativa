@@ -91,7 +91,10 @@ const orcamento = {
   nome_evento: 'Cerimônia Nacional de Entrega da Bandeira Azul',
   cliente_email: null, cliente_telefone: null,
   data_evento: '2026-11-06', dia_semana: 'sexta', num_convidados: conv,
-  validade: '2026-10-01', valor_total: TOTAL,
+  /* a validade acompanha o relógio: data fixa fazia a proposta de teste vencer
+     sozinha depois de alguns dias e as baterias da capa e da validade
+     reprovavam sem nada ter mudado na página (02/10/2026) */
+  validade: new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10), valor_total: TOTAL,
   cidade: { nome: 'Florianópolis', estado: 'SC' },
   espaco: { nome: MULTI ? 'Mediterrâneo 242' : 'Mediterrâneo 242' },
   layout: { nome: 'Coquetel' }, tipo_evento: { nome: 'Corporativo' },

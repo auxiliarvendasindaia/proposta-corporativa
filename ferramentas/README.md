@@ -42,6 +42,13 @@ O parâmetro `&api=` da página só é aceito em `localhost` — em produção e
 - `prova-video.mjs` — o vídeo curto: duração, planos, cartelas e o arquivo que sai.
 - `prova-roteiro-capa.mjs` — o roteiro do evento (só promete o que está no orçamento, nunca
   horário) e o filme de fundo da capa (é o do cliente, sem som, e some com `prefers-reduced-motion`).
+- `gerar-ambientes.mjs [base]` — busca os **25 salões publicados** na rota pública do CRM
+  (`/api/public/layouts-3d/ambientes/:slug`) e grava a fotografia em `dados/ambientes/<slug>.js`
+  (um arquivo por salão, carregado só quando aquele link abre) mais o índice em
+  `dados/ambientes.json`. Rode com o CRM no ar (`npm run dev` no crm-backend) sempre que a
+  equipe mexer numa maquete. As imagens e os GLBs **não** são copiados: ficam no bucket público.
+- `prova-ambientes-crm.mjs [slugs]` — abre os 25, um a um: planta carregada, escala, mapa do
+  piso, montagem dentro do piso e nenhum erro. Slug sem pacote tem que cair no aviso honesto.
 - `prova-mobiliario.mjs` — o mobiliário do orçamento na planta: entra o que foi contratado (e
   só com orçamento), nada nasce calado em cima de mesa, o cliente tira/põe/arrasta e o link
   lembra, e a maquete 3D mostra o bistrô onde ele largou.

@@ -1,0 +1,260 @@
+{
+ "gerado_em": "2026-10-05",
+ "origem": "http://localhost:3333/api/public/layouts-3d/ambientes/:slug",
+ "assets_base": "https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/maquetes-3d/",
+ "ambientes": [
+  {
+   "slug": "canto_lagoa",
+   "nome": "Canto da Lagoa",
+   "versao": "v15.09-2026-fotos-reais-1",
+   "pxm": 29.53846153846154,
+   "mesas": 11,
+   "areas": 11,
+   "glb": true,
+   "kb": 59
+  },
+  {
+   "slug": "castelo",
+   "nome": "Castelo Blumenau",
+   "versao": "v15.09-2026-fotos-reais-1",
+   "pxm": 36,
+   "mesas": 15,
+   "areas": 3,
+   "glb": true,
+   "kb": 50
+  },
+  {
+   "slug": "cerimonia_beira_mar_norte",
+   "nome": "Cerimônia - Beira Mar Norte",
+   "versao": "v19.09-2026-correcoes-1",
+   "pxm": 40,
+   "mesas": 0,
+   "areas": 1,
+   "glb": true,
+   "kb": 24
+  },
+  {
+   "slug": "cerimonia_canto_lagoa",
+   "nome": "Cerimônia flutuante · Canto da Lagoa",
+   "versao": "v19.09-2026-correcoes-1",
+   "pxm": 80,
+   "mesas": 0,
+   "areas": 1,
+   "glb": true,
+   "kb": 47
+  },
+  {
+   "slug": "cerimonia_capela_cristal",
+   "nome": "Cerimônia Capela - Espaço Cristal",
+   "versao": "v15.09-2026-fotos-reais-1",
+   "pxm": 108,
+   "mesas": 0,
+   "areas": 2,
+   "glb": true,
+   "kb": 28
+  },
+  {
+   "slug": "cerimonia_cascata",
+   "nome": "Cerimônia - Cascata",
+   "versao": "v15.09-2026-fotos-reais-1",
+   "pxm": 68.5714,
+   "mesas": 0,
+   "areas": 1,
+   "glb": true,
+   "kb": 47
+  },
+  {
+   "slug": "cerimonia_castelo",
+   "nome": "Cerimônia - Castelo",
+   "versao": "v15.09-2026-fotos-reais-1",
+   "pxm": 48,
+   "mesas": 0,
+   "areas": 1,
+   "glb": true,
+   "kb": 48
+  },
+  {
+   "slug": "cerimonia_figueira",
+   "nome": "Cerimônia - Figueira",
+   "versao": "v15.09-2026-fotos-reais-1",
+   "pxm": 80,
+   "mesas": 0,
+   "areas": 1,
+   "glb": true,
+   "kb": 25
+  },
+  {
+   "slug": "cerimonia_gramado_nova_veneza",
+   "nome": "Cerimônia Gramado - Nova Veneza",
+   "versao": "v19.09-2026-correcoes-1",
+   "pxm": 40,
+   "mesas": 0,
+   "areas": 1,
+   "glb": true,
+   "kb": 25
+  },
+  {
+   "slug": "cerimonia_lago_nova_veneza",
+   "nome": "Cerimônia Lago - Nova Veneza",
+   "versao": "v19.09-2026-correcoes-1",
+   "pxm": 40,
+   "mesas": 0,
+   "areas": 1,
+   "glb": true,
+   "kb": 25
+  },
+  {
+   "slug": "cerimonia_mirante",
+   "nome": "Cerimônia - Mirante da Lagoa",
+   "versao": "v15.09-2026-fotos-reais-1",
+   "pxm": 80,
+   "mesas": 0,
+   "areas": 1,
+   "glb": true,
+   "kb": 24
+  },
+  {
+   "slug": "cerimonia_praia",
+   "nome": "Cerimônia - Praia · Oceanas",
+   "versao": "v15.09-2026-fotos-reais-1",
+   "pxm": 30,
+   "mesas": 0,
+   "areas": 1,
+   "glb": true,
+   "kb": 25
+  },
+  {
+   "slug": "cerimonia_praia_florianopolis",
+   "nome": "Cerimônia - Praia Florianópolis",
+   "versao": "v15.09-2026-joaquina-2",
+   "pxm": 17.142857142857142,
+   "mesas": 0,
+   "areas": 2,
+   "glb": true,
+   "kb": 88
+  },
+  {
+   "slug": "cristal",
+   "nome": "Esp. Cristal",
+   "versao": "v15.09-2026-fotos-reais-1",
+   "pxm": 20.425531914893618,
+   "mesas": 8,
+   "areas": 3,
+   "glb": true,
+   "kb": 85
+  },
+  {
+   "slug": "espaco_lago_nova_veneza",
+   "nome": "Espaço Lago",
+   "versao": "v15.09-2026-fotos-reais-1",
+   "pxm": 30,
+   "mesas": 10,
+   "areas": 1,
+   "glb": true,
+   "kb": 34
+  },
+  {
+   "slug": "joinville",
+   "nome": "Esp. Joinville",
+   "versao": "v21.09-2026-fotos-1",
+   "pxm": 30,
+   "mesas": 27,
+   "areas": 3,
+   "glb": true,
+   "kb": 91
+  },
+  {
+   "slug": "lounge",
+   "nome": "Lounge",
+   "versao": "v19.09-2026-correcoes-1",
+   "pxm": 23.699,
+   "mesas": 13,
+   "areas": 1,
+   "glb": true,
+   "kb": 48
+  },
+  {
+   "slug": "mediterraneo",
+   "nome": "Mediterrâneo Indaiá",
+   "versao": "v14.09-2026-revisao-1",
+   "pxm": 24,
+   "mesas": 0,
+   "areas": 4,
+   "glb": true,
+   "kb": 148
+  },
+  {
+   "slug": "mezanino",
+   "nome": "Mezanino",
+   "versao": "v19.09-2026-correcoes-1",
+   "pxm": 34.2031,
+   "mesas": 12,
+   "areas": 2,
+   "glb": true,
+   "kb": 68
+  },
+  {
+   "slug": "mirante",
+   "nome": "Mirante da Lagoa",
+   "versao": "v15.09-2026-fotos-reais-1",
+   "pxm": 40,
+   "mesas": 11,
+   "areas": 1,
+   "glb": true,
+   "kb": 48
+  },
+  {
+   "slug": "nova_veneza",
+   "nome": "Salão de Eventos Nova Veneza",
+   "versao": "v15.09-2026-fotos-reais-1",
+   "pxm": 33.6629,
+   "mesas": 16,
+   "areas": 4,
+   "glb": true,
+   "kb": 30
+  },
+  {
+   "slug": "panoramico",
+   "nome": "Esp. Panorâmico",
+   "versao": "v19.09-2026-correcoes-1",
+   "pxm": 24.109,
+   "mesas": 13,
+   "areas": 1,
+   "glb": true,
+   "kb": 46
+  },
+  {
+   "slug": "salao_eventos",
+   "nome": "Salão de Eventos",
+   "versao": "v15.09-2026-fotos-reais-2",
+   "pxm": 30,
+   "mesas": 24,
+   "areas": 1,
+   "glb": true,
+   "kb": 47
+  },
+  {
+   "slug": "salao_principal_itapema",
+   "nome": "Salão Principal",
+   "versao": "v15.09-2026-prc-1",
+   "pxm": 70,
+   "mesas": 9,
+   "areas": 1,
+   "glb": true,
+   "kb": 47
+  },
+  {
+   "slug": "solar",
+   "nome": "Solar 915",
+   "versao": "v15.09-2026-fotos-reais-1",
+   "pxm": 48,
+   "mesas": 11,
+   "areas": 1,
+   "glb": true,
+   "kb": 112
+  }
+ ],
+ "fora": [
+  "cerimonia_garden_joinville: falta mascara"
+ ]
+}
