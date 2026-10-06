@@ -1497,7 +1497,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer: é só pedir na nossa conversa.
-      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-36</span></p>
+      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-37</span></p>
   </div>
 </footer>
 
@@ -3280,6 +3280,28 @@ function vestirMultiDia(){
     + `<b id="invConvidados" hidden></b>`;
 }
 /* casa o nome do espaço do CRM com um ambiente que a página conhece */
+/* O SALÃO PELO ID, NÃO PELO NOME (06/10/2026) — o nome do espaço no
+   orçamento não é o nome da maquete: o orçamento diz "Mediterrâneo 242" e a
+   maquete se chama "Mediterrâneo Indaiá · Praia da Joaquina". Um não contém
+   o outro, o casamento por nome falhava e o link real da Sebrae abria no
+   Salão de Eventos com o aviso de "em preparação" — com a casa inteira
+   pronta na página. O CRM já tem a ligação certa e a publica: o pacote
+   público por ID do espaço devolve o ambiente_slug. É uma consulta só, e só
+   quando o link não nomeia salão nenhum; falhando, vale o nome como antes.
+   (O pacote por slug NÃO traz o espaco_id, senão isto seria um arquivo.) */
+async function espacoPorId(id){
+  if(!/^[0-9a-f-]{36}$/i.test(String(id||''))) return null;
+  try{
+    const r = await fetch(`${API_CRM}/api/public/layouts-3d/${id}`, {headers:{accept:'application/json'}});
+    if(!r.ok) return null;
+    const j = await r.json();
+    const slug = (((j.data||j).maquete)||{}).ambiente_slug;
+    if(!slug || !/^[a-z0-9_-]{1,100}$/.test(slug)) return null;
+    /* só vale salão que a página sabe desenhar */
+    const sabe = Array.isArray(window.__AMBS_CRM__) && window.__AMBS_CRM__.some(a=>a.slug===slug);
+    return (sabe || AMBIENTES[slug]) ? slug : null;
+  }catch(e){ return null; }
+}
 function espacoPorNome(nome){
   const n = normNome(nome);
   if(!n) return null;
@@ -8029,7 +8051,10 @@ async function vestirPropostaCRM(){
       document.querySelectorAll('.js-espaco-rotulo').forEach(el=>
         el.textContent = cid ? `${espacoDoOrc} · ${cid}` : espacoDoOrc);
     }
-    const slugDoOrc = espacoDoOrc ? espacoPorNome(espacoDoOrc) : null;
+    /* o ID manda; o nome fica de reserva para quando o CRM não responder */
+    const slugDoOrc = (!ESPACO_PEDIDO && o.espaco && !(ORC_REAL && ORC_REAL.multiDia)
+        ? await espacoPorId(o.espaco.id) : null)
+      || (espacoDoOrc ? espacoPorNome(espacoDoOrc) : null);
     if(slugDoOrc && slugDoOrc !== ESPACO && !ESPACO_PEDIDO){
       const u = new URL(location.href);
       u.searchParams.set('espaco', slugDoOrc);

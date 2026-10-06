@@ -14,6 +14,8 @@ import http from 'node:http';
 const arg = (nome, padrao) => { const i = process.argv.indexOf(nome); return i > 0 ? process.argv[i + 1] : padrao; };
 const MULTI = process.argv.includes('--multi-dia');
 const PORTA = Number(arg('--porta', 8141));
+const COM_ID = process.argv.includes('--com-id');
+const ESPACO_ID = '00d86ae4-a973-44b3-8c54-f8104c5c2c3d';   /* o do Mediterrâneo 242 */
 
 const conv = 300;
 
@@ -96,7 +98,10 @@ const orcamento = {
      reprovavam sem nada ter mudado na página (02/10/2026) */
   validade: new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10), valor_total: TOTAL,
   cidade: { nome: 'Florianópolis', estado: 'SC' },
-  espaco: { nome: MULTI ? 'Mediterrâneo 242' : 'Mediterrâneo 242' },
+  /* --com-id: o orçamento passa a trazer o ID do espaço, como o CRM de
+     verdade traz, e o servidor responde ao pacote público por ID. Sem a
+     flag fica como sempre foi (sem id), que é o caso do aviso honesto. */
+  espaco: COM_ID ? { id: ESPACO_ID, nome: 'Mediterrâneo 242' } : { nome: 'Mediterrâneo 242' },
   layout: { nome: 'Coquetel' }, tipo_evento: { nome: 'Corporativo' },
   vendedor: { name: 'Dani Cardoso' },
   itens, servicos, ...(MULTI ? { dias } : {}),
@@ -104,6 +109,10 @@ const orcamento = {
 
 http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
+  if (COM_ID && req.url.startsWith('/api/public/layouts-3d/' + ESPACO_ID)) {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    return res.end(JSON.stringify({ success: true, data: { maquete: { ambiente_slug: 'mediterraneo' } } }));
+  }
   if (/^\/api\/public\/proposta\//.test(req.url)) {
     res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     return res.end(JSON.stringify({ success: true, data: { orcamento, token: req.url.split('/').pop(),
