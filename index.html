@@ -1497,7 +1497,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer: é só pedir na nossa conversa.
-      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-38</span></p>
+      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-39</span></p>
   </div>
 </footer>
 
@@ -2411,35 +2411,33 @@ const AMBIENTES = {
      festa entram, arco de flores e mesa de bolo ficam de fora. Por isso
      nenhuma legenda promete evento corporativo. */
   mediterraneo: {
-    galeriaIntro:'Fotos reais do Mediterrâneo Indaiá, na Praia da Joaquina: o deck sobre a areia, os lounges com vista para o mar e o salão de teto ripado.',
-    /* faixa do topo: a do deck com o mar ao fundo — a deitada do lounge tem
-       mais pixels, mas a vista é o que vende a casa */
-    heroFoto:1,
+    galeriaIntro:'Eventos corporativos entregues no Mediterrâneo Indaiá, na Praia da Joaquina: a montagem em auditório de frente para o mar, o palco com painel de LED e o jantar nas mesas redondas.',
+    heroFoto:0,
     galeria:[
-      {url:'assets/ambientes/mediterraneo/fotos/lounges.webp', w:1448, h:1086,
-       cap:'Os lounges da recepção, com o deck branco e a vista aberta para o mar',
-       badge:'Lounge da recepção'},
-      {url:'assets/ambientes/mediterraneo/fotos/lounge-mar.webp', w:1086, h:1448,
-       cap:'O deck montado para receber, com a praia logo à frente',
-       badge:'Deck sobre a areia'},
-      {url:'assets/ambientes/mediterraneo/fotos/lounge-deck.webp', w:1448, h:1086,
-       cap:'A área de estar sobre o deck de madeira branca, com o mar ao anoitecer',
-       badge:'Lounge sobre o deck'},
-      {url:'assets/ambientes/mediterraneo/fotos/auditorio.webp', w:1448, h:1086,
-       cap:'Cadeiras em fileira voltadas para o mar, no fim da tarde',
-       badge:'Montagem em auditório'},
-      {url:'assets/ambientes/mediterraneo/fotos/salao-mesas.webp', w:1448, h:1086,
-       cap:'O salão de teto ripado montado com mesas redondas',
-       badge:'Salão · mesas redondas'},
-      {url:'assets/ambientes/mediterraneo/fotos/fachada-noite.webp', w:1086, h:1448,
-       cap:'A casa vista da areia, ao anoitecer',
-       badge:'Mediterrâneo Indaiá · Joaquina'}
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0102.jpg', w:1600, h:893,
+       cap:'O salão montado em auditório, de frente para o mar, com o painel de LED do cliente · Mediterrâneo Indaiá · Praia da Joaquina',
+       badge:'Montagem em auditório', badgeCls:'salao'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0197.jpg', w:1600, h:912,
+       cap:'O palco e o painel de LED, com os bistrôs em volta · Mediterrâneo Indaiá · Praia da Joaquina',
+       badge:'Palco e painel de LED', badgeCls:'salao'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0350.jpg', w:1600, h:1600,
+       cap:'As mesas redondas postas para o jantar, com a praia na janela · Mediterrâneo Indaiá · Praia da Joaquina',
+       badge:'Jantar · mesas redondas', badgeCls:'salao'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0177.jpg', w:1600, h:893,
+       cap:'O auditório visto de trás, com os bistrôs ao fundo · Mediterrâneo Indaiá · Praia da Joaquina',
+       badge:'Auditório e bistrôs', badgeCls:'salao'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0571.jpg', w:1600, h:1600,
+       cap:'O salão iluminado, com as mesas prontas para receber · Mediterrâneo Indaiá · Praia da Joaquina',
+       badge:'Salão montado', badgeCls:'salao'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0211.jpg', w:1600, h:912,
+       cap:'A entrada montada com a comunicação do evento · Mediterrâneo Indaiá · Praia da Joaquina',
+       badge:'Entrada e recepção', badgeCls:'salao'}
     ],
     /* FUNDO DA CAPA — vídeo real da casa, feito pela equipe no celular. Fica
        atrás do véu da capa, em laço de ida e volta, sem som. A seção 05 segue
        mostrando a maquete desta proposta: foto no topo, maquete no layout. */
     capaFilme:'assets/ambientes/mediterraneo/video/capa.mp4',
-    cta:'assets/ambientes/mediterraneo/fotos/fachada-noite.webp'
+    cta:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0102.jpg'
   },
   /* SEIS SALÕES COM AS FOTOS DA TRIAGEM (07/10/2026) — fichas SÓ de curadoria:
      a geometria toda vem do pacote do CRM. As fotos são as APROVADAS pelo dono
