@@ -110,7 +110,12 @@ const capa = await p.evaluate(() => {
     foto: !!document.getElementById('heroImg') } : null;
 });
 ok(!!capa, 'a capa tem filme');
-ok(capa && /propostas\/ORC-2026-02412/.test(capa.src), `é o filme DESTA proposta (${capa && capa.src})`);
+/* O FILME DA CAPA SEGUE O SALÃO (07/10/2026) — o passeio da ORC-2026-02412 foi
+   regravado no Mediterrâneo, que é a casa do orçamento. Aberta no Salão de
+   Eventos, a proposta mostra o filme DA CASA, não o do evento: filme de outro
+   salão na capa é a casa errada, que foi o defeito apontado em 05/10. */
+ok(capa && /ambientes\/salao_eventos\/video\/capa/.test(capa.src),
+  `aberta em outro salão, a capa roda o filme DA CASA (${capa && capa.src})`);
 ok(capa && capa.mudo && capa.laco, 'sem som e em laço');
 ok(capa && capa.tocando && capa.visivel, 'tocando e visível');
 ok(capa && capa.foto, 'a foto continua embaixo, para quando o vídeo não rolar');

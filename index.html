@@ -1497,7 +1497,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer: é só pedir na nossa conversa.
-      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-37</span></p>
+      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-38</span></p>
   </div>
 </footer>
 
@@ -2440,6 +2440,138 @@ const AMBIENTES = {
        mostrando a maquete desta proposta: foto no topo, maquete no layout. */
     capaFilme:'assets/ambientes/mediterraneo/video/capa.mp4',
     cta:'assets/ambientes/mediterraneo/fotos/fachada-noite.webp'
+  },
+  /* SEIS SALÕES COM AS FOTOS DA TRIAGEM (07/10/2026) — fichas SÓ de curadoria:
+     a geometria toda vem do pacote do CRM. As fotos são as APROVADAS pelo dono
+     na triagem de 28/09 para a Elisa (Comercial/triagem-fotos/
+     catalogo-fotos-espacos.json, 102 fotos de ambiente). Escolhidas aqui as que
+     mostram a CASA, não o detalhe de decoração nem convidado de rosto.
+     Ficaram de fora: Espaço Lago (sem foto aprovada na triagem) e Salão
+     Principal (a gestão não oferece, nota do próprio catálogo).
+     `w`/`h` saem da proporção REAL de cada foto (medida com resize=contain): é
+     dela que a página tira a altura da célula e a altura que pede ao Supabase. */
+  panoramico: {
+    galeriaIntro:'Fotos reais do Esp. Panorâmico, em Itapema: o salão envidraçado com vista para a cidade e para o mar, e a pista espelhada.',
+    heroFoto:0,
+    galeria:[
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/acb76dfc-672c-483d-8193-ca3454884e08/1789068131588-73ea9764.jpg', w:1600, h:1067,
+       cap:'O salão com as mesas postas e a vista aberta para a cidade · Esp. Panorâmico · Itapema/SC',
+       badge:'Salão · vista da cidade'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/acb76dfc-672c-483d-8193-ca3454884e08/1789068113273-7e89cd34.jpg', w:1600, h:1067,
+       cap:'A parede de vidro inteira, com as mesas junto à janela · Esp. Panorâmico · Itapema/SC',
+       badge:'Vidro do piso ao teto'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/acb76dfc-672c-483d-8193-ca3454884e08/1789068087797-0f5d3952.jpg', w:1600, h:1067,
+       cap:'Mesas redondas montadas, com o verde logo atrás do vidro · Esp. Panorâmico · Itapema/SC',
+       badge:'Salão · mesas redondas'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0801.jpg', w:1600, h:1069,
+       cap:'O salão à noite, com os lustres acesos · Esp. Panorâmico · Itapema/SC',
+       badge:'Salão à noite'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0817.jpg', w:1600, h:1067,
+       cap:'A pista espelhada com as luzes refletidas no piso · Esp. Panorâmico · Itapema/SC',
+       badge:'Pista espelhada'}
+    ],
+    cta:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/acb76dfc-672c-483d-8193-ca3454884e08/1789068131588-73ea9764.jpg'
+  },
+  nova_veneza: {
+    galeriaIntro:'Fotos reais do Salão de Eventos Nova Veneza: o pé-direito de vidro, os lounges da recepção, o tijolo aparente e a estrutura de som e luz.',
+    heroFoto:0,
+    galeria:[
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0689.jpg', w:1600, h:1067,
+       cap:'O salão sob a cobertura de vidro, com as mesas montadas · Salão de Eventos Nova Veneza · Nova Veneza/SC',
+       badge:'Salão · cobertura de vidro'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0626.jpg', w:1600, h:1067,
+       cap:'Os lounges da recepção, com o verde do lado de fora · Salão de Eventos Nova Veneza · Nova Veneza/SC',
+       badge:'Lounge da recepção'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/acervo/full/nv-ambiente-salao-eventos-1.jpg', w:1600, h:2400,
+       cap:'As mesas postas sob o lustre, com o tijolo aparente ao fundo · Salão de Eventos Nova Veneza · Nova Veneza/SC',
+       badge:'Salão · mesas postas'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-2150.jpg', w:1600, h:1067,
+       cap:'A área de estar, com sofás e poltronas de fibra · Salão de Eventos Nova Veneza · Nova Veneza/SC',
+       badge:'Área de estar'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0625.jpg', w:1600, h:1067,
+       cap:'A pista e o tijolo aparente, com a luz quente acesa · Salão de Eventos Nova Veneza · Nova Veneza/SC',
+       badge:'Pista'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/96fcecf5-e3f5-485a-91ca-d51256f75597/drive/44968e165d8eb5071e4c4b0fe33ed6840d376b85dd30df7897bd76afa06d6af0.webp', w:1600, h:1067,
+       cap:'A estrutura de som e luz montada no salão · Salão de Eventos Nova Veneza · Nova Veneza/SC',
+       badge:'Som e luz'}
+    ],
+    cta:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0689.jpg'
+  },
+  lounge: {
+    galeriaIntro:'Fotos reais do Lounge, em Itapema: a parede de pedra, o piso de madeira e as mesas montadas sob as luzes.',
+    heroFoto:0,
+    galeria:[
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/acervo/full/ita-lounge-3-mesa-tradicional.jpg', w:1600, h:1067,
+       cap:'O salão montado, com os arranjos suspensos sobre as mesas · Lounge · Itapema/SC',
+       badge:'Salão montado'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0802.jpg', w:1600, h:1067,
+       cap:'As mesas postas ao longo da parede de pedra · Lounge · Itapema/SC',
+       badge:'Salão · parede de pedra'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/acervo/full/ita-lounge-5-mesa-tradicional.jpg', w:1600, h:1067,
+       cap:'O piso de madeira e a parede de pedra, com o salão livre · Lounge · Itapema/SC',
+       badge:'O salão livre'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/acervo/full/ita-ambiente-lounge-20-branco-verde-dourado.jpg', w:1600, h:1067,
+       cap:'As mesas montadas, com o letreiro aceso ao fundo · Lounge · Itapema/SC',
+       badge:'Salão à noite'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0818.jpg', w:1600, h:1067,
+       cap:'A área de estar junto à cortina, com a luz do dia · Lounge · Itapema/SC',
+       badge:'Área de estar'}
+    ],
+    cta:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/acervo/full/ita-lounge-3-mesa-tradicional.jpg'
+  },
+  joinville: {
+    galeriaIntro:'Fotos reais do Esp. Joinville: o salão montado para jantar, as cortinas de luz e a pista com a iluminação cênica.',
+    heroFoto:0,
+    galeria:[
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0952.jpg', w:1600, h:1067,
+       cap:'As mesas redondas postas, prontas para o jantar · Esp. Joinville · Joinville/SC',
+       badge:'Salão · jantar'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0697.jpg', w:1600, h:1067,
+       cap:'O salão com as cortinas de luz e os lustres acesos · Esp. Joinville · Joinville/SC',
+       badge:'Salão à noite'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0726.jpg', w:1600, h:1067,
+       cap:'O salão visto de cima, com a iluminação cênica ligada · Esp. Joinville · Joinville/SC',
+       badge:'Iluminação cênica'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-1104.jpg', w:1600, h:1067,
+       cap:'A pista espelhada encostada no piso de madeira · Esp. Joinville · Joinville/SC',
+       badge:'Pista'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/06b5d5c1-f71e-4bc5-a7ca-87a59d723ac5/corp-joinville-651fdf93d9254a270b3e0ce5fd3e18db1fbeabd6e66e6b75f0628523d154ddc0.jpg', w:1600, h:1067,
+       cap:'As luzes refletidas no piso da pista · Esp. Joinville · Joinville/SC',
+       badge:'Pista · luzes'}
+    ],
+    cta:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0952.jpg'
+  },
+  castelo: {
+    galeriaIntro:'Fotos reais do Castelo Blumenau: os arcos do salão, o pé-direito alto e as mesas montadas junto às janelas.',
+    heroFoto:0,
+    galeria:[
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0786.jpg', w:1600, h:1064,
+       cap:'O salão dos arcos, com as mesas montadas e a estrutura de som · Castelo Blumenau · Blumenau/SC',
+       badge:'Salão dos arcos'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0785.jpg', w:1600, h:1067,
+       cap:'As mesas postas sob o lustre, entre os arcos · Castelo Blumenau · Blumenau/SC',
+       badge:'Salão · mesas postas'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0783.jpg', w:1600, h:1067,
+       cap:'A mesa junto à janela em arco, com a cortina clara · Castelo Blumenau · Blumenau/SC',
+       badge:'Janela em arco'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0787.jpg', w:1600, h:1064,
+       cap:'O salão visto por cima do arranjo central · Castelo Blumenau · Blumenau/SC',
+       badge:'Salão montado'}
+    ],
+    cta:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0786.jpg'
+  },
+  cristal: {
+    galeriaIntro:'Fotos reais do Esp. Cristal, em Blumenau: as janelas para o verde e a pedra aparente do salão.',
+    heroFoto:0,
+    galeria:[
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0334.jpg', w:1600, h:1067,
+       cap:'As mesas montadas junto às janelas, com o verde lá fora · Esp. Cristal · Blumenau/SC',
+       badge:'Salão · janelas para o verde'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-2714.jpg', w:1600, h:2400,
+       cap:'O salão livre, com a pedra aparente e a luz indireta · Esp. Cristal · Blumenau/SC',
+       badge:'O salão livre'}
+    ],
+    cta:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0334.jpg'
   }
 };
 /* seleção do ambiente: ?espaco=<id> (inválido/ausente = Salão de Eventos) */
@@ -7027,14 +7159,23 @@ let GALERIA = galeriaDoEvento(null);
    tamanho que vai MOSTRAR, pelo endpoint de imagem do Supabase. Medido na
    chat-0202: 11,6 MB → 1,2 MB (1400 px) → 637 KB (800 px). Sem transformação
    disponível (outra origem ou 404), cai na URL original. */
-function fotoNoTamanho(url, largura, qualidade){
+/* SÓ A LARGURA NÃO REDIMENSIONA: RECORTA (medido em 07/10/2026) — pedindo
+   `width=900` ao Supabase, a chat-1101 (3000 × 2000) voltava 900 × 2000: o
+   endpoint mantém a altura e CORTA as laterais, porque o `resize` padrão é
+   `cover` e a altura que falta vale a do original. O cliente via uma tira
+   vertical no lugar da foto. Com as duas medidas (a altura sai da proporção
+   `w`/`h` da ficha) vem 900 × 600 — a foto inteira, e 67 KB no lugar de 163. */
+function fotoNoTamanho(url, largura, qualidade, prop){
   const u = String(url||'');
   if(!/\/storage\/v1\/object\/public\//.test(u)) return u;
+  const alt = prop > 0 ? `&height=${Math.round(largura * prop)}&resize=contain` : '';
   return u.replace('/storage/v1/object/public/', '/storage/v1/render/image/public/')
-    + (u.includes('?') ? '&' : '?') + `width=${largura}&quality=${qualidade}`;
+    + (u.includes('?') ? '&' : '?') + `width=${largura}&quality=${qualidade}${alt}`;
 }
-const fotoGrid = f => fotoNoTamanho(f.url, 900, 70);      /* miniatura do mosaico */
-const fotoCheia = f => fotoNoTamanho(f.url, 1800, 78);    /* ao ampliar (lightbox) */
+/* proporção da ficha: sem w/h não dá para pedir a altura, e vale o antigo */
+const fotoProp = f => (f && f.w > 0 && f.h > 0) ? f.h / f.w : 0;
+const fotoGrid = f => fotoNoTamanho(f.url, 900, 70, fotoProp(f));      /* miniatura do mosaico */
+const fotoCheia = f => fotoNoTamanho(f.url, 1800, 78, fotoProp(f));    /* ao ampliar (lightbox) */
 /* enquanto a maquete de 20 MB baixa, o quadro do 3D mostra o render do salão
    desfocado — o cliente vê o espaço dele em vez de uma área vazia */
 function esperaDaMaquete(ligar){
@@ -7043,7 +7184,7 @@ function esperaDaMaquete(ligar){
   if(!ligar){ box.classList.remove('esperando'); box.style.backgroundImage = ''; return; }
   const f = fotoDestaque();
   if(!f || !f.url) return;
-  box.style.backgroundImage = `url("${fotoNoTamanho(f.url, 900, 60)}")`;
+  box.style.backgroundImage = `url("${fotoNoTamanho(f.url, 900, 60, fotoProp(f))}")`;
   box.classList.add('esperando');
 }
 /* imagem do topo: a 1ª da galeria do ambiente, no tamanho da tela */
@@ -7064,7 +7205,7 @@ function montarHero(){
   /* a largura pedida acompanha a DENSIDADE da tela: num celular de 3x, 900 px
      abriam macios. O teto de 1800 evita pedir imagem gigante num monitor 4K. */
   const larguraReal = Math.round(innerWidth * Math.min(devicePixelRatio || 1, 2.5));
-  img.src = fotoNoTamanho(f.url, Math.min(1800, Math.max(900, larguraReal)), 72);
+  img.src = fotoNoTamanho(f.url, Math.min(1800, Math.max(900, larguraReal)), 72, fotoProp(f));
   img.alt = '';
 }
 function montarGaleria(){
@@ -7074,7 +7215,7 @@ function montarGaleria(){
     <button type="button" class="gfoto" data-i="${i}" style="aspect-ratio:${f.w}/${f.h}"
       aria-label="Ampliar foto: ${esc(f.cap)}">
       ${f.badge?`<span class="gfoto__badge${f.badgeCls==='salao'?' gfoto__badge--salao':''}">${esc(f.badge)}</span>`:''}
-      <img src="${fotoGrid(f)}" srcset="${fotoNoTamanho(f.url, 600, 68)} 600w, ${fotoGrid(f)} 900w, ${fotoNoTamanho(f.url, 1400, 72)} 1400w"
+      <img src="${fotoGrid(f)}" srcset="${fotoNoTamanho(f.url, 600, 68, fotoProp(f))} 600w, ${fotoGrid(f)} 900w, ${fotoNoTamanho(f.url, 1400, 72, fotoProp(f))} 1400w"
         sizes="(max-width:760px) 92vw, 46vw"
         width="${f.w}" height="${f.h}" alt="${esc(f.cap)}" loading="lazy" decoding="async"
         onload="this.parentElement.classList.add('is-loaded')"
@@ -7955,7 +8096,7 @@ async function vestirPropostaCRM(){
       if((AMB.cta||'').includes('dimy')){
         const g = AMB.galeria||[];
         const fotoReal = g[AMB.ctaFoto] || g.find(f=>f && f.url && !/render/i.test(f.selo||''));
-        if(fotoReal) $('#ctaImg').src = fotoNoTamanho(fotoReal.url, 1600, 72);   /* fundo do CTA: não precisa do original de 11 MB */
+        if(fotoReal) $('#ctaImg').src = fotoNoTamanho(fotoReal.url, 1600, 72, fotoProp(fotoReal));   /* fundo do CTA: não precisa do original de 11 MB */
       }
     }
 
