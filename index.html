@@ -1497,7 +1497,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer: é só pedir na nossa conversa.
-      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-39</span></p>
+      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-40</span></p>
   </div>
 </footer>
 
@@ -1858,71 +1858,27 @@ const AMBIENTES = {
     rotulo:'Salão de Eventos · Itapema/SC', curto:'Salão de Eventos, Itapema',
     cidadeLonga:'Itapema · Santa Catarina', emTitulo:'salão',
     descricao:'Proposta interativa corporativa — DIMY · 24/09/2026 · Salão de Eventos, Itapema/SC.',
-    galeriaIntro:'O layout padrão da casa em render, com fotos reais do Salão de Eventos de Itapema, incluindo um evento corporativo entregue nele.',
-    /* foto do alto da página: o salão inteiro montado para recepção (a foto
-       do "evento corporativo" é a tela de uma apresentação, não o salão) */
-    heroFoto:3,
-    /* fundo do fechamento: a pista com a chuva de cristais (a foto do evento
-       corporativo mostra o slide de outra empresa, legível no recorte) */
-    ctaFoto:4,
-    /* o filme do espaço (gerado por ferramentas/gerar-filme.mjs) */
-    filme:{src:'assets/ambientes/salao_eventos/video/passeio.mp4', poster:'assets/ambientes/salao_eventos/video/poster.jpg',
-      cap:'Um passeio pelo Salão de Eventos, com a montagem da casa, em 25 segundos.'},
-    planta:{src:'assets/planta-salao-eventos.jpg', w:1920, h:1080,
-      alt:'Planta vazia do Salão de Eventos de Itapema vista de cima'},
-    pxm:(1832-765)/24.5,                                  // ≈ 43,55 px por metro (eixo X oficial)
-    mascara:{b64:MASCARA_B64, w:480, h:270, passo:4},
-    areas:[
-      {x0:275,  x1:766,  y0:152, y1:420},   // A1 braço da entrada
-      {x0:262,  x1:1400, y0:248, y1:420},   // A2 junção (piso contínuo)
-      {x0:775,  x1:1400, y0:248, y1:862},   // A3 bloco principal
-      {x0:1290, x1:1746, y0:250, y1:862}    // A4 braço superior direito
-    ],
-    principal:2,                                          // A3: âncora do distribuir automático
-    mesasPadrao:[
-      {x:867,y:329},{x:994,y:329},{x:1121,y:329},{x:1248,y:329},{x:1375,y:329},{x:1502,y:329},
-      {x:867,y:457},{x:994,y:457},{x:1121,y:457},{x:1248,y:457},{x:1375,y:457},{x:1502,y:457},{x:1629,y:457},
-      {x:867,y:715},{x:994,y:715},{x:1121,y:715},{x:1248,y:715},{x:1375,y:715},{x:1502,y:715}
-    ],
-    glb:{src:'assets/salao-real.glb', cal:{px0:765, x0:-4.3, py0:555, z0:-0.575},
-      pisoY:0.588, corteY:null, luzCentrada:false},
-    telao:true,                                           // palco + telão + faixa da pista (só aqui)
-    envMap:'assets/pano-salao-mesas.jpg',
-    camera:{alvoPx:{x:970,y:470}, orb:{theta:.35, phi:.8, raio:30}},
-    olhoPanoPx:{x:1100,y:600},                            // olho do "Seu layout" (meio da pista)
-    panoInterno:true,                                     // mantém a pill "Salão interno" (v18.08-22)
-    panos:[
-      {id:'layout',  rotulo:'Seu layout', dinamico:true, lon:356, lat:-2},
-      {id:'interno', rotulo:'Salão interno', dinamico:true, vazio:true, lon:356, lat:-2,
-        legenda:'O salão interno · pronto para receber o seu evento.'},
-      {id:'deck', rotulo:'Salão externo · Deck', arquivo:'assets/pano-deck-figueira.jpg', lon:228, lat:2,
-        legenda:'Passeio fotorrealista · Salão externo — Deck da Figueira, recepção e coquetel ao ar livre.'}
-    ],
-    nota360:'Salão de Eventos Itapema',
-    tour:'salao',                                         // roteiro autoral (pista + telão)
-    /* GALERIA — curadoria 18/08: abre com o render do layout padrão da casa;
-       depois as 2 fotos do evento corporativo B. Fabbriani NESTE salão (2022)
-       e 3 institucionais (salão montado de dia, pista com a chuva de cristais
-       e o deck da figueira). chat-0180 fora (treliça no quadro); chat-0679 404. */
+    galeriaIntro:'Eventos corporativos entregues no Salão de Eventos de Itapema: a montagem em auditório com painel de LED, o jantar nas mesas longas e a plateia em convenção.',
+    heroFoto:0,
     galeria:[
-      {url:'assets/planta-layout-padrao.jpg', w:1422, h:1106,
-       cap:'Render do salão no layout padrão da casa, 19 mesas de 8 lugares',
-       selo:'Render da maquete', badge:'Layout padrão · 19 mesas', badgeCls:'salao'},
-      {url:`${MID}chat-1101.jpg`, w:3000, h:2000,
-       cap:'Evento corporativo realizado neste salão · B. Fabbriani, 2022',
-       badge:'Evento corporativo · neste salão', badgeCls:'salao'},
-      {url:`${MID}chat-1100.jpg`, w:3000, h:2000,
-       cap:'O lounge com vista, montado para a recepção · B. Fabbriani, 2022',
-       badge:'Lounge da recepção', badgeCls:'salao'},
-      {url:`${MID}chat-0208.jpg`, w:1600, h:1066,
-       cap:'O salão montado para recepção · Salão de Eventos, Itapema/SC',
-       badge:'Salão de Eventos · Itapema'},
-      {url:`${MID}chat-0192.jpg`, w:3500, h:2333,
-       cap:'A pista e a chuva de cristais · Salão de Eventos, Itapema/SC',
-       badge:'Salão de Eventos · Itapema'},
-      {url:`${MID}chat-0202.jpg`, w:6608, h:4405,
-       cap:'O deck da figueira, anexo ao salão · Salão de Eventos, Itapema/SC',
-       badge:'Salão de Eventos · Itapema'}
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/b377d97e-ed85-4fd9-953f-79c1c6935411/drive/11WmvBrAITBJxVPplRirq_Vsrj6-uApiY.jpg', w:4096, h:2731,
+       cap:'A plateia montada em auditório, de frente para o painel de LED · Salão de Eventos · Itapema/SC',
+       badge:'Montagem em auditório', badgeCls:'salao'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0180.jpg', w:5724, h:3821,
+       cap:'As mesas redondas postas junto ao vidro, com a mata ao fundo · Salão de Eventos · Itapema/SC',
+       badge:'Jantar · mesas redondas', badgeCls:'salao'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/b377d97e-ed85-4fd9-953f-79c1c6935411/drive/1E_3mACj8Ru3gdsxOrGJsnr-iR2qEmwXY.jpg', w:4096, h:2731,
+       cap:'As mesas longas montadas sob as luzes, para o salão inteiro · Salão de Eventos · Itapema/SC',
+       badge:'Salão · mesas longas', badgeCls:'salao'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/b377d97e-ed85-4fd9-953f-79c1c6935411/drive/1NkoGRWzqr6yNMZaZp0dmizRrb3MyUnZG.jpg', w:1800, h:1200,
+       cap:'A convenção em andamento, com a plateia diante do telão · Salão de Eventos · Itapema/SC',
+       badge:'Convenção', badgeCls:'salao'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/b377d97e-ed85-4fd9-953f-79c1c6935411/drive/10JJuqZ-YkdyJafbBBkahttfiTgytgpdZ.jpg', w:4096, h:3072,
+       cap:'O salão em clima de festa, com as mesas e o telão acesos · Salão de Eventos · Itapema/SC',
+       badge:'Salão à noite', badgeCls:'salao'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/b377d97e-ed85-4fd9-953f-79c1c6935411/drive/1CcfVSyvzUaojs3KIoIer2OysQB7uGU5l.jpg', w:3024, h:4032,
+       cap:'O salão em dia claro, com o pé-direito alto e a luz natural · Salão de Eventos · Itapema/SC',
+       badge:'Salão de dia', badgeCls:'salao'}
     ],
     cta:'assets/cta-salao-dimy.jpg'
   },
@@ -2210,81 +2166,27 @@ const AMBIENTES = {
     rotulo:'Mirante da Lagoa · Florianópolis/SC', curto:'Mirante da Lagoa, Florianópolis',
     cidadeLonga:'Florianópolis · Santa Catarina', emTitulo:'Mirante',
     descricao:'Proposta interativa corporativa — DIMY · 24/09/2026 · Mirante da Lagoa, Florianópolis/SC.',
-    galeriaIntro:'Fotos reais do Mirante da Lagoa: o salão envidraçado com vista para a Lagoa da Conceição, os lustres de cristal e o lounge.',
-    /* foto do alto da página: salão em ensaio corporativo — nada de casamento nem
-       15 anos numa proposta corporativa */
-    heroFoto:4,
-    /* o filme do espaço (gerado por ferramentas/gerar-filme.mjs) */
-    filme:{src:'assets/ambientes/mirante/video/passeio.mp4', poster:'assets/ambientes/mirante/video/poster.jpg',
-      cap:'Um passeio pelo Mirante da Lagoa, com a montagem da casa, em 25 segundos.'},
-    planta:{src:'assets/ambientes/mirante/planta.jpg', w:1920, h:1080,
-      alt:'Planta vazia do térreo do Mirante da Lagoa vista de cima'},
-    pxm:40,
-    mascara:{b64:MASCARA_MIRANTE_B64, w:480, h:270, passo:4},
-    areas:[
-      {nome:'Salão do Mirante', x0:991, x1:1474, y0:196, y1:932, pisoY:0.35},
-      {nome:'Hall dos Espelhos', x0:418, x1:991, y0:394, y1:932, pisoY:0.35}
-    ],
-    principal:0,
-    /* LAYOUT PADRÃO — fixado do distribuir automático de cada aba (v18.08-30):
-       Salão 9 + Hall 12 + Lounge 7 = 224 lugares */
-    mesasPadrao:[{x:1069,y:252},{x:1233,y:252},{x:1397,y:252},{x:1141,y:416},{x:1305,y:416},{x:1025,y:580},{x:1189,y:580},{x:1121,y:744},{x:1021,y:908}],
-    pisos:[
-      {id:'salao', nome:'Salão do Mirante', mascaraDaArea:true,
-       recorte:{x:830, y:40, w:800, h:1040},
-       areas:[{nome:'Salão do Mirante', x0:991, x1:1474, y0:196, y1:932, pisoY:0.35,
-         poligono:[[991,196],[1474,196],[1474,932],[991,932]]}]},
-      {id:'hall', nome:'Hall dos Espelhos', pisoY:0.35, mascaraDaArea:true,
-       recorte:{x:260, y:240, w:890, h:840}, mesasPadrao:[{x:470,y:511},{x:634,y:511},{x:798,y:511},{x:962,y:511},{x:458,y:675},{x:622,y:675},{x:786,y:675},{x:950,y:675},{x:458,y:839},{x:622,y:839},{x:786,y:839},{x:950,y:839}],
-       areas:[{nome:'Hall dos Espelhos', x0:418, x1:991, y0:394, y1:932, pisoY:0.35,
-         poligono:[[418,394],[991,394],[991,932],[418,932]]}]},
-      {id:'lounge', nome:'Lounge Superior', pisoY:3.7,
-       planta:{src:'assets/ambientes/mirante/planta-superior.jpg', w:1920, h:1080,
-         alt:'Planta do lounge superior do Mirante vista de cima'},
-       mascara:{b64:MASCARA_MIRANTE_SUP_B64, w:480, h:270, passo:4},
-       recorte:{x:260, y:370, w:760, h:710}, principal:0, mesasPadrao:[{x:477,y:581},{x:641,y:581},{x:805,y:581},{x:477,y:745},{x:641,y:745},{x:805,y:745},{x:623,y:909}],
-       areas:[{nome:'Lounge Superior', x0:417, x1:864, y0:522, y1:932, pisoY:3.7,
-         poligono:[[417,522],[864,522],[864,932],[417,932]]}]}
-    ],
-    glb:{src:'assets/ambientes/mirante/salao.glb', cal:{px0:960, x0:0.3, py0:540, z0:-0.6},
-      pisoY:0.35, corteY:7.9, luzCentrada:true},
-    telao:false,
-    envMap:'assets/pano-salao-mesas.jpg',                     /* sem pano próprio ainda: reflexos do Salão */
-    camera:{alvoPx:null, orb:{theta:.5, phi:.8, raio:26}},
-    olhoPanoPx:null,
-    panoInterno:false,
-    panos:[
-      {id:'layout',  rotulo:'Seu layout', dinamico:true, lon:270, lat:-15},
-      {id:'interno', rotulo:'Mirante interno', dinamico:true, vazio:true, lon:270, lat:-15,
-        legenda:'O Mirante por dentro · pronto para receber o seu evento.'}
-    ],
-    nota360:'Mirante da Lagoa Florianópolis',
-    /* tour genérico: entra pela porta de correr da fachada norte do Salão
-       (vão px 990..1187, y 204 → 0,20 da divisa) → Hall; o plano do lounge
-       vem do mecanismo de pisos (nível 3,7 ≥ térreo+1,5). */
-    tour:{entradaFrac:.2},
-    tourOrdem:[0, 1],
-    /* GALERIA — curadoria 27/08 do banco de mídias (loc-mirante, álbum
-       "Espaços — FLO - Mirante" col-corporativo + ensaio corporativo). */
+    galeriaIntro:'Eventos corporativos entregues no Mirante da Lagoa: a montagem em auditório diante do vidro, os lounges com vista para a Lagoa da Conceição e a plateia em convenção.',
+    heroFoto:0,
     galeria:[
-      {url:`${MID}chat-1092.jpg`, w:5299, h:3533,
-       cap:'O lounge diante do vidro, com a Lagoa da Conceição à noite · Mirante da Lagoa, Florianópolis/SC',
-       badge:'Mirante da Lagoa · Florianópolis', badgeCls:'salao'},
-      {url:`${MID}chat-0831.jpg`, w:2048, h:1365,
-       cap:'O salão montado sob os lustres de cristal · Mirante da Lagoa, Florianópolis/SC',
-       badge:'Mirante da Lagoa · Florianópolis'},
-      {url:`${MID}chat-0830.jpg`, w:1600, h:1066,
-       cap:'Mesa posta com a vista da lagoa em dia claro · Mirante da Lagoa, Florianópolis/SC',
-       badge:'Vista da lagoa · neste espaço', badgeCls:'salao'},
-      {url:`${MID}chat-1148.jpg`, w:5231, h:3487,
-       cap:'Mesas bistrô à beira do vidro · Mirante da Lagoa, Florianópolis/SC',
-       badge:'Mirante da Lagoa · Florianópolis'},
-      {url:`${MID}chat-0945.jpg`, w:4000, h:2250,
-       cap:'O salão em ensaio corporativo, com a mata ao fundo · Mirante da Lagoa, Florianópolis/SC',
-       badge:'Evento corporativo · neste espaço', badgeCls:'salao'},
-      {url:`${MID}chat-0038.jpg`, w:2500, h:1665,
-       cap:'A fachada do Mirante à noite · Mirante da Lagoa, Florianópolis/SC',
-       badge:'Mirante da Lagoa · Florianópolis'}
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-1148.jpg', w:5231, h:3487,
+       cap:'Os bistrôs à beira do vidro, com a Lagoa da Conceição ao anoitecer · Mirante da Lagoa · Florianópolis/SC',
+       badge:'Vista da Lagoa', badgeCls:'salao'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-1092.jpg', w:5299, h:3533,
+       cap:'Os lounges montados diante do vidro, sob as luzes · Mirante da Lagoa · Florianópolis/SC',
+       badge:'Lounge com vista', badgeCls:'salao'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/b377d97e-ed85-4fd9-953f-79c1c6935411/drive/170zhQap-89gD0WTk9r_NXVGu9vkv86AZ.jpg', w:2362, h:1577,
+       cap:'As cadeiras em fileira diante do palco e da passarela espelhada · Mirante da Lagoa · Florianópolis/SC',
+       badge:'Montagem em auditório', badgeCls:'salao'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/b377d97e-ed85-4fd9-953f-79c1c6935411/drive/1o8ogMyKjEMCWrYxOTQM4uM1gkQRHqc2e.jpg', w:2362, h:1323,
+       cap:'O salão com o telão aceso e a plateia acomodada · Mirante da Lagoa · Florianópolis/SC',
+       badge:'Convenção', badgeCls:'salao'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/b377d97e-ed85-4fd9-953f-79c1c6935411/drive/15W6vGHWNwaXngUJesH9Gj5WYhHiCQ9Yb.jpg', w:2362, h:1577,
+       cap:'O palco com o painel de LED, visto do fundo do salão · Mirante da Lagoa · Florianópolis/SC',
+       badge:'Palco e painel de LED', badgeCls:'salao'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/b377d97e-ed85-4fd9-953f-79c1c6935411/drive/1A2287zlspe58tBn5apxaPQ_HbiS9v-AY.jpg', w:2362, h:1577,
+       cap:'A plateia diante do telão, com os lustres de cristal acesos · Mirante da Lagoa · Florianópolis/SC',
+       badge:'Plateia', badgeCls:'salao'}
     ],
     /* CTA: recorte 16:9 da foto chat-1092 (lounge com a lagoa à noite) */
     cta:'assets/ambientes/mirante/cta-mirante.jpg'
@@ -2518,43 +2420,52 @@ const AMBIENTES = {
     cta:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/acervo/full/ita-lounge-3-mesa-tradicional.jpg'
   },
   joinville: {
-    galeriaIntro:'Fotos reais do Esp. Joinville: o salão montado para jantar, as cortinas de luz e a pista com a iluminação cênica.',
+    galeriaIntro:'Eventos corporativos entregues no Esp. Joinville: o salão envidraçado montado para jantar, a montagem em auditório e o deck coberto da recepção.',
     heroFoto:0,
     galeria:[
-      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0952.jpg', w:1600, h:1067,
-       cap:'As mesas redondas postas, prontas para o jantar · Esp. Joinville · Joinville/SC',
-       badge:'Salão · jantar'},
-      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0697.jpg', w:1600, h:1067,
-       cap:'O salão com as cortinas de luz e os lustres acesos · Esp. Joinville · Joinville/SC',
-       badge:'Salão à noite'},
-      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0726.jpg', w:1600, h:1067,
-       cap:'O salão visto de cima, com a iluminação cênica ligada · Esp. Joinville · Joinville/SC',
-       badge:'Iluminação cênica'},
-      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-1104.jpg', w:1600, h:1067,
-       cap:'A pista espelhada encostada no piso de madeira · Esp. Joinville · Joinville/SC',
-       badge:'Pista'},
-      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/06b5d5c1-f71e-4bc5-a7ca-87a59d723ac5/corp-joinville-651fdf93d9254a270b3e0ce5fd3e18db1fbeabd6e66e6b75f0628523d154ddc0.jpg', w:1600, h:1067,
-       cap:'As luzes refletidas no piso da pista · Esp. Joinville · Joinville/SC',
-       badge:'Pista · luzes'}
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0952.jpg', w:2953, h:1969,
+       cap:'As mesas redondas postas diante das janelas, em dia claro · Esp. Joinville · Joinville/SC',
+       badge:'Jantar · mesas redondas', badgeCls:'salao'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/b377d97e-ed85-4fd9-953f-79c1c6935411/drive/1zNCQAe0jX4PhX-Igp1QkzoENubr-RWIg.jpg', w:4096, h:2731,
+       cap:'As cadeiras em fileira diante do telão, com a passarela espelhada · Esp. Joinville · Joinville/SC',
+       badge:'Montagem em auditório', badgeCls:'salao'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/b377d97e-ed85-4fd9-953f-79c1c6935411/drive/1ZmJgfd4IwASWjv0RSQbSAVJcFPmmJPIY.jpg', w:2953, h:1969,
+       cap:'O salão inteiro montado para o jantar · Esp. Joinville · Joinville/SC',
+       badge:'Salão montado', badgeCls:'salao'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/b377d97e-ed85-4fd9-953f-79c1c6935411/drive/1N5wRvikrIFh1WKoNfexrPdHzKeMLsY8g.jpg', w:4000, h:2670,
+       cap:'O deck coberto, com os lounges da recepção · Esp. Joinville · Joinville/SC',
+       badge:'Deck e lounges', badgeCls:'salao'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/b377d97e-ed85-4fd9-953f-79c1c6935411/drive/1eI-eslpM_TwBIqY7ihXUYCZ35vqUWxS8.jpg', w:4000, h:2670,
+       cap:'A chegada à noite, com a fachada iluminada · Esp. Joinville · Joinville/SC',
+       badge:'Chegada', badgeCls:'salao'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/b377d97e-ed85-4fd9-953f-79c1c6935411/drive/1UINvW1LyWld3mbmlT3e0zGium6kNBHkp.jpg', w:4096, h:2731,
+       cap:'O salão visto de cima, com as mesas prontas · Esp. Joinville · Joinville/SC',
+       badge:'Salão visto de cima', badgeCls:'salao'}
     ],
     cta:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0952.jpg'
   },
   castelo: {
-    galeriaIntro:'Fotos reais do Castelo Blumenau: os arcos do salão, o pé-direito alto e as mesas montadas junto às janelas.',
+    galeriaIntro:'Eventos corporativos entregues no Castelo Blumenau: a fachada iluminada, o salão dos arcos montado para jantar e a plateia diante do telão.',
     heroFoto:0,
     galeria:[
-      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0786.jpg', w:1600, h:1064,
-       cap:'O salão dos arcos, com as mesas montadas e a estrutura de som · Castelo Blumenau · Blumenau/SC',
-       badge:'Salão dos arcos'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0788.jpg', w:2200, h:1467,
+       cap:'A fachada do castelo iluminada, com o pátio livre · Castelo Blumenau · Blumenau/SC',
+       badge:'Chegada', badgeCls:'salao'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0783.jpg', w:4000, h:2667,
+       cap:'O salão dos arcos montado, com a pista no centro · Castelo Blumenau · Blumenau/SC',
+       badge:'Salão dos arcos', badgeCls:'salao'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/b377d97e-ed85-4fd9-953f-79c1c6935411/drive/1-9XPbLiC7SnVaGK8VQNT7LKJVUWWyWiM.jpg', w:3000, h:2000,
+       cap:'O salão em enfiada, com as arcadas acesas · Castelo Blumenau · Blumenau/SC',
+       badge:'Salão montado', badgeCls:'salao'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0786.jpg', w:1600, h:1065,
+       cap:'As mesas postas diante do palco, entre os arcos · Castelo Blumenau · Blumenau/SC',
+       badge:'Palco e mesas', badgeCls:'salao'},
       {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0785.jpg', w:1600, h:1067,
-       cap:'As mesas postas sob o lustre, entre os arcos · Castelo Blumenau · Blumenau/SC',
-       badge:'Salão · mesas postas'},
-      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0783.jpg', w:1600, h:1067,
-       cap:'A mesa junto à janela em arco, com a cortina clara · Castelo Blumenau · Blumenau/SC',
-       badge:'Janela em arco'},
-      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0787.jpg', w:1600, h:1064,
-       cap:'O salão visto por cima do arranjo central · Castelo Blumenau · Blumenau/SC',
-       badge:'Salão montado'}
+       cap:'As mesas longas sob os lustres, junto às arcadas · Castelo Blumenau · Blumenau/SC',
+       badge:'Mesas longas', badgeCls:'salao'},
+      {url:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/b377d97e-ed85-4fd9-953f-79c1c6935411/drive/1bR5BZnr1S0YdRjTwrPP62uIT5_uhe4AN.jpg', w:3000, h:2000,
+       cap:'A plateia acomodada, com o telão do evento aceso · Castelo Blumenau · Blumenau/SC',
+       badge:'Convenção', badgeCls:'salao'}
     ],
     cta:'https://wnhdvlavbtljjyzevocz.supabase.co/storage/v1/object/public/midias/chat/full/chat-0786.jpg'
   },
