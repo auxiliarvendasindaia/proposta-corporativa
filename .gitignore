@@ -14,3 +14,7 @@ _simulacao-*
 
 # logo de cliente é material dele: não vai para o repositório
 assets/clientes/
+
+# a chave da fal fica fora do git
+.env
+video-prova/cenas-ia/
