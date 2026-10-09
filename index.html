@@ -1497,7 +1497,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer: é só pedir na nossa conversa.
-      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-42</span></p>
+      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-43</span></p>
   </div>
 </footer>
 
@@ -5467,6 +5467,33 @@ function carregarSalao(){
   ]).then(([mod, decoder])=>new Promise((res, rej)=>{
     const loader = new mod.GLTFLoader();
     loader.setMeshoptDecoder(decoder);
+  /* QUADRO E ANÚNCIO QUE NÃO SÃO NOSSOS (09/10/2026) — as maquetes vieram de
+     bibliotecas de modelo e trouxeram arte colada na parede que não tem nada a
+     ver com o Indaiá: no Salão Principal três quadros de casamento (aquarela de
+     noivos), no Cristal o SELO de propaganda de um ar-condicionado, no Solar
+     pôsteres infantis de bichos, e na maquete antiga do Salão de Eventos um
+     slide de template ("BUSINESS PROJECT · Presented by: Olivia Wilson") e a
+     foto de um casal desconhecido. Numa proposta corporativa isso destoa, e a
+     do ar-condicionado é publicidade de terceiro.
+     Em vez de refazer o GLB — 15 a 30 MB por casa, e o arquivo é do CRM —, a
+     página APAGA a textura desses materiais no carregamento e deixa a
+     superfície lisa: o porta-retrato fica vazio, o aparelho fica sem o selo.
+     Os nomes são exatos, conferidos no glTF de cada maquete; se a equipe
+     reexportar e mudar o nome, a prova-maquete-limpa reprova. */
+  const FORA_DA_CASA = new Set(({
+    salao_principal_itapema: ['*36', '*39', '*44'],
+    cristal: ['Ar condicionado1_SELO', 'Ar condicionado1_Material.002'],
+    solar: ['Color_', '[Color_001]4', 'Color_0021', '[Color_001]2'],
+    /* maquete antiga, hoje só reserva: o pacote do CRM traz outro modelo */
+    salao_eventos: ['material_55', '__Color_A01_2'],
+  })[ESPACO] || []);
+  function neutralizar(mt){
+    for(const campo of ['map', 'emissiveMap', 'aoMap', 'lightMap'])
+      if(mt[campo]){ mt[campo] = null; }
+    if(mt.color) mt.color.set(0xD8D4CC);        /* parede clara, sem desenho */
+    if(mt.emissive) mt.emissive.set(0x000000);
+    mt.needsUpdate = true;
+  }
     loader.load(AMB.glb.src, g=>{      /* o GLB do ambiente (Salão: salao-real.glb) */
       T3.salao = g.scene;
       /* o salão recebe as sombras das mesas, não projeta (2,74 M tris no
@@ -5478,6 +5505,7 @@ function carregarSalao(){
         for(const mt of mats){
           if(mt && 'envMapIntensity' in mt)
             mt.envMapIntensity = /vidro|glass|translucent/i.test(mt.name||'') ? .9 : .35;
+          if(FORA_DA_CASA.has(mt.name||'')) neutralizar(mt);
         }
       });
       res(T3.salao);
