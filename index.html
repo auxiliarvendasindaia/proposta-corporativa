@@ -30,6 +30,8 @@
        página reconhece, pelo nome que vem no orçamento, o salão certo */
     document.write('<scr' + 'ipt src="dados/ambientes-index.js"></scr' + 'ipt>');
     document.write('<scr' + 'ipt src="dados/ambientes/' + s + '.js"></scr' + 'ipt>');
+    if(/[?&]planta=tratada/.test(location.search))
+      document.write('<scr' + 'ipt src="dados/plantas-tratadas.js"></scr' + 'ipt>');
   }catch(e){}
 })();
 </script>
@@ -4506,7 +4508,15 @@ let dragMesa = null;
 function montarPlanta(){
   /* planta do AMBIENTE (v18.08-21): imagem, tamanho e viewBox vêm do
      registro — o HTML já carrega o Salão de Eventos; só troca se for outro */
-  const img = $('#plantaImg'), PL = PISO.planta || AMB.planta;   /* planta do PISO em edição (v18.08-24) */
+  const img = $('#plantaImg'); let PL = PISO.planta || AMB.planta;   /* planta do PISO em edição (v18.08-24) */
+  /* TESTE DA PLANTA TRATADA (09/10/2026) — `?planta=tratada` troca a imagem
+     do CRM pela versão limpa de ferramentas/gerar-plantas.mjs. É só para
+     comparar: sem o parâmetro, nada muda. */
+  /* o src já veio absoluto do bucket: casa pelo fim do caminho */
+  const mapa = window.__PLANTAS_TRATADAS__ || {};
+  const chave = Object.keys(mapa).find(k => String(PL.src).endsWith(k));
+  const tratada = chave && mapa[chave];
+  if(tratada) PL = {...PL, src: 'assets/plantas/' + tratada};
   if(img.getAttribute('src')!==PL.src){
     img.src = PL.src; img.width = PL.w; img.height = PL.h; img.alt = PL.alt || '';
   }
