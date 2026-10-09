@@ -1497,7 +1497,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer: é só pedir na nossa conversa.
-      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-44</span></p>
+      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-45</span></p>
   </div>
 </footer>
 
@@ -2726,6 +2726,18 @@ const PISOS = ((AMB.pisos && AMB.pisos.length) ? AMB.pisos : [{id:'terreo', nome
      mesasPadrao:mesasDoPiso(p, 0), pisoY:p.pisoY!=null ? p.pisoY : AMB.glb.pisoY}
   : {...p, nome:nomeLimpo(p.nome||('Piso '+(i+1))), areas:p.areas||[], principal:p.principal||0, mesasPadrao:mesasDoPiso(p, i)});
 let PISO_I = 0, PISO = PISOS[0];
+/* VISÃO GERAL DO ESPAÇO (09/10/2026) — pedido do dono: "além das maquetes
+   separadas por espaço no 2D, precisa de uma visão geral, onde se vê a planta
+   completa". Numa casa de várias zonas o cliente via uma zona por vez e nunca
+   a casa inteira; a maquete 3D já tinha o atalho "Espaço inteiro", o 2D não.
+   É uma VISTA, não um editor: mostra a planta toda com tudo que está posto,
+   e os botões de mexer somem — para arrastar, o cliente escolhe a zona. */
+const PISO_TUDO = -1;
+const pisoGeral = () => ({id:'tudo', nome:'Espaço inteiro', planta:AMB.planta,
+  areas:AMB.areas, principal:AMB.principal||0, mesasPadrao:[]});
+const vistaGeral = () => PISO_I === PISO_TUDO;
+/* na vista geral desenha tudo; na zona, só o que é dela */
+const naVista = o => vistaGeral() || pisoDe(o) === PISO_I;
 const pisoDe = m=>{ const p = m ? (m.p|0) : 0; return (p>0 && p<PISOS.length) ? p : 0; };
 function mascaraDoPiso(p){
   const P = PISOS[p] || PISOS[0];
@@ -4509,7 +4521,27 @@ function montarPlanta(){
      só, o do coffee). Trocar de aba não mexia no desenho e as peças da zona
      caíam fora do quadro: parecia que a aba não fazia nada. Com várias zonas,
      o recorte passa a ser o retângulo DA ZONA, com uma folga em volta. */
-  if(PISOS.length > 1){
+  /* na VISTA GERAL o quadro é a casa toda: a caixa que cobre as áreas de
+     todas as zonas, com folga. O `recorte` da ficha não serve aqui — ele
+     enquadra uma zona só (no Mediterrâneo, o coffee). */
+  if(PISOS.length > 1 && vistaGeral()){
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for(const P of PISOS) for(const A of (P.areas || [])){
+      x0 = Math.min(x0, A.x0); y0 = Math.min(y0, A.y0);
+      x1 = Math.max(x1, A.x1); y1 = Math.max(y1, A.y1);
+    }
+    if(isFinite(x0)){
+      const folga = Math.max(40, Math.min(x1-x0, y1-y0) * 0.10);
+      let x = Math.max(0, x0 - folga), y = Math.max(0, y0 - folga);
+      let w = Math.min(PL.w - x, (x1 - x0) + folga*2);
+      let h = Math.min(PL.h - y, (y1 - y0) + folga*2);
+      const ALVO = 16/10;
+      if(w/h < ALVO){ const nw = Math.min(PL.w, h*ALVO); x = Math.max(0, Math.min(PL.w - nw, x - (nw-w)/2)); w = nw; }
+      else if(w/h > ALVO){ const nh = Math.min(PL.h, w/ALVO); y = Math.max(0, Math.min(PL.h - nh, y - (nh-h)/2)); h = nh; }
+      R = {x: Math.round(x), y: Math.round(y), w: Math.round(w), h: Math.round(h)};
+    }
+  }
+  if(PISOS.length > 1 && !vistaGeral()){
     const Az = (PISO.areas && (PISO.areas[PISO.principal||0] || PISO.areas[0])) || null;
     if(Az){
       const folga = Math.max(60, Math.min(Az.x1-Az.x0, Az.y1-Az.y0) * 0.25);
@@ -4575,7 +4607,7 @@ function montarPlanta(){
      planta: trocar de aba não mudava nada na tela e parecia defeito. Agora o
      resto do desenho escurece e só a zona aberta fica acesa. */
   const camadaAreas = $('#areasCamada');
-  if(PISOS.length > 1){
+  if(PISOS.length > 1 && !vistaGeral()){
     const Az = (PISO.areas && (PISO.areas[PISO.principal||0] || PISO.areas[0])) || null;
     const PL2 = PISO.planta || AMB.planta;
     if(Az){
@@ -4606,10 +4638,15 @@ function pintarPisos(){
     const n = PROPOSTA.mesas.filter(m=>pisoDe(m)===i).length;
     return `<button type="button" class="pill" role="tab" data-piso="${i}" aria-selected="${i===PISO_I}" aria-pressed="${i===PISO_I}">${esc(nomeLimpo(P.nome))} · ${n} ${n===1?'mesa':'mesas'}</button>`;
   }).join('');
+  /* a vista geral vem primeiro, com o total da casa */
+  const tot = PROPOSTA.mesas.length;
+  box.innerHTML = `<button type="button" class="pill" role="tab" data-piso="${PISO_TUDO}"
+      aria-selected="${vistaGeral()}" aria-pressed="${vistaGeral()}">Espaço inteiro · ${tot} ${tot===1?'mesa':'mesas'}</button>` + box.innerHTML;
+  modoSoVer();
 }
 function trocarPiso(i){
-  if(!PISOS[i] || i===PISO_I) return;
-  PISO_I = i; PISO = PISOS[i]; mesaSel = -1; dragMesa = null;
+  if(i === PISO_I || (i !== PISO_TUDO && !PISOS[i])) return;
+  PISO_I = i; PISO = (i === PISO_TUDO) ? pisoGeral() : PISOS[i]; mesaSel = -1; dragMesa = null;
   montarPlanta(); renderMesas(); renderPecas();
 }
 document.addEventListener('click', ev=>{
@@ -4778,7 +4815,7 @@ function renderPecas(){
   const camada = document.getElementById('pecasCamada');
   if(!camada) return;
   camada.innerHTML = pecasNaPlanta().map((pc,i)=>{
-    const cfg = PECAS[pc.t]; if(!cfg || pisoDe(pc)!==PISO_I) return '';
+    const cfg = PECAS[pc.t]; if(!cfg || !naVista(pc)) return '';
     const {w, h} = pecaPx(pc.t);
     const bx = (w/2).toFixed(1), by = (-h/2).toFixed(1);
     return `<g class="peca" data-i="${i}" data-t="${pc.t}" tabindex="0" role="button"
@@ -4815,6 +4852,28 @@ function pecasSobreMesa(){
   }
   return fora;
 }
+/* VISTA GERAL É SÓ DE VER (09/10/2026) — a planta inteira mostra o que está
+   posto na casa toda; mexer continua sendo por zona, senão não dá para saber
+   em qual delas a mesa nova entra. Some a barra do editor e a das peças, e
+   entra uma linha dizendo onde clicar. */
+function modoSoVer(){
+  const geral = vistaGeral() && PISOS.length > 1;
+  const barra = document.querySelector('.visao__foot .planta__bar');
+  if(barra) barra.hidden = geral;
+  const pb = document.getElementById('pecasBarra');
+  if(pb && geral) pb.hidden = true;
+  let dica = document.getElementById('plantaDica');
+  if(!dica && barra){
+    dica = document.createElement('p');
+    dica.id = 'plantaDica'; dica.className = 'planta__cont';
+    dica.style.cssText = 'margin:0;width:100%;';
+    barra.parentNode.insertBefore(dica, barra);
+  }
+  if(dica){
+    dica.hidden = !geral;
+    dica.textContent = 'A casa inteira, com tudo que está posto. Para mexer nas mesas e no mobiliário, escolha um dos ambientes acima.';
+  }
+}
 function pintarPecas(){
   const camada = document.getElementById('pecasCamada');
   if(!camada) return;
@@ -4844,6 +4903,7 @@ function pintarPecas(){
       aria-label="Acrescentar ${esc(PECAS[t].um)} na planta">
       <b>${esc(PECAS[t].nome)}</b><span>${n} de ${c}${dif}</span><em>+</em></button>`;
   }).join('');
+  modoSoVer();
 }
 function removerPeca(i){
   pecasNaPlanta().splice(i, 1);
@@ -4870,7 +4930,7 @@ function tresMesasSePronto(){ try{ if(typeof T3 !== 'undefined' && T3.pronto) tr
 
 function renderMesas(){
   const bx = (MESA_R*0.72).toFixed(1), by = (-MESA_R*0.72).toFixed(1);
-  $('#mesasCamada').innerHTML = PROPOSTA.mesas.map((m,i)=> pisoDe(m)!==PISO_I ? '' : `
+  $('#mesasCamada').innerHTML = PROPOSTA.mesas.map((m,i)=> !naVista(m) ? '' : `
     <g class="mesa" data-i="${i}" tabindex="0" role="button"
       aria-label="Mesa ${i+1}, ${MESA.lugares} lugares. Arraste ou use as setas; Delete remove."
       transform="translate(${m.x},${m.y})">

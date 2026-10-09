@@ -81,6 +81,23 @@ const fora = await p.evaluate(() => (PROPOSTA.pecas || []).filter(pc => {
 }).length);
 ok(fora === 0, `nenhuma peça fora da sua zona (${fora} fora)`);
 
+/* 4 · VISTA GERAL — a casa inteira num quadro só, sem o escurecido da zona e
+   sem a barra do editor: para mexer, o cliente escolhe um ambiente. */
+await p.evaluate(() => trocarPiso(-1));
+await espera(400);
+const geral = await p.evaluate(() => ({
+  pill: (document.querySelector('#pisosSel .pill') || {}).textContent || '',
+  pecas: (PROPOSTA.pecas || []).length,
+  desenhadas: document.querySelectorAll('#pecasCamada .peca').length,
+  foco: !!document.querySelector('#areasCamada .zona__foco'),
+  barra: !!(document.querySelector('.visao__foot .planta__bar') || {}).hidden,
+  dica: !(document.getElementById('plantaDica') || {hidden:true}).hidden,
+}));
+ok(/Espaço inteiro/.test(geral.pill), `a primeira aba é a do espaço inteiro (${geral.pill.trim()})`);
+ok(geral.desenhadas === geral.pecas, `mostra o mobiliário de todas as zonas (${geral.desenhadas} de ${geral.pecas})`);
+ok(!geral.foco, 'sem escurecer nada: a planta inteira acesa');
+ok(geral.barra && geral.dica, 'a barra do editor some e entra a dica de escolher o ambiente');
+
 ok(erros.length === 0, 'sem erro de página' + (erros.length ? ': ' + erros[0] : ''));
 await b.close();
 console.log(falhas ? `\n${falhas} FALHA(S)` : '\nTUDO VERDE');
