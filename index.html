@@ -494,7 +494,8 @@ html.sem-maquete .hero__fundo,html.sem-maquete .cta__media{display:none;}
 .area__txt{font-family:var(--serif);font-weight:600;font-size:34px;fill:var(--brown-deep);letter-spacing:.02em;}
 .areas{pointer-events:none;}
 /* o resto da planta escurece; a zona aberta fica acesa */
-.zona__foco{fill:rgba(20,24,29,.42);}
+/* o véu de fora da zona começou em .42 e apagava a cor da planta: o cliente via cinza onde a imagem tem madeira, grama e mar. Com o recorte por zona já dizendo onde se está, .16 basta para dar foco sem lavar a imagem (09/10/2026) */
+.zona__foco{fill:rgba(20,24,29,.16);}
 .ambs3d{position:absolute;top:12px;left:12px;z-index:6;display:flex;gap:8px;flex-wrap:wrap;max-width:calc(100% - 24px);}
 .ambs3d .pill{font-size:.74rem;padding:5px 13px;background:rgba(247,248,249,.94);box-shadow:0 2px 8px rgba(20,24,29,.12);}
 /* a aba escolhida estava com texto creme sobre fundo claro (a regra do .ambs3d
@@ -1499,7 +1500,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer: é só pedir na nossa conversa.
-      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-46</span></p>
+      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-47</span></p>
   </div>
 </footer>
 
@@ -4558,6 +4559,13 @@ function montarPlanta(){
       let x = Math.max(0, Az.x0 - folga), y = Math.max(0, Az.y0 - folga);
       let w = Math.min(PL.w - x, (Az.x1 - Az.x0) + folga*2);
       let h = Math.min(PL.h - y, (Az.y1 - Az.y0) + folga*2);
+      /* NUNCA AMPLIAR (09/10/2026): a zona da Palestra tem 582 px de largura na
+         imagem e o quadro na tela tem 832 — era esticar 43% e a planta saía
+         borrada. O recorte passa a ter um mínimo: abaixo disso, mostra mais
+         espaço em volta em vez de ampliar o que tem. */
+      const MIN = 1000;
+      if(w < MIN){ const nw = Math.min(PL.w, MIN); x = Math.max(0, Math.min(PL.w - nw, x - (nw - w)/2)); w = nw; }
+      if(h < MIN/1.6){ const nh = Math.min(PL.h, MIN/1.6); y = Math.max(0, Math.min(PL.h - nh, y - (nh - h)/2)); h = nh; }
       /* MESMO QUADRO EM TODAS AS ABAS — sem igualar a proporção, a zona
          estreita saía com duas tarjas brancas dos lados e o quadro mudava de
          tamanho a cada aba. Aqui o recorte cresce pelo lado curto até 16:10,

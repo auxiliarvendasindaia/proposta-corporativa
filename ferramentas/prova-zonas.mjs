@@ -54,6 +54,12 @@ ok(chaves.size === zonas.length, `cada zona com a sua janela (${chaves.size} de 
 const props = quadros.map(q => q.vb[2] / q.vb[3]);
 ok(Math.max(...props) - Math.min(...props) < 0.02,
   `mesmo quadro em todas as abas (proporção ${props.map(x => x.toFixed(2)).join(' · ')})`);
+/* SEM AMPLIAR (09/10/2026) — a zona da Palestra tem 582 px na imagem e o quadro
+   na tela tem 832: o recorte esticava a planta 43% e ela saía borrada. Agora o
+   recorte tem um mínimo, e o que o cliente vê nunca é imagem ampliada. */
+const tela = await p.evaluate(() => Math.round(document.getElementById('plantaSvg').getBoundingClientRect().width));
+const maiorEscala = Math.max(...quadros.map(q => tela / q.vb[2]));
+ok(maiorEscala <= 1.02, `nenhuma zona amplia a planta (maior escala ${maiorEscala.toFixed(2)}x em ${tela}px de tela)`);
 ok(quadros.every(q => q.foco), 'o resto do desenho escurece em todas as abas');
 
 /* 2 · cada peça na sua zona */
