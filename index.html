@@ -1500,7 +1500,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer: é só pedir na nossa conversa.
-      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-47</span></p>
+      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-48</span></p>
   </div>
 </footer>
 
@@ -4944,7 +4944,85 @@ function addPeca(t){
   salvarMesas(); renderPecas(); tresMesasSePronto();
 }
 /* a maquete 3D acompanha o 2D quando já estiver carregada */
-function tresMesasSePronto(){ try{ if(typeof T3 !== 'undefined' && T3.pronto) tresMesas(); }catch(e){} }
+/* O MOBILIÁRIO DO ORÇAMENTO NA MAQUETE (05/10/2026, refeito em 09/10) — nos
+   salões sem o cenário autoral do Salão de Eventos, as peças vêm do EDITOR 2D:
+   o que o cliente arrastou na planta é o que a maquete mostra.
+   Até 09/10 isto rodava UMA VEZ, dentro do carregamento do GLB: arrastar o
+   palco no 2D não mexia nada no 3D, e o cliente via as duas telas discordando
+   (apontado pelo dono). Agora é função, e roda a cada mudança — as peças ficam
+   num grupo só, que é jogado fora e redesenhado inteiro. */
+function tresPecas(){
+  if(typeof T3 === 'undefined' || !T3.cena || AMB.telao) return;
+  const TH = window.THREE;
+  const antigo = T3.cena.getObjectByName('pecasDoOrcamento');
+  if(antigo){
+    antigo.traverse(o=>{ if(o.isMesh){ o.geometry && o.geometry.dispose(); } });
+    T3.cena.remove(antigo);
+  }
+  const grupo = new TH.Group(); grupo.name = 'pecasDoOrcamento';
+    const pecas = Array.isArray(PROPOSTA.pecas) ? PROPOSTA.pecas : [];
+    const matPalco = new TH.MeshStandardMaterial({color:0x23282E, roughness:.85});
+    const matBorda = new TH.MeshStandardMaterial({color:0x171B20, roughness:.55});
+    const matTampo = new TH.MeshStandardMaterial({color:0xE8E2D6, roughness:.5});
+    const matPe = new TH.MeshStandardMaterial({color:0x2A2E33, roughness:.6, metalness:.35});
+    const matBanco = new TH.MeshStandardMaterial({color:0x6B4B2E, roughness:.75});
+    const geoTampo = new TH.CylinderGeometry(.35, .35, .05, 24);
+    const geoPe = new TH.CylinderGeometry(.045, .09, 1.05, 12);
+    const geoAssento = new TH.CylinderGeometry(.16, .16, .05, 16);
+    const geoPeBanco = new TH.CylinderGeometry(.03, .06, .72, 10);
+    const alturaDoPiso = pc => {
+      const P = PISOS[pc.p|0];
+      return (P && P.pisoY != null) ? P.pisoY : pisoYEm(pc.x, pc.y, pc.p|0);
+    };
+    for(const pc of pecas){
+      const cfg = PECAS[pc.t]; if(!cfg) continue;
+      const c = pxParaM(pc.x, pc.y), y0 = alturaDoPiso(pc);
+      if(pc.t === 'palco'){
+        const p = new TH.Mesh(new TH.BoxGeometry(cfg.larg, .4, cfg.fund), matPalco);
+        p.position.set(c.x, y0 + .2, c.z);
+        p.castShadow = p.receiveShadow = true;
+        p.name = 'palco';
+        grupo.add(p);
+      }else if(pc.t === 'telao'){
+        const W = cfg.larg, H = 2.2;
+        const g = new TH.Group();
+        const moldura = new TH.Mesh(new TH.BoxGeometry(W + .12, H + .12, .07), matBorda);
+        moldura.castShadow = true;
+        const tela = new TH.Mesh(new TH.PlaneGeometry(W, H), telaoMaterial(TH));
+        tela.position.z = .041;
+        g.add(moldura, tela);
+        /* dois pés curtos, para o painel não nascer flutuando */
+        for(const dx of [-W/2 + .35, W/2 - .35]){
+          const pe = new TH.Mesh(new TH.BoxGeometry(.12, .34, .07), matBorda);
+          pe.position.set(dx, -(H/2) - .17, 0);
+          g.add(pe);
+        }
+        g.position.set(c.x, y0 + .34 + H/2, c.z);
+        g.name = 'telao';
+        grupo.add(g);
+      }else if(pc.t === 'bistro'){
+        const g = new TH.Group();
+        const tampo = new TH.Mesh(geoTampo, matTampo);
+        tampo.position.y = 1.08; tampo.castShadow = true;
+        const pe = new TH.Mesh(geoPe, matPe); pe.position.y = .53;
+        const base = new TH.Mesh(new TH.CylinderGeometry(.24, .24, .03, 16), matPe);
+        base.position.y = .015;
+        g.add(tampo, pe, base);
+        for(const dz of [-.62, .62]){
+          const assento = new TH.Mesh(geoAssento, matBanco);
+          assento.position.set(0, .74, dz); assento.castShadow = true;
+          const pb = new TH.Mesh(geoPeBanco, matPe);
+          pb.position.set(0, .36, dz);
+          g.add(assento, pb);
+        }
+        g.name = 'bistro';
+        g.position.set(c.x, y0, c.z);
+        grupo.add(g);
+      }
+    }
+  T3.cena.add(grupo);
+}
+function tresMesasSePronto(){ try{ if(typeof T3 !== 'undefined' && T3.pronto){ tresMesas(); tresPecas(); } }catch(e){} }
 
 function renderMesas(){
   const bx = (MESA_R*0.72).toFixed(1), by = (-MESA_R*0.72).toFixed(1);
@@ -5904,68 +5982,7 @@ function tresIniciar(){
      calibração dele), as peças vêm do EDITOR 2D: o que o cliente arrastou na
      planta é o que a maquete mostra. Sem isto, o Mediterrâneo abria a maquete
      vazia mesmo com palco, telão e dez bistrôs no orçamento. */
-  if(!AMB.telao){
-    const pecas = Array.isArray(PROPOSTA.pecas) ? PROPOSTA.pecas : [];
-    const matPalco = new TH.MeshStandardMaterial({color:0x23282E, roughness:.85});
-    const matBorda = new TH.MeshStandardMaterial({color:0x171B20, roughness:.55});
-    const matTampo = new TH.MeshStandardMaterial({color:0xE8E2D6, roughness:.5});
-    const matPe = new TH.MeshStandardMaterial({color:0x2A2E33, roughness:.6, metalness:.35});
-    const matBanco = new TH.MeshStandardMaterial({color:0x6B4B2E, roughness:.75});
-    const geoTampo = new TH.CylinderGeometry(.35, .35, .05, 24);
-    const geoPe = new TH.CylinderGeometry(.045, .09, 1.05, 12);
-    const geoAssento = new TH.CylinderGeometry(.16, .16, .05, 16);
-    const geoPeBanco = new TH.CylinderGeometry(.03, .06, .72, 10);
-    const alturaDoPiso = pc => {
-      const P = PISOS[pc.p|0];
-      return (P && P.pisoY != null) ? P.pisoY : pisoYEm(pc.x, pc.y, pc.p|0);
-    };
-    for(const pc of pecas){
-      const cfg = PECAS[pc.t]; if(!cfg) continue;
-      const c = pxParaM(pc.x, pc.y), y0 = alturaDoPiso(pc);
-      if(pc.t === 'palco'){
-        const p = new TH.Mesh(new TH.BoxGeometry(cfg.larg, .4, cfg.fund), matPalco);
-        p.position.set(c.x, y0 + .2, c.z);
-        p.castShadow = p.receiveShadow = true;
-        p.name = 'palco';
-        T3.cena.add(p);
-      }else if(pc.t === 'telao'){
-        const W = cfg.larg, H = 2.2;
-        const g = new TH.Group();
-        const moldura = new TH.Mesh(new TH.BoxGeometry(W + .12, H + .12, .07), matBorda);
-        moldura.castShadow = true;
-        const tela = new TH.Mesh(new TH.PlaneGeometry(W, H), telaoMaterial(TH));
-        tela.position.z = .041;
-        g.add(moldura, tela);
-        /* dois pés curtos, para o painel não nascer flutuando */
-        for(const dx of [-W/2 + .35, W/2 - .35]){
-          const pe = new TH.Mesh(new TH.BoxGeometry(.12, .34, .07), matBorda);
-          pe.position.set(dx, -(H/2) - .17, 0);
-          g.add(pe);
-        }
-        g.position.set(c.x, y0 + .34 + H/2, c.z);
-        g.name = 'telao';
-        T3.cena.add(g);
-      }else if(pc.t === 'bistro'){
-        const g = new TH.Group();
-        const tampo = new TH.Mesh(geoTampo, matTampo);
-        tampo.position.y = 1.08; tampo.castShadow = true;
-        const pe = new TH.Mesh(geoPe, matPe); pe.position.y = .53;
-        const base = new TH.Mesh(new TH.CylinderGeometry(.24, .24, .03, 16), matPe);
-        base.position.y = .015;
-        g.add(tampo, pe, base);
-        for(const dz of [-.62, .62]){
-          const assento = new TH.Mesh(geoAssento, matBanco);
-          assento.position.set(0, .74, dz); assento.castShadow = true;
-          const pb = new TH.Mesh(geoPeBanco, matPe);
-          pb.position.set(0, .36, dz);
-          g.add(assento, pb);
-        }
-        g.name = 'bistro';
-        g.position.set(c.x, y0, c.z);
-        T3.cena.add(g);
-      }
-    }
-  }
+  tresPecas();
 
   /* luz de fim de tarde: ambiente + direcional bem âmbar, sombra suave.
      v18.08-21: ambiente longe da origem do GLB (Solar) recebe a luz e a
@@ -6320,7 +6337,13 @@ const PANOS_INTERNOS = (() => {
     return { id:'zona'+i, rotulo:nomeLimpo(nome), dinamico:true, interna:i,
       olhoM:o, alvoM:a,
       lon: Math.round(Math.atan2(a[2]-o[2], a[0]-o[0])*180/Math.PI),
-      lat: Math.round(Math.atan2(a[1]-o[1], Math.hypot(a[0]-o[0], a[2]-o[2]))*180/Math.PI),
+      /* O 360 ABRE NO HORIZONTE (09/10/2026) — a inclinação saía do alvo da ficha
+         do CRM, e em casas onde o alvo está no chão (Joinville) a vista abria
+         OLHANDO PARA O PISO: o cliente via tábua de madeira e achava que estava
+         quebrado. Panorâmica se abre na altura dos olhos; quem quiser olhar para
+         baixo arrasta. Limito a ±7°, que é inclinação de enquadramento, não de
+         tropeço. */
+      lat: Math.max(-7, Math.min(7, Math.round(Math.atan2(a[1]-o[1], Math.hypot(a[0]-o[0], a[2]-o[2]))*180/Math.PI))),
       legenda:`Vista de dentro · ${nomeLimpo(nome)}.` };
   });
 })();
@@ -6486,7 +6509,13 @@ function layoutRenderizarPanorama(olhoPx){
   const TH = window.THREE, rd = T3.renderer;
   const emM = olhoPx && Array.isArray(olhoPx.m);
   const olho = emM ? {x:olhoPx.m[0], z:olhoPx.m[2]} : pxParaM(olhoPx.x, olhoPx.y);
-  const olhoY = emM ? (olhoPx.m[1] + 1.60) : (pisoYEm(olhoPx.x, olhoPx.y) + 1.60);
+  /* ALTURA DO OLHO SOMADA DUAS VEZES (09/10/2026) — o `olho` das câmeras
+     internas do CRM já vem na ALTURA DOS OLHOS (Joinville 1,70 sobre um piso em
+     zero; Solar 2,70 sobre um piso em 0,94). Somar 1,60 punha a panorâmica a
+     3,30 m, acima da cabeça: o Joinville abria olhando o assoalho entre os
+     lustres e parecia defeito. Só o caminho em PIXEL precisa do acréscimo, que
+     parte do piso. */
+  const olhoY = emM ? olhoPx.m[1] : (pisoYEm(olhoPx.x, olhoPx.y) + 1.60);
   const fazer = (lado, tipo)=>{
     const cubo = new TH.WebGLCubeRenderTarget(lado, {type:tipo});
     const cam = new TH.CubeCamera(.1, 300, cubo);
