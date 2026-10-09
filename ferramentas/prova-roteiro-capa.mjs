@@ -109,16 +109,13 @@ const capa = await p.evaluate(() => {
     visivel: document.querySelector('.hero__fundo').classList.contains('filme-ok'),
     foto: !!document.getElementById('heroImg') } : null;
 });
-ok(!!capa, 'a capa tem filme');
-/* O FILME DA CAPA SEGUE O SALÃO (07/10/2026) — o passeio da ORC-2026-02412 foi
-   regravado no Mediterrâneo, que é a casa do orçamento. Aberta no Salão de
-   Eventos, a proposta mostra o filme DA CASA, não o do evento: filme de outro
-   salão na capa é a casa errada, que foi o defeito apontado em 05/10. */
-ok(capa && /ambientes\/salao_eventos\/video\/capa/.test(capa.src),
-  `aberta em outro salão, a capa roda o filme DA CASA (${capa && capa.src})`);
-ok(capa && capa.mudo && capa.laco, 'sem som e em laço');
-ok(capa && capa.tocando && capa.visivel, 'tocando e visível');
-ok(capa && capa.foto, 'a foto continua embaixo, para quando o vídeo não rolar');
+/* SEM VÍDEO NO SITE (09/10/2026) — o dono mandou tirar o vídeo enquanto o
+   caminho bom (imagem gerada a partir do orçamento) não existe. A capa fica
+   com a FOTO, que é real. Esta checagem virou o contrário da anterior: o que
+   não pode é vídeo voltar sem ninguém decidir. */
+ok(capa === null, 'a capa não tem vídeo, só a foto' + (capa ? ' (achei ' + capa.src + ')' : ''));
+const temFoto = await p.evaluate(() => !!document.getElementById('heroImg'));
+ok(temFoto, 'e a foto do topo está lá');
 
 /* 4 · quem pede menos movimento fica com a foto */
 const q = await b.newPage();
@@ -141,7 +138,7 @@ await espera(3200);
 const demo = await lerRoteiro(d);
 ok(!demo.oculto && demo.passos.length >= 4, `demonstração: roteiro com ${demo.passos.length} momentos`);
 const filmeDemo = await d.evaluate(() => { const v = document.querySelector('.hero__fundo video'); return v && v.dataset.src; });
-ok(/ambientes\/solar/.test(filmeDemo || ''), `e o filme da capa é o da casa (${filmeDemo})`);
+ok(!filmeDemo, `e a capa segue sem vídeo na demonstração (${filmeDemo || 'nenhum'})`);
 
 /* 6 · no modo só-layout (dentro do CRM) nada disso aparece */
 const l = await b.newPage();

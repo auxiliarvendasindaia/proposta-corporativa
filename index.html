@@ -1499,7 +1499,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer: é só pedir na nossa conversa.
-      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-45</span></p>
+      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-46</span></p>
   </div>
 </footer>
 
@@ -7811,7 +7811,19 @@ function montarPlayer(){
   andar();
 }
 /* o filme do espaço: arquivo pronto por ambiente, sem nada gerado na hora */
+/* SEM VÍDEO NO SITE (09/10/2026) — decisão do dono: "vamos deixar o vídeo de
+   lado, remover o vídeo do site". O que a página sabe gerar hoje é sobrevoo
+   da maquete, e ele não mostra o evento do cliente; o caminho bom (imagem
+   gerada a partir do orçamento, como na proposta da Algar) depende de uma
+   chave da fal que ainda não temos. Até lá, nada de vídeo: nem a seção 05,
+   nem o laço de fundo da capa. Fica a foto, que é real.
+   O código e os arquivos ficam onde estão — voltar é trocar este false. */
+const VIDEO_NO_SITE = false;
 function montarFilme(){
+  if(!VIDEO_NO_SITE){
+  const sec0 = document.getElementById('filme'); if(sec0) sec0.hidden = true;
+    return;
+  }
   const sec = document.getElementById('filme'); if(!sec) return;
   const v = AMB.filme;
   if(!v || !v.src){ sec.hidden = true; return; }
@@ -7838,6 +7850,9 @@ function montarFilme(){
    (apontado pelo dono em 05/10/2026). Escrito por gerar-filme.mjs. */
 const PROPOSTAS_COM_FILME = {'ORC-2026-02412':'mediterraneo'};
 function filmeDaProposta(){
+  if(!VIDEO_NO_SITE){
+    return;
+  }
   if(!ORC_REAL || !ORC_NUMERO) return;
   if(PROPOSTAS_COM_FILME[ORC_NUMERO] !== ESPACO) return;
   const base = `assets/propostas/${encodeURIComponent(ORC_NUMERO)}/`;
@@ -7873,6 +7888,9 @@ function filmeAtual(){
   return (AMB.filme && AMB.filme.src) ? comCapa({src:AMB.filme.src, poster:AMB.filme.poster||''}) : null;
 }
 function filmeDaCapa(){
+  if(!VIDEO_NO_SITE){
+    return;
+  }
   const fundo = document.querySelector('.hero__fundo');
   if(!fundo || MODO_FILME || MODO_LAYOUT) return;
   if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
