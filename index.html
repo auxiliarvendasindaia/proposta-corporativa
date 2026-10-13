@@ -1498,7 +1498,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer: é só pedir na nossa conversa.
-      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-49</span></p>
+      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-50</span></p>
   </div>
 </footer>
 
@@ -1893,8 +1893,8 @@ const AMBIENTES = {
     olhoPanoPx:{x:1100,y:600},                            // olho do "Seu layout" (meio da pista)
     panoInterno:true,                                     // mantém a pill "Salão interno" (v18.08-22)
     panos:[
-      {id:'layout',  rotulo:'Seu layout', dinamico:true, lon:356, lat:-2},
-      {id:'interno', rotulo:'Salão interno', dinamico:true, vazio:true, lon:356, lat:-2,
+      {id:'layout',  rotulo:'Seu layout', dinamico:true, lonDinamico:true, lon:356, lat:-2},
+      {id:'interno', rotulo:'Salão interno', dinamico:true, lonDinamico:true, vazio:true, lon:356, lat:-2,
         legenda:'O salão interno · pronto para receber o seu evento.'},
       {id:'deck', rotulo:'Salão externo · Deck', arquivo:'assets/pano-deck-figueira.jpg', lon:228, lat:2,
         legenda:'Passeio fotorrealista · Salão externo · Deck da Figueira, recepção e coquetel ao ar livre.'}
@@ -2253,8 +2253,8 @@ const AMBIENTES = {
     olhoPanoPx:null,
     panoInterno:false,
     panos:[
-      {id:'layout',  rotulo:'Seu layout', dinamico:true, lon:270, lat:-15},
-      {id:'interno', rotulo:'Mirante interno', dinamico:true, vazio:true, lon:270, lat:-15,
+      {id:'layout',  rotulo:'Seu layout', dinamico:true, lonDinamico:true, lon:270, lat:-15},
+      {id:'interno', rotulo:'Mirante interno', dinamico:true, lonDinamico:true, vazio:true, lon:270, lat:-15,
         legenda:'O Mirante por dentro · pronto para receber o seu evento.'}
     ],
     nota360:'Mirante da Lagoa Florianópolis',
@@ -5544,9 +5544,11 @@ const centroPrincipalPx = ()=>({x:(SALAO_PRINCIPAL.x0+SALAO_PRINCIPAL.x1)/2, y:(
    máscara, que já vem erodida em 0,8 m) e fora de qualquer mesa do layout.
    No Solar o centro do pátio cai na caixa da árvore: o olho fica logo ao
    sul dela, entre as mesas, olhando a árvore. */
-function panoOlho(){
-  if(AMB.olhoPanoPx) return AMB.olhoPanoPx;
-  const c = centroPrincipalPx();
+/* 13/10: com um ponto de partida (semente) a busca corre a partir DELE — e
+   nesse caso ignora o olho curado: quem chama já sabe onde quer ficar. */
+function panoOlho(semente){
+  if(!semente && AMB.olhoPanoPx) return AMB.olhoPanoPx;
+  const c = semente || centroPrincipalPx();
   const rLivre = Math.round(1.2*pxm/MG.passo), folga = MESA_R + 0.4*pxm;
   const gx0 = Math.round(c.x/MG.passo), gy0 = Math.round(c.y/MG.passo);
   const livre = (gx,gy)=>{
@@ -5572,6 +5574,90 @@ function panoOlho(){
   }
   return c;
 }
+
+/* O 360° ABRE OLHANDO O LAYOUT DO CLIENTE (13/10/2026) — a varredura das 25
+   casas achou oito abrindo de cara numa parede, numa cortina ou num tampo de
+   mesa. A direção saía da GEOMETRIA da sala (o eixo mais longo), e geometria
+   não sabe onde o cliente pôs as coisas. Agora o alvo é o que ele montou no
+   2D: o palco/telão se houver — num evento de empresa é para lá que todo
+   mundo olha —, senão o miolo das mesas e peças daquela área. O olho recua
+   para o lado OPOSTO do alvo, dentro da área, para o layout inteiro ficar na
+   frente, e nunca em cima de uma mesa.
+   Vale tanto para o "Seu layout" quanto para o "<espaço> interno": os dois
+   panoramas precisam nascer do mesmo ponto de vista, senão o cliente acha
+   que trocaram de salão. */
+const ALVO_FORTE = /palco|tablado|telao|tel.o|painel|led/i;
+const naArea = (P,q) => !!q && q.x>=P.x0 && q.x<=P.x1 && q.y>=P.y0 && q.y<=P.y1;
+/* 13/10: a vista por ZONA só conta o que está na zona; a vista do salão conta
+   o layout INTEIRO. No Canto da Lagoa a área principal é uma de onze, e 9 das
+   11 mesas ficavam de fora: o alvo caía num canto e o 360° abria no fundo de
+   cortina. */
+function panoFoco(P, soNaArea){
+  const pecas = (Array.isArray(PROPOSTA.pecas) ? PROPOSTA.pecas : [])
+    .filter(q => !soNaArea || naArea(P, q));
+  const forte = pecas.find(q=>ALVO_FORTE.test(String(q.t||"")));
+  if(forte) return {x:forte.x, y:forte.y};
+  const tudo = pecas.concat((PROPOSTA.mesas||[]).filter(q => !soNaArea || naArea(P, q)));
+  if(tudo.length) return {x:tudo.reduce((s,q)=>s+q.x,0)/tudo.length,
+                          y:tudo.reduce((s,q)=>s+q.y,0)/tudo.length};
+  return {x:(P.x0+P.x1)/2, y:(P.y0+P.y1)/2};
+}
+/* a caixa onde o olho pode andar: a área, esticada até caber o layout todo */
+function caixaDoLayout(P){
+  const tudo = (Array.isArray(PROPOSTA.pecas) ? PROPOSTA.pecas : []).concat(PROPOSTA.mesas||[]);
+  if(!tudo.length) return P;
+  const m = 1.5*pxm;
+  return { x0: Math.min(P.x0, Math.min(...tudo.map(q=>q.x)) - m),
+           x1: Math.max(P.x1, Math.max(...tudo.map(q=>q.x)) + m),
+           y0: Math.min(P.y0, Math.min(...tudo.map(q=>q.y)) - m),
+           y1: Math.max(P.y1, Math.max(...tudo.map(q=>q.y)) + m) };
+}
+/* RECUAR SEM SAIR DA CASA (13/10/2026) — a primeira versão ia direto a 82%
+   da caixa da área, e caixa não é sala: no Lounge, no Mirante e no Panorâmico
+   o olho pousava do lado de fora da parede e a panorâmica saía 88% céu — a
+   página julgava o quadro liso e escondia a aba sozinha. Agora o olho ANDA a
+   partir do alvo, meio metro por vez, e para no último ponto que ainda é piso
+   de verdade: dentro do polígono da área, com 1 m de folga em volta e sem
+   mesa em cima. Não achando nenhum, fica onde sempre ficou. */
+function pisoFolgado(x, y, P){
+  if(!pisoValido(x, y)) return false;
+  if(P && P.poligono && !dentroPoligono(P.poligono, x, y)) return false;
+  const r = 1.0*pxm;
+  for(let a = 0; a < 8; a++){
+    if(!pisoValido(x + Math.cos(a*Math.PI/4)*r, y + Math.sin(a*Math.PI/4)*r)) return false;
+  }
+  return true;
+}
+function panoOlhoAtras(P, foco){
+  let dx = (P.x0+P.x1)/2 - foco.x, dy = (P.y0+P.y1)/2 - foco.y;
+  const d = Math.hypot(dx, dy);
+  if(d < 0.6*pxm){                      /* alvo no meio: recua pelo eixo mais longo */
+    const larg = P.x1-P.x0, fund = P.y1-P.y0;
+    dx = larg >= fund ? 1 : 0; dy = larg >= fund ? 0 : 1;
+  }else{ dx /= d; dy /= d; }
+  /* 13/10: o recuo em linha reta às vezes esbarra logo numa parede — no Canto
+     da Lagoa parava a 3 m do palco e a vista abria no fundo de cortina. Então
+     tento um LEQUE de direções em volta da principal e fico com a que anda
+     mais: é dali que se vê o salão inteiro. A direção do olhar não muda, que
+     é sempre o alvo. */
+  const base = Math.atan2(dy, dx);
+  const passo = 0.5*pxm, limite = Math.hypot(P.x1-P.x0, P.y1-P.y0);
+  let melhor = null, maior = 0;
+  for(const giro of [0, 25, -25, 50, -50, 75, -75, 100, -100]){
+    const a = base + giro*Math.PI/180, ex = Math.cos(a), ey = Math.sin(a);
+    let ponto = null, alcance = 0;
+    for(let s = 1.5*pxm; s <= limite; s += passo){
+      const q = {x:foco.x + ex*s, y:foco.y + ey*s};
+      if(!pisoFolgado(q.x, q.y, P)) break;             /* passou da parede: para */
+      if((PROPOSTA.mesas||[]).some(m=>Math.hypot(m.x-q.x, m.y-q.y) < MESA_R + 0.4*pxm)) continue;
+      ponto = q; alcance = s;
+    }
+    const nota = alcance * (giro === 0 ? 1.15 : 1);    /* na duvida, a reta */
+    if(ponto && nota > maior){ maior = nota; melhor = ponto; }
+  }
+  return melhor || panoOlho();
+}
+const grauEntre = (o, a) => Math.round(Math.atan2(a.z-o.z, a.x-o.x)*180/Math.PI);
 
 function tresTemWebGL(){
   try{
@@ -6330,7 +6416,10 @@ const PANOS_INTERNOS = (() => {
   return ins.map((v, i) => {
     const o = v.olho || [0,0,0], a = v.alvo || [0,0,0];
     const nome = (PISOS[v.piso|0] || {}).nome || `Ambiente ${i+1}`;
+    const Pz = (PISOS[v.piso|0] || {});
+    const areaZ = (Pz.areas && (Pz.areas[Pz.principal||0] || Pz.areas[0])) || null;
     return { id:'zona'+i, rotulo:nomeLimpo(nome), dinamico:true, interna:i,
+      lonDinamico:true, area:areaZ,
       olhoM:o, alvoM:a,
       lon: Math.round(Math.atan2(a[2]-o[2], a[0]-o[0])*180/Math.PI),
       /* O 360 ABRE NO HORIZONTE (09/10/2026) — a inclinação saía do alvo da ficha
@@ -6352,6 +6441,15 @@ const PANO_PRIMEIRO = (PANOS_LISTA[0] || {}).id || 'layout';
 PANOS_LISTA.forEach(p=>{ PANOS[p.id] = {...p, tx:null, legenda:p.legenda||''}; });
 document.querySelector('.pano__ambientes').innerHTML = PANOS_LISTA.map((p,i)=>
   `<button type="button" class="pill" data-pano="${p.id}" aria-pressed="${i===0?'true':'false'}">${esc(p.rotulo)}</button>`).join('');
+/* CASA SEM PANORÂMICA NENHUMA (13/10/2026) — a Cerimônia Mirante da Lagoa vem
+   do CRM com zero panos e UMA só câmera interna (o gerador por zona exige
+   duas): PANOS_LISTA ficava vazio, PANO_PRIMEIRO caía no "layout" que não
+   existe e a aba estourava em PANOS[id].dinamico — tela preta. Sem
+   panorâmica a aba não entra na página; as outras duas visões bastam. */
+const ABA_360 = '[data-visao="v360"]';
+const TEM_360 = PANOS_LISTA.length > 0;
+if(!TEM_360){ const abaP = document.querySelector(ABA_360); if(abaP) abaP.hidden = true; }
+
 const PANOL = { rev:0 };   /* versão do layout que o panorama dinâmico retrata */
 const P360 = {
   pronto:false, falhou:false, raf:0, ambiente:PANO_PRIMEIRO, pedido:null, emVoo:null,
@@ -6415,7 +6513,7 @@ function pano360TemImagem(){
 }
 function pano360Julgar(){
   if(pano360TemImagem()) return;
-  const aba = document.querySelector('[data-visao="v360"]');
+  const aba = document.querySelector(ABA_360);
   if(aba) aba.hidden = true;
   if(typeof visaoAtual !== 'undefined' && visaoAtual === 'v360') trocarVisao('v3d');
 }
@@ -6501,6 +6599,36 @@ function panoMostrar(id){
 /* olhoPx: ponto na planta (px). Com {m:[x,y,z]} o olho vem em METROS — é o
    caso das vistas internas que o CRM traz prontas por zona (camera.internas),
    feitas à mão por quem calibrou a maquete. */
+/* O VIDRO APAGAVA O PANORAMA (medido em 23/09/2026, aplicado em 13/10/2026) —
+   as maquetes novas do CRM (v15.09+) trazem KHR_materials_transmission no
+   vidro. Material com transmissão exige do three uma passada de render à
+   parte, e essa passada NÃO sobrevive à câmera de cubo: cinco das seis faces
+   voltam em cor de fundo. Dava o 360° "que não funciona" — 88% de fundo, um
+   quadrado de imagem e o resto liso — no Lounge, no Mirante, no Panorâmico, no
+   Cristal, no Mezanino, no Salão de Eventos e no Mediterrâneo (nesse a página
+   ainda escondia a aba sozinha, por achar o quadro liso). Eram 2 materiais
+   entre 114.
+   Aqui o vidro vira transparência comum só enquanto o panorama é gerado, e
+   volta ao que era no finally. O 3D e a maquete não mudam. Hipóteses já
+   testadas e DESCARTADAS, para não repetir: face única, altura do piso pelo
+   modelo, corte do telhado, descarte por frustum e posição do olho. */
+function semVidroTransmitido(fazer){
+  const guarda = [];
+  T3.cena.traverse(o=>{
+    if(!o.isMesh) return;
+    for(const m of [].concat(o.material)){
+      if(!m || !m.transmission) continue;
+      guarda.push([m, m.transmission, m.transparent, m.opacity]);
+      m.transmission = 0; m.transparent = true; m.opacity = .25; m.needsUpdate = true;
+    }
+  });
+  try{ return fazer(); }
+  finally{
+    for(const [m, tr, tp, op] of guarda){
+      m.transmission = tr; m.transparent = tp; m.opacity = op; m.needsUpdate = true;
+    }
+  }
+}
 function layoutRenderizarPanorama(olhoPx){
   const TH = window.THREE, rd = T3.renderer;
   const emM = olhoPx && Array.isArray(olhoPx.m);
@@ -6569,11 +6697,13 @@ function layoutRenderizarPanorama(olhoPx){
      escadinha de fallback: cubo menor → bytes, p/ GPU/driver apertado */
   const teto = (rd.capabilities.maxCubemapSize|0) || 1024;
   const lado = Math.min(matchMedia('(min-width: 900px)').matches ? 2048 : 1024, teto);
-  try{ return fazer(lado, TH.HalfFloatType); }
-  catch(e1){
-    try{ return fazer(1024, TH.HalfFloatType); }
-    catch(e2){ return fazer(1024, TH.UnsignedByteType); }
-  }
+  return semVidroTransmitido(()=>{
+    try{ return fazer(lado, TH.HalfFloatType); }
+    catch(e1){
+      try{ return fazer(1024, TH.HalfFloatType); }
+      catch(e2){ return fazer(1024, TH.UnsignedByteType); }
+    }
+  });
 }
 /* garante a maquete inteira (three + salão + mesa real + cena) e rende o pano.
    id='layout' → com as mesas do estado (cache por rev);
@@ -6587,26 +6717,38 @@ function panoGerarLayout(id){
       if(!T3.pronto) tresIniciar();
       /* olho calculado com o layout do cliente (vale também para o vazio,
          para os dois panoramas terem o mesmo ponto de vista) */
-      const olho = panoOlho();
-      if(amb.lonDinamico){
-        /* ABRE OLHANDO O FUNDO DO SALÃO (30/09/2026) — antes mirava o CENTRO
-           da área principal, mas o olho já nasce quase no centro (medido: de
-           1,07 m a 3,01 m de distância). Com um vetor tão curto o ângulo era
-           praticamente ruído, e o 360° abria numa escada escura (Mezanino),
-           numa parede lisa (Mirante) ou no teto (Canto da Lagoa). Agora a
-           vista corre o eixo MAIS LONGO da sala, para o lado que tem mais
-           salão pela frente: é a vista com profundidade, com as mesas
-           afastando — a mesma que o Salão de Eventos já usava na mão. */
-        const P = SALAO_PRINCIPAL;
-        const larg = P.x1 - P.x0, fund = P.y1 - P.y0;
-        const alvoPx = larg >= fund
-          ? {x:(olho.x - P.x0) > (P.x1 - olho.x) ? P.x0 : P.x1, y:(P.y0 + P.y1)/2}
-          : {x:(P.x0 + P.x1)/2, y:(olho.y - P.y0) > (P.y1 - olho.y) ? P.y0 : P.y1};
-        const o = pxParaM(olho.x, olho.y), al = pxParaM(alvoPx.x, alvoPx.y);
-        amb.lon = Math.round(Math.atan2(al.z - o.z, al.x - o.x)*180/Math.PI);
+      /* QUAL ÁREA ESTE PANORAMA RETRATA — a da zona, quando a vista é por
+         zona; senão o salão principal. */
+      const P = amb.area || SALAO_PRINCIPAL;
+      const foco = panoFoco(P, !!amb.area);
+      /* ONDE FICA O OLHO. Zona com câmera no pacote do CRM: o ponto vem de lá
+         (no Mediterrâneo a maquete é um modelo de implantação e o ponto
+         calculado dava quadro vazio) — só saio de cima de uma mesa, se ele cai
+         em cima de uma. Sem câmera no pacote: recuo para trás do alvo. */
+      const emM = (amb.interna != null && Array.isArray(amb.olhoM));
+      let olhoDaVez, o;
+      if(emM){
+        const pxOlho = {x:(amb.olhoM[0]-GLBCAL.x0)*pxm + GLBCAL.px0,
+                        y:(amb.olhoM[2]-GLBCAL.z0)*pxm + GLBCAL.py0};
+        const emCima = (PROPOSTA.mesas||[]).some(m=>Math.hypot(m.x-pxOlho.x, m.y-pxOlho.y) < MESA_R + 0.3*pxm)
+          || (Array.isArray(PROPOSTA.pecas)?PROPOSTA.pecas:[]).some(q=>Math.hypot(q.x-pxOlho.x, q.y-pxOlho.y) < 0.9*pxm);
+        const livre = emCima ? panoOlho(pxOlho) : pxOlho;
+        const m = pxParaM(livre.x, livre.y);
+        olhoDaVez = {m:[m.x, amb.olhoM[1], m.z]};
+        o = {x:m.x, z:m.z};
+      }else{
+        const olho = panoOlhoAtras(caixaDoLayout(P), foco);
+        olhoDaVez = olho;
+        o = pxParaM(olho.x, olho.y);
       }
-      /* zona com vista interna própria: o olho vem em metros, do pacote */
-      const olhoDaVez = (amb.interna != null && Array.isArray(amb.olhoM)) ? {m:amb.olhoM} : olho;
+      /* A DIREÇÃO: sempre o layout do cliente. A inclinação abre no horizonte
+         (até 7°) — panorâmica que abre olhando o piso parece quebrada. */
+      const a = pxParaM(foco.x, foco.y);
+      if(Math.hypot(a.x-o.x, a.z-o.z) > 1.2){
+        amb.lon = grauEntre(o, a);
+        amb.lat = Math.max(-7, Math.min(7, amb.lat|0));
+      }
+
       let tx;
       if(amb.vazio){
         const guarda = PROPOSTA.mesas;

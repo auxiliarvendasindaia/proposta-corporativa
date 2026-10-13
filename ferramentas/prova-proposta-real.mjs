@@ -39,7 +39,12 @@ console.log(`   ${d.versao} · ${d.conv} convidados · total ${d.total} · ${d.i
 ok(cent(d.total) === 20849260 && d.conv === 200, 'demo com o total de sempre');
 ok(d.itens.length === 9 && d.serv.length === 7, 'demo com os 9 itens e 7 serviços de sempre');
 ok(!d.aviso && d.marca === 'DIMY', 'demo sem aviso de modo real e com a marca DIMY');
-ok(d.planta === 'assets/planta-salao-eventos.jpg' && d.mesas === 19, 'planta e layout originais');
+/* 13/10/2026: a planta e o layout da demo passaram a vir do pacote do CRM
+   (planta.jpg no Supabase, 24 mesas) desde que a planta voltou a ser a
+   colorida do sistema. O arquivo local assets/planta-salao-eventos.jpg nao
+   manda mais; o que o teste guarda e que a demo nasce do pacote, nao que ela
+   nunca muda. */
+ok(d.planta.includes('/salao_eventos/') && d.planta.endsWith('planta.jpg') && d.mesas === 24, 'planta e layout originais');
 await p.close();
 
 /* 2 · COM token: o orçamento real (ORC-2026-02412, cupom de R$ 11.250) */
