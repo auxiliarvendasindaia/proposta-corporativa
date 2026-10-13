@@ -30,8 +30,6 @@
        página reconhece, pelo nome que vem no orçamento, o salão certo */
     document.write('<scr' + 'ipt src="dados/ambientes-index.js"></scr' + 'ipt>');
     document.write('<scr' + 'ipt src="dados/ambientes/' + s + '.js"></scr' + 'ipt>');
-    if(/[?&]planta=tratada/.test(location.search))
-      document.write('<scr' + 'ipt src="dados/plantas-tratadas.js"></scr' + 'ipt>');
   }catch(e){}
 })();
 </script>
@@ -1500,7 +1498,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer: é só pedir na nossa conversa.
-      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-48</span></p>
+      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-49</span></p>
   </div>
 </footer>
 
@@ -4510,14 +4508,12 @@ function montarPlanta(){
   /* planta do AMBIENTE (v18.08-21): imagem, tamanho e viewBox vêm do
      registro — o HTML já carrega o Salão de Eventos; só troca se for outro */
   const img = $('#plantaImg'); let PL = PISO.planta || AMB.planta;   /* planta do PISO em edição (v18.08-24) */
-  /* TESTE DA PLANTA TRATADA (09/10/2026) — `?planta=tratada` troca a imagem
-     do CRM pela versão limpa de ferramentas/gerar-plantas.mjs. É só para
-     comparar: sem o parâmetro, nada muda. */
-  /* o src já veio absoluto do bucket: casa pelo fim do caminho */
-  const mapa = window.__PLANTAS_TRATADAS__ || {};
-  const chave = Object.keys(mapa).find(k => String(PL.src).endsWith(k));
-  const tratada = chave && mapa[chave];
-  if(tratada) PL = {...PL, src: 'assets/plantas/' + tratada};
+  /* a imagem é a QUE O CRM MANDA, colorida (decisão do dono em 13/10). Houve
+     uma versão tratada — sem a luz das lâmpadas e com a parede desenhada — e
+     ele preferiu a original. O que deixava a planta feia na tela eram dois
+     defeitos daqui, corrigidos na v18.09-47: o véu da zona a 42% e o recorte
+     que ampliava a imagem. A ferramenta de tratar continua em
+     ferramentas/gerar-plantas.mjs, se um dia mudar de ideia. */
   if(img.getAttribute('src')!==PL.src){
     img.src = PL.src; img.width = PL.w; img.height = PL.h; img.alt = PL.alt || '';
   }
