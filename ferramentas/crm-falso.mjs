@@ -3,7 +3,7 @@
 // no mesmo formato da rota real do CRM, para testar a página vestida com um
 // orçamento sem depender de link de teste.
 //
-//   node ferramentas/crm-falso.mjs                 → orçamento de 1 dia (ORC-2026-02412)
+//   node ferramentas/crm-falso.mjs                 → orçamento de 1 dia (ORC-2026-90001, fictício)
 //   node ferramentas/crm-falso.mjs --multi-dia     → o mesmo, em 2 dias e 2 espaços
 //   node ferramentas/crm-falso.mjs --porta 8142
 //
@@ -27,7 +27,9 @@ const item = (nome, qtd, unit, bloco, dia_id = null) => ({ id: `${nome}-${dia_id
   quantidade: qtd, valor_unitario: unit, valor_total: +(qtd * unit).toFixed(2),
   produto: { nome, vinculado_convidados: qtd === (dia_id ? CONV_DIA[dia_id] : conv) } });
 
-/* Orçamento transcrito do PDF real ORC-2026-02412 (Bandeira Azul · Mediterrâneo).
+/* Valores de um orçamento real de coquetel no Mediterrâneo (transcritos do PDF), com
+   empresa, número, evento e logo FICTÍCIOS desde 15/10/2026: o projeto e o site são
+   públicos, e o nome do cliente real estava aqui. Não volte a pôr dado de cliente.
    Os valores unitários já são os COM desconto; o cupom aparece só na diferença
    entre a soma das linhas e o valor_total — a página rateia e nunca mostra. */
 const itens1 = [
@@ -84,13 +86,14 @@ const soma = itens.reduce((a, i) => a + i.valor_total, 0) + servicos.reduce((a, 
 const TOTAL = MULTI ? +(soma * 0.92).toFixed(2) : 123782.95;   /* 1 dia: total do PDF (com cupom) */
 
 const orcamento = {
-  id: '91b0c5c1-c1a2-4982-a21d-60bd51e5c175', numero: MULTI ? 'ORC-2026-02412-D2' : 'ORC-2026-02412',
+  id: '00000000-0000-4000-8000-000000090001', numero: MULTI ? 'ORC-2026-90001-D2' : 'ORC-2026-90001',
   tipo_orcamento: MULTI ? 'multi_dia' : 'corporativo',
-  cliente_nome: 'SEBRAE',
+  cliente_nome: 'EMPRESA EXEMPLO',
   /* logo da empresa: no CRM real virá de companies.logo_url (hoje vazio em
-     todas as 32 empresas). Aqui aponta para um arquivo local de teste. */
-  empresa: { nome: 'SEBRAE', logo_url: 'assets/clientes/sebrae.png' },
-  nome_evento: 'Cerimônia Nacional de Entrega da Bandeira Azul',
+     todas as 32 empresas). Aqui, uma logo fictícia versionada junto das ferramentas
+     (antes era a logo do cliente real em assets/clientes/, fora do Git: 404 nas baterias). */
+  empresa: { nome: 'EMPRESA EXEMPLO', logo_url: 'ferramentas/fixtures/logo-exemplo.svg' },
+  nome_evento: 'Convenção Anual Exemplo',
   cliente_email: null, cliente_telefone: null,
   data_evento: '2026-11-06', dia_semana: 'sexta', num_convidados: conv,
   /* a validade acompanha o relógio: data fixa fazia a proposta de teste vencer
@@ -115,7 +118,7 @@ http.createServer((req, res) => {
   }
   if (/^\/api\/public\/proposta\//.test(req.url)) {
     res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-    return res.end(JSON.stringify({ success: true, data: { orcamento, token: req.url.split('/').pop(),
+    return res.end(JSON.stringify({ success: true, data: { orcamento, token: req.url.split('?')[0].split('/').pop(),
       expires_at: new Date(Date.parse(orcamento.validade) + 864e5).toISOString(), incluir_pagamento: false } }));
   }
   res.writeHead(404); res.end('{}');

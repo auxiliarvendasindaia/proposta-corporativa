@@ -36,7 +36,8 @@ let p = await abrir(`${BASE}/`);
 let d = await estado(p);
 console.log('\n— DEMO (sem token) —');
 console.log(`   ${d.versao} · ${d.conv} convidados · total ${d.total} · ${d.itens.length} itens · ${d.serv.length} serviços`);
-ok(cent(d.total) === 20849260 && d.conv === 200, 'demo com o total de sempre');
+/* 214.472,60 desde 15/10/2026: menus e open bars com os preços atuais do CRM (era 208.492,60) */
+ok(cent(d.total) === 21447260 && d.conv === 200, 'demo com o total de sempre');
 ok(d.itens.length === 9 && d.serv.length === 7, 'demo com os 9 itens e 7 serviços de sempre');
 ok(!d.aviso && d.marca === 'DIMY', 'demo sem aviso de modo real e com a marca DIMY');
 /* 13/10/2026: a planta e o layout da demo passaram a vir do pacote do CRM
@@ -47,10 +48,10 @@ ok(!d.aviso && d.marca === 'DIMY', 'demo sem aviso de modo real e com a marca DI
 ok(d.planta.includes('/salao_eventos/') && d.planta.endsWith('planta.jpg') && d.mesas === 24, 'planta e layout originais');
 await p.close();
 
-/* 2 · COM token: o orçamento real (ORC-2026-02412, cupom de R$ 11.250) */
+/* 2 · COM token: o orçamento de teste (ORC-2026-90001, fictício; valores de um orçamento real com cupom de R$ 11.250) */
 p = await abrir(`${BASE}/?proposta=${'b'.repeat(40)}&api=${API}`);
 let r = await estado(p);
-console.log('\n— COM TOKEN (ORC-2026-02412) —');
+console.log('\n— COM TOKEN (ORC-2026-90001) —');
 console.log(`   ${r.titulo} · ${r.conv} convidados · total ${r.total}`);
 r.itens.forEach(i => console.log('     ' + i));
 console.log('   serviços:', r.serv.join(' · '));
@@ -62,7 +63,7 @@ ok(!/desconto|cupom/i.test(r.corpo), 'nenhuma menção a desconto ou cupom');
 /* "Valores … sujeitos a confirmação": o plural entrou junto com a limpeza dos
    travessões (05/10); o teste aceita as duas concordâncias */
 ok(/sujeit[oa]s? a confirmação/i.test(r.aviso || ''), 'aviso de confirmação presente');
-ok(r.conv === 300 && /SEBRAE/i.test(r.titulo), `cliente e convidados do orçamento (${r.titulo})`);
+ok(r.conv === 300 && /EMPRESA EXEMPLO/i.test(r.titulo), `cliente e convidados do orçamento (${r.titulo})`);
 
 /* RETIRAR DA PROPOSTA — o cliente tira o que não quer pelo botão do card, mas
    o evento nunca fica sem comida nem sem bebida */

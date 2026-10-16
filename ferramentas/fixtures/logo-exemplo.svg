@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 96" width="320" height="96">
+  <!-- logo FICTÍCIA para o crm-falso.mjs (EMPRESA EXEMPLO); não é de nenhum cliente -->
+  <rect x="4" y="18" width="60" height="60" rx="14" fill="#1F6FB2"/>
+  <path d="M20 62 L34 34 L48 62 Z" fill="#fff"/>
+  <text x="78" y="58" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#1F2D3D">Empresa Exemplo</text>
+</svg>

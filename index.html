@@ -34,10 +34,21 @@
 })();
 </script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23242B33'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-style='italic' font-size='16' fill='%23B09A6E' text-anchor='middle'%3Ein%3C/text%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- Protótipo: fontes via CDN. Em produção, self-hosted. -->
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- Fontes self-hosted (15/10/2026): antes vinham do CDN do Google Fonts, que é mais uma
+     dependência externa na frente do cliente (rede corporativa que bloqueia, Google lento =
+     letra trocando no meio da leitura). Mesmos arquivos e recortes que o Google servia
+     (latin + latin-ext, fontes variáveis: um arquivo cobre os pesos 300–700). As duas
+     mais usadas vêm em preload para a capa não piscar. Licença: SIL OFL. -->
+<link rel="preload" href="assets/fonts/montserrat-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/cormorantgaramond-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:'Cormorant Garamond';font-style:italic;font-weight:400 600;font-display:swap;src:url(assets/fonts/cormorantgaramond-italic-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:'Cormorant Garamond';font-style:italic;font-weight:400 600;font-display:swap;src:url(assets/fonts/cormorantgaramond-italic-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:400 700;font-display:swap;src:url(assets/fonts/cormorantgaramond-normal-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:400 700;font-display:swap;src:url(assets/fonts/cormorantgaramond-normal-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:'Montserrat';font-style:normal;font-weight:300 500;font-display:swap;src:url(assets/fonts/montserrat-normal-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:'Montserrat';font-style:normal;font-weight:300 500;font-display:swap;src:url(assets/fonts/montserrat-normal-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+</style>
 <!-- three.js r160 em MÓDULOS (v18.08-13): o importmap resolve o "three" que o
      GLTFLoader importa por dentro; tudo self-hosted e carregado lazy (import()
      dinâmico só quando uma visão 3D/360° abre — nada baixa no arranque). -->
@@ -158,6 +169,15 @@ html.sem-io .reveal{opacity:1;transform:none;}
   padding-left:.34em; /* compensa o tracking da última letra */}
 .topbar__by{font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:var(--taupe);}
 .topbar__by b{font-weight:500;color:var(--brown-deep);}
+/* Nome do cliente no topo: UMA linha. O tracking largo foi pensado para "DIMY"; com
+   um nome de empresa de 24 letras quebrava em três linhas na barra de 58px e só
+   "…Business C…" ficava visível no Galaxy S22 (360px, teste de 15/10/2026). Nome longo
+   ganha tracking e corpo menores; se ainda não couber, termina em "…" (o nome inteiro
+   está logo abaixo, no título da capa, e no aria-label do link). */
+.topbar .brand{min-width:0;flex:1 1 auto;overflow:hidden;}
+.topbar .brand__mono{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.topbar .brand__mono--longo{font-size:1.05rem;letter-spacing:.14em;padding-left:.14em;}
+.topbar__by{flex:0 0 auto;}
 
 /* ---------- hero (claro) ---------- */
 .hero{position:relative;padding-block:clamp(72px,12vh,140px) clamp(56px,9vh,110px);
@@ -438,6 +458,15 @@ html.sem-maquete .hero__fundo,html.sem-maquete .cta__media{display:none;}
 .visoes{display:grid;}
 .visao{grid-area:1/1;min-width:0;visibility:hidden;opacity:0;transition:opacity .16s;}
 .visao.ativa{visibility:visible;opacity:1;}
+/* No celular a pilha não serve: o editor 2D empilha abas e botões e fica muito mais alto
+   que o 3D e o 360°. No Galaxy S22 (360px) sobrava, abaixo do 3D/360°, um vazio de 314 a
+   743px (40% a 95% da tela; Solar, com 4 ambientes, o pior) — teste de 15/10/2026.
+   Abaixo de 760px a altura é a da visão ABERTA: as fechadas saem do fluxo, mas seguem
+   montadas e com largura (o canvas do 3D/360° nunca nasce com tamanho zero). */
+@media (max-width:760px){
+  .visoes{position:relative;}
+  .visao:not(.ativa){position:absolute;top:0;left:0;right:0;pointer-events:none;}
+}
 .visao__frame{position:relative;aspect-ratio:16/10;overflow:hidden;border-radius:var(--radius);
   border:1px solid var(--line-soft);background:#fff;}
 /* maquete 3D: o canvas ocupa o quadro; touch-action none (o gesto é da órbita) */
@@ -576,8 +605,15 @@ html.sem-maquete .hero__fundo,html.sem-maquete .cta__media{display:none;}
 .inv__inclusos{margin:1.1rem 0;padding:1rem 1.2rem;background:var(--nude);border:1px solid var(--line-soft);border-radius:var(--radius);}
 .inv__inclusos>p{font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-deep);
   font-weight:500;margin:0 0 .6rem;}
-.inv__inclusos ul{list-style:none;margin:0;padding:0;display:grid;gap:.35rem .8rem;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));}
-.inv__inclusos li{display:flex;justify-content:space-between;gap:12px;font-size:.84rem;color:var(--brown);}
+.inv__inclusos ul{list-style:none;margin:0;padding:0;display:grid;gap:.35rem .8rem;grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr));}  /* min(): em tela de 320px a coluna de 250px estourava o quadro */
+.inv__inclusos li{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;font-size:.84rem;color:var(--brown);}
+/* nome que quebra em duas linhas: o valor acompanha a ÚLTIMA linha (como numa nota), não fica
+   solto no alto — "Taxa de Estacionamento" no Galaxy S22 (apontado pela Dai em 16/10/2026) */
+.inv__inclusos li span{min-width:0;}
+@media (max-width:420px){
+  .inv__inclusos{padding:.9rem .85rem;}
+  .inv__inclusos li{font-size:.8rem;gap:8px;}
+}
 .inv__inclusos li b{font-weight:500;color:var(--brown-deep);font-variant-numeric:tabular-nums;white-space:nowrap;}
 .inv__total{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;
   padding-top:1.3rem;margin-top:.4rem;}
@@ -935,7 +971,10 @@ html.sem-maquete .hero__fundo,html.sem-maquete .cta__media{display:none;}
 /* ---------- responsivo ---------- */
 @media (max-width:760px){
   body{padding-bottom:124px;} /* tierbar mobile tem 2 linhas: nada de conteúdo coberto */
-  .topbar__inner{height:58px;}
+  .topbar__inner{height:58px;gap:12px;}
+  .topbar .brand__mono--longo{font-size:.95rem;letter-spacing:.08em;padding-left:.08em;}
+  /* "Proposta · Indaiá Eventos" em duas linhas curtas, sem roubar a largura do nome */
+  .topbar__by{font-size:.56rem;letter-spacing:.18em;line-height:1.5;text-align:right;max-width:10.5em;}
   .item{grid-template-columns:minmax(0,1fr) auto;}
   .item__info{grid-column:1/-1;}
   .item__total{text-align:right;}
@@ -1094,12 +1133,12 @@ html.so-layout body{padding-bottom:0;}
       <div class="rcard reveal" data-d="2">
         <p class="rcard__lbl">Convidados</p>
         <div class="stepper">
-          <button type="button" class="stepper__btn" id="convMenos" aria-label="Menos 10 convidados">−</button>
-          <input type="number" class="stepper__val" id="convVal" value="200" min="30" max="500" step="10"
+          <button type="button" class="stepper__btn" id="convMenos" aria-label="Menos 1 convidado">−</button>
+          <input type="number" class="stepper__val" id="convVal" value="200" min="30" max="500" step="1"
                  inputmode="numeric" aria-label="Número de convidados (de 30 a 500)">
-          <button type="button" class="stepper__btn" id="convMais" aria-label="Mais 10 convidados">+</button>
+          <button type="button" class="stepper__btn" id="convMais" aria-label="Mais 1 convidado">+</button>
         </div>
-        <p class="rcard__sub">de 30 a 500 · os itens por pessoa acompanham</p>
+        <p class="rcard__sub" id="convFaixa">de 30 a 500 · os itens por pessoa acompanham</p>
       </div>
       <!-- v18.08-33 (decisão do dono): o cliente NÃO simula mais o dia da semana —
            mudar dia ou data é conversa com o consultor, que refaz a proposta.
@@ -1391,8 +1430,8 @@ html.so-layout body{padding-bottom:0;}
     </div>
     <!-- O FILME DO ESPAÇO (v18.09-13) — um passeio pronto, no mesmo lugar em
          que a proposta mostra as fotos. É arquivo (assets/ambientes/<slug>/
-         video/passeio.mp4 + poster.jpg), como nas propostas da Algar e do
-         Sebrae: nada é gerado no navegador do cliente, e o vídeo só começa a
+         video/passeio.mp4 + poster.jpg), como nas propostas feitas à mão
+         antes desta página: nada é gerado no navegador do cliente, e o vídeo só começa a
          baixar quando ele dá play (preload="metadata"). A seção some sozinha
          se o ambiente ainda não tiver filme. -->
     <figure class="filme reveal" id="filme" hidden>
@@ -1498,7 +1537,7 @@ html.so-layout body{padding-bottom:0;}
     <p class="footer__fine">Proposta <span class="js-orc">ORC-2026-01837</span> · Indaiá Eventos · válida até <span class="js-validade">25/08/2026</span>.
       Tudo o que está nesta proposta já está incluso; o que não estiver listado aqui a gente cota
       com prazer: é só pedir na nossa conversa.
-      Protótipo de proposta interativa; este material não substitui o contrato. <span id="versaoBuild">v18.09-50</span></p>
+      Este material não substitui o contrato. <span id="versaoBuild">v18.09-51</span></p>
   </div>
 </footer>
 
@@ -1567,36 +1606,41 @@ const FOTO = {
 
 /* item de cardápio: 'Nome|sg,sl' (dietas opcionais depois do pipe) */
 
-/* ---- MENUS DO JANTAR (conteúdo do cardápio publicado; preços do CRM 2026) ---- */
+/* ---- MENUS DO JANTAR (conteúdo do cardápio publicado; preços do CRM 2026) ----
+   PREÇOS conferidos com `produtos.valor` do CRM em 15/10/2026: menus e open bars
+   estavam ~10% abaixo (reajuste do CRM que não chegou aqui); coquetéis já batiam.
+   Só valem quando o cliente TROCA de cardápio (ao abrir, o preço é o do orçamento).
+   Caminho definitivo: o CRM mandar o catálogo na resposta da proposta (pendente).
+   VMC_PRODUTOS.tab (painel interno) não foi mexido: conferir à parte. */
 const MENUS = [
- {id:'m1', nome:'Menu Superior I', curto:'Superior I', preco:14990, inclui:[], secoes:[
+ {id:'m1', nome:'Menu Superior I', curto:'Superior I', preco:16490, inclui:[], secoes:[
    {label:'Pratos principais', curto:'principais', n:3, itens:['Frango bechamel c/ bacon','Frango strogonoff','Picanha Suína mostarda e mel|sg,sl','Picanha Suína barbecue c/ cebola|sg,sl','Filet strogonoff|sg']},
    {label:'Massas', curto:'massas', n:1, itens:['Spaghetti ao molho Pomodoro c/ manjericão|vg','Spaghetti ao pesto de manjericão|vg','Penne ao molho suíço|vg','Penne na manteiga|vg']},
    {label:'Guarnições', curto:'guarnições', n:3, itens:['Arroz branco na manteiga|sg,sl','Batatas assadas c/ alecrim|sg,vg','Batata palha','Arroz à grega|sg,sl','Arroz c/ brócolis e nozes|sg,vg','Legumes ao vapor c/ tomilho|sg,sl,vg','Farofa de pão, bacon, castanhas e passas','Purê de batata c/ ervas finas']},
    {label:'Saladas', curto:'saladas', n:4, itens:['Salada de maçã','Salpicão de frango','Mix de folhas verdes|sg,sl,vg','Rúcula c/ tomate seco|sg,sl,vg','Mix de folhas c/ mostarda, mel e gorgonzola|sg','Folhas nobres c/ amêndoas, parmesão e balsâmico|sg']}
   ], fotos:[['frango','Frango bechamel c/ bacon'],['penne','Penne na manteiga'],['strog','Strogonoff'],['batataassada','Batatas assadas c/ alecrim'],['noisette','Batata noissete'],['legumesvapor','Legumes ao vapor'],['batatapalha','Batata palha'],['saladagrande','Mix de folhas']]},
- {id:'m2', nome:'Menu Superior II', curto:'Superior II', preco:16990, inclui:[], secoes:[
+ {id:'m2', nome:'Menu Superior II', curto:'Superior II', preco:18990, inclui:[], secoes:[
    {label:'Entradas', curto:'entradas', n:2, itens:['Escondidinho de Carne Seca','Pães caseiros c/ patês (linguiça e truta)','Mini Risoto de alecrim c/ cogumelos|sg','Batata Noissete ao molho tártaro|vg','Queijo de colono em cubos|sg,vg','Mini Risoto Gorgonzola|sg,vg']},
    {label:'Pratos principais', curto:'principais', n:3, itens:['Frango bechamel c/ bacon','Frango strogonoff','Picanha Suína mostarda e mel|sg,sl','Picanha Suína barbecue c/ cebola|sg,sl','Camarão ao molho catupiry','Camarão na moranga','Filet ao molho mostarda|sg','Filet ao molho madeira']},
    {label:'Massas', curto:'massas', n:2, itens:['Gnocchi ao molho Suíço','Gnocchi ao molho de Champignons','Spaghetti ao Frutos do Mar c/ Açafrão|sl','Spaghetti c/ Bacon e manjericão','Penne ao molho de Camarões c/ limão','Penne na Manteiga']},
    {label:'Guarnições', curto:'guarnições', n:4, itens:['Arroz branco na manteiga|sg,sl','Batatas assadas c/ alecrim|sg,vg','Batata palha','Arroz à grega|sg,sl','Arroz c/ brócolis e nozes|sg,vg','Legumes ao vapor c/ tomilho|sg,sl,vg','Farofa de pão, bacon, castanhas e passas','Purê de batata c/ ervas finas','Purê de aipim c/ bacon']},
    {label:'Saladas', curto:'saladas', n:5, itens:['Salada de maçã','Salpicão de frango','Ovos de codorna|sg,sl','Salada de folhas c/ camarões e tomate seco|sg,sl,vg','Mix de folhas c/ mostarda, mel e gorgonzola|sg','Folhas c/ palmito, frango, bacon e parmesão','Tomate cereja c/ azeitona e champignon|sg,sl,vg','Folhas nobres c/ amêndoas, parmesão e balsâmico|sg']}
   ], fotos:[['moranga','Camarão na moranga','center 83%'],['noisette','Batata noissete'],['filetm','Filet ao molho madeira'],['gnocchi','Gnocchi'],['batatapalha','Batata palha'],['camarao','Camarão ao molho catupiry'],['aipim','Purê de aipim c/ bacon'],['arrozbranco','Arroz branco na manteiga'],['caprese','Tomate cereja c/ azeitona'],['saladagrande','Mix de folhas']]},
- {id:'m3', nome:'Menu Premium', curto:'Premium', preco:17990, inclui:[], secoes:[
+ {id:'m3', nome:'Menu Premium', curto:'Premium', preco:19990, inclui:[], secoes:[
    {label:'Entradas', curto:'entradas', n:3, itens:['Bolinho de peixe','Pães caseiros c/ patês (linguiça e truta)','Mini risoto de alecrim c/ cogumelos|sg','Batata Noissete ao molho tártaro|vg','Escondidinho de Filet|vg','Mini risoto de alho poró|sg']},
    {label:'Pratos principais', curto:'principais', n:4, itens:['Frango bechamel c/ bacon','Frango strogonoff','Picanha Suína mostarda e mel|sg,sl','Picanha Suína barbecue c/ cebola|sg,sl','Camarão ao molho catupiry','Camarões ao creme de moranga, dendê e crocante de alho poró','Filet ao molho mostarda|sg','Filet ao molho madeira']},
    {label:'Massas', curto:'massas', n:2, itens:['Gnocchi ao molho suíço','Gnocchi ao molho de champignons','Spaghetti ao frutos do mar c/ açafrão|sl','Spaghetti c/ bacon e manjericão','Penne ao molho de camarão c/ limão','Penne na manteiga','Caneloni de frango c/ catupiry','Caneloni de Camarão c/ catupiry']},
    {label:'Guarnições', curto:'guarnições', n:5, itens:['Paella de frutos do mar|sg,sl','Arroz branco na manteiga|sg,sl','Batatas assadas c/ alecrim|sg,vg','Batata palha|sg','Arroz à grega|sg,sl','Arroz c/ brócolis e nozes|sg,vg','Legumes ao vapor c/ tomilho|sg,sl,vg','Farofa de pão, bacon, castanhas e passas','Purê de batata c/ ervas finas','Purê de aipim c/ bacon']},
    {label:'Saladas', curto:'saladas', n:5, itens:['Pupunha laminada c/ camarões e vinagrete de frutas amarelas|sg,sl','Burrata artesanal c/ folhas baby, parma e tomates ao pesto','Salada de maçã','Salpicão de frango|sg,sl,vg','Ovos de codorna|sg,sl','Salada de folhas c/ camarões e tomate seco|sg,sl,vg','Mix de folhas c/ mostarda, mel e gorgonzola|sg','Folhas c/ palmito, frango, bacon e parmesão','Tomate cereja c/ azeitona e champignon|sg,sl,vg']}
   ], fotos:[['moranga','Camarões na moranga','center 83%'],['entradinhas','Bolinho de peixe'],['filetm','Filet ao molho madeira'],['paella','Paella de frutos do mar'],['camarao','Camarão ao molho catupiry'],['aipim','Purê de aipim c/ bacon'],['gnocchi','Gnocchi'],['legumesvapor','Legumes ao vapor'],['caprese','Tomate cereja c/ azeitona']]},
- {id:'m4', nome:'Menu Privilege', curto:'Privilege', preco:24990, inclui:['Decoração Elegance','Lanche da Madrugada'], secoes:[
+ {id:'m4', nome:'Menu Privilege', curto:'Privilege', preco:27490, inclui:['Decoração Elegance','Lanche da Madrugada'], secoes:[
    {label:'Entradas', curto:'entradas', n:4, itens:['Bolinho de peixe','Pães caseiros c/ patês (linguiça e truta)','Mini risoto de salmão|sg','Escondidinho de camarão c/ catupiry','Mini paella de frutos do mar|sg,sl','Batata Noissete ao molho tártaro|sl,vg','Queijo de colono em cubos|sg,vg','Mini caldeirada de frutos do mar|sg,sl']},
    {label:'Pratos principais', curto:'principais', n:4, itens:['Frango bechamel c/ bacon','Frango strogonoff','Picanha Suína mostarda e mel|sg,sl','Picanha Suína barbecue c/ cebola|sg,sl','Salmão à Belle Meunière|sg','Salmão ao molho de camarão','Filet ao molho mostarda|sg','Filet ao molho madeira','Camarão ao molho catupiry','Camarões ao creme de moranga, dendê e alho poró','Carré de Cordeiro ao vinho e ervas|sg','Carré de Cordeiro na manteiga e alho|sg']},
    {label:'Massas', curto:'massas', n:2, itens:['Gnocchi ao molho suíço','Gnocchi ao molho de champignons','Caneloni de frango c/ catupiry','Caneloni de camarão c/ catupiry','Penne ao molho de camarão c/ limão','Penne na manteiga','Spaghetti ao frutos do mar c/ açafrão|sl','Spaghetti c/ bacon e manjericão']},
    {label:'Guarnições', curto:'guarnições', n:5, itens:['Paella de frutos do mar|sg,sl','Arroz branco na manteiga|sg,sl','Purê de aipim c/ bacon','Batata palha','Arroz à grega|sg,sl','Arroz c/ brócolis e nozes|sg,vg','Farofa de camarão','Arroz c/ nozes','Farofa de pão, bacon, castanhas e passas','Purê de batata c/ ervas finas|sg,vg','Batatas assadas c/ alecrim|sg,sl,vg','Legumes ao vapor c/ tomilho|sg,sl,vg','Legumes salteados c/ bacon e tomilho|sg,sl','Coração de palmito in natura ao vapor|sg,sl,vg']},
    {label:'Saladas', curto:'saladas', n:6, itens:['Pupunha laminada c/ camarões e vinagrete de frutas amarelas|sg,sl','Burrata artesanal c/ folhas baby, parma e tomates ao pesto','Salada de folhas c/ camarões e tomate seco','Mix de folhas c/ mostarda, mel e gorgonzola','Folhas c/ palmito, frango, bacon e parmesão','Tomate cereja c/ azeitona e champignon','Folhas c/ peras, gorgonzola e nozes|sg','Carpaccio de Filet c/ rúcula e alcaparras|sg','Salada de maçã','Salpicão de frango','Ovos de codorna|sg,sl','Salada de frutos do mar|sg,sl']}
   ], fotos:[['carre','Carré de cordeiro'],['moranga','Camarões na moranga','center 83%'],['camarao','Camarão ao molho catupiry'],['esccam','Escondidinho de camarão'],['entradinhas','Bolinho de peixe'],['filetm','Filet ao molho madeira'],['paella','Paella de frutos do mar'],['legumessalt','Legumes salteados'],['caprese','Tomate cereja c/ azeitona'],['saladagrande','Mix de folhas'],['burger','Lanche da Madrugada (incluso)']]},
- {id:'m5', nome:'Menu Excellence', curto:'Excellence', preco:27990, inclui:['Decoração Elegance','Lanche da Madrugada','Mesa Mediterrânea'], secoes:[
+ {id:'m5', nome:'Menu Excellence', curto:'Excellence', preco:30990, inclui:['Decoração Elegance','Lanche da Madrugada','Mesa Mediterrânea'], secoes:[
    {label:'Entradas', curto:'entradas', n:4, itens:['Bolinho de peixe','Pães caseiros c/ patês (linguiça e truta)','Mini risoto de salmão|sg','Escondidinho de camarão c/ catupiry','Mini paella de frutos do mar|sg,sl','Batata Noissete ao molho tártaro|vg','Queijo de colono em cubos|sg','Mini caldeirada de frutos do mar|sg,sl']},
    {label:'Pratos principais', curto:'principais', n:4, itens:['Frango bechamel c/ bacon','Frango strogonoff','Picanha Suína mostarda e mel|sg,sl','Picanha Suína barbecue c/ cebola|sg,sl','Salmão à Belle Meunière|sg','Salmão ao molho de camarão','Filet ao molho mostarda|sg','Filet ao molho madeira','Camarão ao molho catupiry','Camarões ao creme de moranga, dendê e alho poró','Carré de Cordeiro ao vinho e ervas|sg','Carré de Cordeiro na manteiga e alho|sg']},
    {label:'Massas', curto:'massas', n:2, itens:['Gnocchi ao molho suíço','Gnocchi ao molho de champignons','Caneloni de frango c/ catupiry','Caneloni de camarão c/ catupiry','Penne ao molho de camarão c/ limão','Penne na manteiga','Spaghetti ao frutos do mar c/ açafrão|sl','Spaghetti c/ bacon e manjericão']},
@@ -1646,24 +1690,24 @@ const SOFT = ['Coca-Cola e Coca Zero','Guaraná e Guaraná Zero','Água com e se
 const SOFT_S = SOFT.concat(['Suco de laranja']);
 const DRINKS = ['Bourbon Peach','Cosmopolitan','Gin Tônica Clássico','Gin Tônica Maracujá','Gin Tônica Morango','Strawberry Julep Cremoso','New York Sour','Moscow Mule','Negroni','Mojito'];
 const OPENBARS = [
- {id:'b1', nome:'Open bar 1', curto:'Open bar 1', preco:6990, secoes:[
+ {id:'b1', nome:'Open bar 1', curto:'Open bar 1', preco:7590, secoes:[
    {label:'Soft', itens:SOFT}]},
- {id:'b2', nome:'Open bar 2', curto:'Open bar 2', preco:8590, secoes:[
+ {id:'b2', nome:'Open bar 2', curto:'Open bar 2', preco:9590, secoes:[
    {label:'Soft', itens:SOFT},{label:'Cerveja', itens:['Brahma litro']}]},
- {id:'b3', nome:'Open bar 3', curto:'Open bar 3', preco:11290, secoes:[
+ {id:'b3', nome:'Open bar 3', curto:'Open bar 3', preco:12590, secoes:[
    {label:'Soft', itens:SOFT},{label:'Cerveja', itens:['Brahma litro']},
    {label:'Destilados', itens:['Vodka Smirnoff','Whisky Passport']}]},
- {id:'b4', nome:'Open bar 4', curto:'Open bar 4', preco:16990, secoes:[
+ {id:'b4', nome:'Open bar 4', curto:'Open bar 4', preco:18590, secoes:[
    {label:'Soft', itens:SOFT},{label:'Cerveja', itens:['Brahma litro']},
    {label:'Destilados', itens:['Vodka Smirnoff','Whisky Passport']},
    {label:'Espumante', itens:['Sanjo, Moscatel ou Brut']},{label:'Energético', itens:['Baly litro']}]},
- {id:'b5', nome:'Open bar 5', curto:'Open bar 5', preco:25990, secoes:[
+ {id:'b5', nome:'Open bar 5', curto:'Open bar 5', preco:28590, secoes:[
    {label:'Soft', itens:SOFT_S},{label:'Cerveja', itens:['Heineken long neck']},
    {label:'Destilados', itens:['Vodka Absolut','Whisky J. Walker Red Label']},
    {label:'Espumante', itens:['Perini, Moscatel ou Brut']},{label:'Energético', itens:['Red Bull']},
    {label:'Open Drinks Classic', itens:DRINKS},
    {label:'Balcão de pista', itens:['Balcão de apoio montado perto da pista']}]},
- {id:'b6', nome:'Open bar 6', curto:'Open bar 6', preco:29990, secoes:[
+ {id:'b6', nome:'Open bar 6', curto:'Open bar 6', preco:32990, secoes:[
    {label:'Soft', itens:SOFT_S},{label:'Cerveja', itens:['Heineken long neck']},
    {label:'Destilados', itens:['Vodka Absolut','Whisky J. Walker Red Label']},
    {label:'Espumante', itens:['Perini, Moscatel ou Brut']},{label:'Energético', itens:['Red Bull']},
@@ -3084,6 +3128,27 @@ const PADRAO = {convidados:200, dia:'seg-qui', coquetel:'c4', menu:'m2', openbar
   /* PADRAO só é usado via cópia profunda (JSON), então as mesas não são mutadas;
      com #L=/&C= na URL, a "proposta original" já inclui o layout sugerido e o
      crédito definido pela equipe */
+/* Faixa de convidados: 30 a 500 é a trava das mexidas do CLIENTE. O número que vem do CRM
+   nunca é reescrito por ela: um orçamento real de 25 convidados abria dizendo "Valores para 30
+   convidados" com o total de 25 e o por pessoa dividido por 30 (teste de 14/10/2026). Quando o
+   orçamento fica fora da faixa, a faixa se alarga até ele (decisão da Dai, 14/10/2026).
+   Declarada ANTES do carregar() logo abaixo, que já usa a faixa. */
+let CONV_MIN = 30, CONV_MAX = 500;
+function limitaConv(v){ return limita(v, CONV_MIN, CONV_MAX); }
+function alargarFaixaConv(...ns){
+  for(const n of ns){
+    const v = parseInt(n,10);
+    if(!Number.isFinite(v) || v<=0) continue;
+    CONV_MIN = Math.min(CONV_MIN, v); CONV_MAX = Math.max(CONV_MAX, v);
+  }
+  const campo = document.getElementById('convVal');
+  if(campo){
+    campo.min = CONV_MIN; campo.max = CONV_MAX;
+    campo.setAttribute('aria-label', `Número de convidados (de ${CONV_MIN} a ${CONV_MAX})`);
+  }
+  const sub = document.getElementById('convFaixa');
+  if(sub) sub.textContent = `de ${CONV_MIN} a ${CONV_MAX} · os itens por pessoa acompanham`;
+}
 let PROPOSTA = carregar();
 
 function carregar(){
@@ -3092,7 +3157,7 @@ function carregar(){
     if(!raw) return JSON.parse(JSON.stringify(PADRAO));
     const s = JSON.parse(raw);
     return {
-      convidados: limita(parseInt(s.convidados,10)||PADRAO.convidados, 30, 500),
+      convidados: limitaConv(parseInt(s.convidados,10)||PADRAO.convidados),
       dia: PADRAO.dia,   /* v18.08-33: dia é o do orçamento — cliente não altera */
       coquetel: COQUETEIS.some(c=>c.id===s.coquetel) ? s.coquetel : PADRAO.coquetel,
       menu: MENUS.some(m=>m.id===s.menu) ? s.menu : PADRAO.menu,
@@ -3177,7 +3242,8 @@ function casarCardapio(nome){
 function lerOrcamentoReal(o){
   if(!o || !Array.isArray(o.itens)) return null;
   const cent = v=>Math.round(Number(v||0)*100);
-  const conv = limita(parseInt(o.num_convidados,10) || PROPOSTA.convidados, 30, 500);
+  alargarFaixaConv(o.num_convidados, ...(Array.isArray(o.dias) ? o.dias.map(d=>d && d.num_convidados) : []));
+  const conv = limitaConv(parseInt(o.num_convidados,10) || PROPOSTA.convidados);
   const R = {conv, total:cent(o.valor_total), sel:{}, linhas:[], servicos:[]};
   /* EVENTO DE MAIS DE UM DIA — o orçamento multi_dia traz `dias[]` (data, dia
      da semana, convidados, espaço e layout de cada um) e cada item carrega o
@@ -3216,7 +3282,12 @@ function lerOrcamentoReal(o){
        sem esse campo continua no palpite pela quantidade */
     const vinc = it.produto && it.produto.vinculado_convidados;
     const convDoItem = it.dia_id ? ((o.dias||[]).find(d=>d.id===it.dia_id)||{}).num_convidados || conv : conv;
-    R.linhas.push({nome, qtd, unit, bloco, dia: it.dia_id || null,
+    /* paga taxa de equipe? O CRM diz por produto (`tem_taxa_servico`, desde 15/10/2026):
+       a Mesa de Frios, por exemplo, é comida e NÃO paga — a regra "comida e bebida pagam"
+       diluía a Equipe (15% viravam 10,36% num orçamento real de 25 convidados) e errava quando o cliente
+       trocava um cardápio. Link de CRM antigo, sem o campo, segue a regra antiga. */
+    const taxa = (it.produto && 'tem_taxa_servico' in it.produto) ? !!it.produto.tem_taxa_servico : null;
+    R.linhas.push({nome, qtd, unit, bloco, dia: it.dia_id || null, taxa,
       porPessoa: vinc != null ? !!vinc : (qtd===Number(convDoItem))});
   }
   for(const sv of (Array.isArray(o.servicos) ? o.servicos : [])){
@@ -3232,8 +3303,12 @@ function lerOrcamentoReal(o){
        Os PARÂMETROS (o percentual, o valor do grupo) não vêm no link público,
        então são deduzidos do próprio orçamento — o que dá o mesmo número que o
        CRM para o orçamento enviado e acompanha certo quando o cliente muda. */
+    /* `parametros` (CRM desde 15/10/2026, PEDIDOS-AO-CRM.md §1): os números da fórmula
+       (percentual, tamanho e valor do grupo, limite). Link de CRM antigo vem sem eles e
+       a página segue deduzindo, como antes. */
     R.servicos.push({nome, tipo: (sv.servico && sv.servico.tipo_calculo) || '',
-      valor: cent(sv.valor_calculado!=null ? sv.valor_calculado : sv.valor_base)});
+      valor: cent(sv.valor_calculado!=null ? sv.valor_calculado : sv.valor_base),
+      par: (sv.parametros && typeof sv.parametros === 'object') ? sv.parametros : null});
   }
   const selDosDias = R.dias.reduce((a,d)=>a + Object.keys(d.sel).length, 0);
   if(!R.linhas.length && !Object.keys(R.sel).length && !selDosDias) return null;
@@ -3252,17 +3327,24 @@ function lerOrcamentoReal(o){
      encolher assim que o cliente mexia (medido: 15% viravam 7,6% com 500).
      O link público não manda quais produtos têm taxa nem o percentual, então
      a base é deduzida: fica com a que dá o percentual "de tabela" (múltiplo
-     de 0,5%) — no ORC-2026-02412 é comida+bebida, 91.233,00 → 15,00%. */
+     de 0,5%) — no orçamento de teste (ferramentas/crm-falso.mjs) é comida+bebida, 91.233,00 → 15,00%. */
   const daTaxa = b => b==='alimentacao' || b==='bebidas';
-  const baseComidaBebida = R.linhas.filter(x=>daTaxa(x.bloco)).reduce((a,x)=>a + valorLinha(x), 0)
+  const baseComidaBebida = R.linhas.filter(x=>x.taxa != null ? x.taxa : daTaxa(x.bloco)).reduce((a,x)=>a + valorLinha(x), 0)
     + valorSel(R.sel, conv)
     + R.dias.reduce((a,d)=>a + valorSel(d.sel, d.conv), 0);
   const equipe = R.servicos.find(sv=>tipoDoServico(sv)==='percentual_produtos');
   const redondo = p => Math.abs(p*200 - Math.round(p*200)) < 0.01;   /* múltiplo de 0,5% */
+  /* com o percentual do CRM (`parametros.percentual`) a base é a que reproduz ESSE
+     percentual; sem ele, a que dá um percentual "de tabela", como antes */
+  const pctCRM = equipe && equipe.par && Number.isFinite(+equipe.par.percentual) && +equipe.par.percentual>0
+    ? +equipe.par.percentual/100 : null;
+  const bate = (p, q) => Math.abs(p - q) < 0.0005;   /* 0,05 ponto percentual */
   if(equipe){
     const pctComida = baseComidaBebida>0 ? equipe.valor/baseComidaBebida : 0;
     const pctTudo = R.brutoItens>0 ? equipe.valor/R.brutoItens : 0;
-    const usaTudo = !redondo(pctComida) && redondo(pctTudo);
+    const usaTudo = pctCRM != null
+      ? (!bate(pctComida, pctCRM) && bate(pctTudo, pctCRM))
+      : (!redondo(pctComida) && redondo(pctTudo));
     R.baseTaxaTudo = usaTudo;
     R.baseTaxa0 = usaTudo ? R.brutoItens : baseComidaBebida;
     R.equipePct = R.baseTaxa0>0 ? equipe.valor/R.baseTaxa0 : 0.15;
@@ -3329,8 +3411,9 @@ function itensReais(s){
     /* multi-dia: a quantidade das linhas de estrutura é a que o consultor
        enviou; num dia só, os itens por pessoa acompanham o ajuste */
     const qtd = (ORC_REAL.multiDia || !x.porPessoa) ? x.qtd : s.convidados;
-    /* comida e bebida entram na base da equipe, como no CRM */
-    const taxa = x.bloco==='alimentacao' || x.bloco==='bebidas';
+    /* base da equipe: o que o CRM marca como `tem_taxa_servico`; sem a marca (CRM
+       antigo), comida e bebida, como antes */
+    const taxa = x.taxa != null ? x.taxa : (x.bloco==='alimentacao' || x.bloco==='bebidas');
     l.push({id:`${x.nome}·${x.dia||'0'}`, nome:x.nome, qtd, unit:x.unit, total:x.unit*qtd,
       f:{bloco:x.bloco, taxa}, doOrc:true, dia:x.dia, pp:x.porPessoa});
   }
@@ -3422,8 +3505,8 @@ function cardConvidadosDoDia(d){
   st.hidden = false;
   const campo = document.getElementById('convVal');
   if(campo) campo.value = d ? d.conv : ORC_REAL.conv;
-  document.getElementById('convMenos').disabled = (d ? d.conv : ORC_REAL.conv) <= 30;
-  document.getElementById('convMais').disabled  = (d ? d.conv : ORC_REAL.conv) >= 500;
+  document.getElementById('convMenos').disabled = (d ? d.conv : ORC_REAL.conv) <= CONV_MIN;
+  document.getElementById('convMais').disabled  = (d ? d.conv : ORC_REAL.conv) >= CONV_MAX;
   const sub = st.parentElement.querySelector('.rcard__sub');
   if(sub) sub.textContent = d
     ? `no dia ${d.numero} de ${ORC_REAL.dias.length} · os itens por pessoa acompanham`
@@ -3461,7 +3544,7 @@ function vestirMultiDia(){
 /* O SALÃO PELO ID, NÃO PELO NOME (06/10/2026) — o nome do espaço no
    orçamento não é o nome da maquete: o orçamento diz "Mediterrâneo 242" e a
    maquete se chama "Mediterrâneo Indaiá · Praia da Joaquina". Um não contém
-   o outro, o casamento por nome falhava e o link real da Sebrae abria no
+   o outro, o casamento por nome falhava e um link real abria no
    Salão de Eventos com o aviso de "em preparação" — com a casa inteira
    pronta na página. O CRM já tem a ligação certa e a publica: o pacote
    público por ID do espaço devolve o ambiente_slug. É uma consulta só, e só
@@ -3519,10 +3602,23 @@ function servicosReais(s, baseTaxaCent){
     switch(tipoDoServico(sv)){
       case 'percentual_produtos':
         return [sv.nome, Math.round(baseTaxaCent*ORC_REAL.equipePct)];
-      case 'por_grupo_convidados':
+      case 'por_grupo_convidados': {
+        /* fórmula do CRM com os números dele: valor_por_grupo × min(teto(conv/grupo), máx).
+           Só quando ela reproduz o valor do orçamento (ajuste manual do consultor mantém a
+           proporção, como antes). Sem `parametros`: grupos de 100 até 10, como sempre. */
+        const p = sv.par || {}, tam = +p.convidados_por_grupo || GRUPO_CONVIDADOS, max = +p.max_grupos || 10;
+        const g = n => Math.min(Math.ceil(n/tam), max);
+        const porGrupo = Math.round((+p.valor_por_grupo || 0)*100);
+        if(porGrupo>0 && Math.abs(porGrupo*g(ORC_REAL.conv) - sv.valor) <= 1) return [sv.nome, porGrupo*g(s.convidados)];
+        if(sv.par) return [sv.nome, Math.round(sv.valor*g(s.convidados)/Math.max(g(ORC_REAL.conv),1))];
         return [sv.nome, Math.round(sv.valor*grupos/Math.max(ORC_REAL.grupos0,1))];
-      case 'por_convidados':
+      }
+      case 'por_convidados': {
+        const p = sv.par || {}, vpp = Math.round((+p.valor_por_pessoa || 0)*100), min = +p.minimo_pessoas || 0;
+        const n = c => Math.max(c, min);
+        if(vpp>0 && Math.abs(vpp*n(ORC_REAL.conv) - sv.valor) <= 1) return [sv.nome, vpp*n(s.convidados)];
         return [sv.nome, Math.round(sv.valor*s.convidados/Math.max(ORC_REAL.conv,1))];
+      }
       default:                      /* valor fixo, locação do espaço, reajuste */
         return [sv.nome, sv.valor];
     }
@@ -3594,6 +3690,10 @@ function propostaIndisponivel(){
   const heroSub = document.querySelector('.hero__sub');
   if(heroSub) heroSub.textContent = 'Esta proposta não está mais disponível.';
   ['investimento','extras','resumo'].forEach(id=>{ const s = document.getElementById(id); if(s) s.hidden = true; });
+  /* Sem proposta, nada da demo pode sobrar: o selo do topo e o rodapé mostravam
+     "ORC-2026-01837 · válida até 25/08" (número e data da DIMY), e o "Ver a proposta" e o
+     "ajuste do seu jeito" convidavam a ver o que não existe (teste de 14/10/2026). */
+  document.querySelectorAll('.hero__actions, .hero__validade, .hero__ajuste, .footer__fine').forEach(el=>{ el.hidden = true; el.style.display = 'none'; });
   const tb = document.getElementById('tierbar'); if(tb) tb.style.display = 'none';
   let av = document.querySelector('.expirada');
   if(!av){ av = document.createElement('div'); av.className = 'expirada'; av.setAttribute('role','status'); $('#conteudo').prepend(av); }
@@ -3917,7 +4017,10 @@ function montarItens(){
    do gerente ativo, o fator de rateio deixa a lista consistente com o
    total do cliente — o desconto em si nunca aparece aqui. */
 function montarServicos(r, fator, prontos){
-  const lista = prontos || r.servLista.map(([n,v])=>[n, Math.round(v*fator)]);
+  /* Linha zerada não aparece: o CRM manda todos os serviços do orçamento, e o cliente lia
+     "Taxa de Estacionamento R$ 0,00" e "Reajuste R$ 0,00" (orçamento real de 25 convidados, teste de
+     14/10/2026). Zero não soma nada, então o total e o subtotal continuam os mesmos. */
+  const lista = (prontos || r.servLista.map(([n,v])=>[n, Math.round(v*fator)])).filter(([,v])=>v!==0);
   $('#listaServicos').innerHTML = lista.map(([n,v])=>
     `<li><span>${esc(n)}</span><b>${fmt(v)}</b></li>`).join('');
 }
@@ -4211,13 +4314,15 @@ function atualizarTotais(){
     : ORC_REAL
     ? `${C} convidados · ${['coquetel','menu','openbar'].map(t=>{ const x = selecaoReal(t); return x && x.curto; }).filter(Boolean).join(' + ') || 'sem cardápio'}`
     : `${C} convidados · ${r.coq.curto} + ${r.menu.nome} + ${r.bar.nome}`;
-  $('#tbTotal').textContent = fmt0(ORC_REAL ? Math.round(r.total*fator) : r.total);
+  /* mesmo valor e mesmo formato do "Total do investimento": arredondada, a barra dizia
+     R$ 144.693 com o quadro em R$ 144.692,50 e parecia outro valor (Dai, 16/10/2026) */
+  $('#tbTotal').textContent = fmt(ORC_REAL ? Math.round(r.total*fator) : r.total);
   /* WhatsApp com resumo pré-preenchido (a pergunta é sempre a última linha).
      v18.08-15: sem consumidores .js-wa na página (os CTAs saíram — a conversa
      com o cliente já existe no WhatsApp); o builder fica, inofensivo com
      zero elementos, para um futuro canal que precise do resumo. */
   const nMesas = PROPOSTA.mesas.length;
-  const msg = `Olá! Aqui é da ${CLIENTE_NOME}. Estou vendo a proposta ${ORC_NUMERO} (${DATA_EVENTO_BR} · ${AMB.curto}).\n`+
+  const msg = `Olá! Estou vendo a proposta ${ORC_NUMERO} (${CLIENTE_NOME} · ${DATA_EVENTO_BR} · ${AMB.curto}).\n`+
     `Meus ajustes: ${C} convidados · Coquetel ${r.coq.nome} · ${r.menu.nome} · ${r.bar.nome}.\n`+
     (nMesas ? `Layout: ${nMesas} mesas de ${MESA.lugares} lugares.\n` : '')+
     `Total estimado: ${fmt(r.total)}.\n`+
@@ -4239,7 +4344,7 @@ function convAtual(){
   return PROPOSTA.convidados;
 }
 function mudarConvidados(v){
-  const novo = limita(v, 30, 500);
+  const novo = limitaConv(v);
   if(ORC_REAL && ORC_REAL.multiDia){
     const d = (ORC_REAL.dias||[]).find(x=>x.id===diaCorrente());
     if(d){
@@ -4251,18 +4356,20 @@ function mudarConvidados(v){
       montarDias();                                   /* o chip do dia mostra o novo número */
       vestirMultiDia();                               /* e a nota do investimento também */
       $('#convVal').value = novo;
-      $('#convMenos').disabled = novo<=30;
-      $('#convMais').disabled = novo>=500;
+      $('#convMenos').disabled = novo<=CONV_MIN;
+      $('#convMais').disabled = novo>=CONV_MAX;
       return;
     }
   }
   if(novo===PROPOSTA.convidados){ $('#convVal').value = novo; return; }
   PROPOSTA.convidados = novo; salvar(); atualizarTotais();
-  $('#convMenos').disabled = novo<=30;
-  $('#convMais').disabled = novo>=500;
+  $('#convMenos').disabled = novo<=CONV_MIN;
+  $('#convMais').disabled = novo>=CONV_MAX;
 }
-$('#convMenos').addEventListener('click', ()=>mudarConvidados(convAtual()-10));
-$('#convMais').addEventListener('click', ()=>mudarConvidados(convAtual()+10));
+/* De 1 em 1 (decisão da Dai, 14/10/2026: "ir de + em + ou digitar quantos deseja");
+   para pular muitos, o cliente digita no campo. Antes era de 10 em 10. */
+$('#convMenos').addEventListener('click', ()=>mudarConvidados(convAtual()-1));
+$('#convMais').addEventListener('click', ()=>mudarConvidados(convAtual()+1));
 $('#convVal').addEventListener('change', e=>{
   const v = parseInt(e.target.value,10);
   mudarConvidados(Number.isFinite(v)?v:PROPOSTA.convidados);
@@ -4360,7 +4467,9 @@ function linkDaConversa(){
   const ajustes = ajustesDoCliente();
   const r = calcular(PROPOSTA);
   const total = fmt(ORC_REAL ? Math.round(r.total*ORC_REAL.fator) : r.total);
-  const msg = `Olá! Aqui é da ${CLIENTE_NOME}. Sobre a proposta ${ORC_NUMERO}:\n`
+  /* "Aqui é da <cliente>" só servia para nome de empresa; o CRM costuma trazer nome de
+     pessoa ("Aqui é da Daiane Bortoli") — Dai, 16/10/2026 */
+  const msg = `Olá! Sobre a proposta ${ORC_NUMERO} (${CLIENTE_NOME}):\n`
     + (ajustes.length ? ajustes.map(a=>`• ${a}`).join('\n') + `\nTotal estimado na página: ${total}.\n`
                       : `Revisei a proposta e está do meu jeito. Total: ${total}.\n`)
     + `Podemos confirmar?`;
@@ -4460,7 +4569,7 @@ $('#btnConfirmar').addEventListener('click', validarEVoltar);
 $('#btnCtaFinal').addEventListener('click', validarEVoltar);
 /* "Incluir mais itens no orçamento": a mesma conversa, pedindo o que falta */
 $('#btnMaisItens').addEventListener('click', ()=>{
-  const msg = `Olá! Aqui é da ${CLIENTE_NOME}. Sobre a proposta ${ORC_NUMERO}: eu gostaria de incluir mais itens no orçamento.
+  const msg = `Olá! Sobre a proposta ${ORC_NUMERO} (${CLIENTE_NOME}): eu gostaria de incluir mais itens no orçamento.
 `
     + 'Pode me ajudar com o que dá para acrescentar?';
   const url = `https://wa.me/${WA_NUM}?text=${encodeURIComponent(msg)}`;
@@ -4702,7 +4811,7 @@ const PECAS = {
   telao: {
     nome:'Telão de LED', um:'telão', plural:'telões',
     /* "audiovisual" sozinho pegava pacote de som e transmissão, que não são
-       painel: no ORC-2026-02412 virava TRÊS telões em vez de um (05/10) */
+       painel: no orçamento de teste virava TRÊS telões em vez de um (05/10) */
     casa:/\bled\b|tel[aã]o|painel|projec|datashow/,
     larg:4, fund:0.5,
     desenho(w, h){
@@ -4720,9 +4829,16 @@ function pecasContratadas(){
   const fora = {};
   if(typeof ORC_REAL === 'undefined' || !ORC_REAL) return fora;
   for(const l of ORC_REAL.linhas){
-    const nome = normNome(l.nome);
+    /* o que o nome diz que NÃO vem não é peça: "Pacote audiovisual - DJ (Telão de LED não
+       incluso)", em 150 dos 252 orçamentos Corporativo, desenhava um telão que o cliente não
+       contratou (levantamento de 15/10/2026). Sai o trecho "… não incluso"/"sem …" antes de casar. */
+    const nome = normNome(l.nome)
+      .replace(/\([^)]*\bnao inclu[^)]*\)/g, ' ')
+      .replace(/\b(sem|nao inclui|exceto)\s+(o\s+|a\s+)?(telao|painel|led|palco|bistro)[^,;()]*/g, ' ');
     for(const t of ORDEM_PECAS){
       if(!PECAS[t].casa.test(nome)) continue;
+      /* pista de LED é piso de dança, não painel: não vira telão */
+      if(t === 'telao' && /\bpista\b/.test(nome)) continue;
       const q = Math.min(parseInt(l.qtd, 10) || 0, 40);
       if(q > 0) fora[t] = (fora[t]||0) + q;
       break;                                    /* cada linha conta uma vez */
@@ -7893,11 +8009,14 @@ function montarProva(nomeDoCRM){
     + `${p.onde ? ` · Indaiá ${/^(Itapema|Florianópolis)$/.test(p.onde) ? 'em' : 'no'} ${p.onde}` : ' nas casas do Indaiá'}</span>`;
   /* quando os depoimentos são de casas irmãs da mesma cidade, a intro diz isso */
   const cidade = p.depoimentos.some(d=>d.casa);
+  /* cidade sem artigo, casa com: "em Itapema", "no Canto da Lagoa". Antes a frase dizia
+     "O que quem esteve no Itapema escreveu" (apontado pela Dai em 16/10/2026) */
+  const noOuEm = /^(Itapema|Florianópolis)$/.test(p.onde) ? 'em' : 'no';
   document.getElementById('provaIntro').textContent = !p.depoimentos.length
     ? 'A média das casas do Indaiá no Google, somando todas as unidades.'
     : cidade
-      ? `O que quem esteve nas nossas casas de ${p.onde} escreveu, direto do Google.`
-      : `O que quem esteve ${AMB.emTitulo==='salão' ? 'no salão' : `no ${p.onde}`} escreveu, direto do Google.`;
+      ? `Avaliações de quem já esteve nas nossas casas de ${p.onde}, direto do Google.`
+      : `Avaliações de quem já esteve ${AMB.emTitulo==='salão' ? 'no salão' : `${noOuEm} ${p.onde}`}, direto do Google.`;
   document.getElementById('provaGrid').innerHTML = p.depoimentos.map(d=>`
     <figure class="prova__card">
       <span class="prova__aspas" aria-hidden="true">“</span>
@@ -7989,7 +8108,7 @@ function montarPlayer(){
 /* SEM VÍDEO NO SITE (09/10/2026) — decisão do dono: "vamos deixar o vídeo de
    lado, remover o vídeo do site". O que a página sabe gerar hoje é sobrevoo
    da maquete, e ele não mostra o evento do cliente; o caminho bom (imagem
-   gerada a partir do orçamento, como na proposta da Algar) depende de uma
+   gerada a partir do orçamento, como numa proposta feita à mão) depende de uma
    chave da fal que ainda não temos. Até lá, nada de vídeo: nem a seção 05,
    nem o laço de fundo da capa. Fica a foto, que é real.
    O código e os arquivos ficam onde estão — voltar é trocar este false. */
@@ -8161,7 +8280,11 @@ function fimDaValidade(){
   const [a,m,d] = VALIDADE_ISO.split('-').map(Number);
   return new Date(a, m-1, d, 23, 59, 59);
 }
+let VALIDADE_INICIO = null;       /* Date, vem do criado_em do token (CRM desde 15/10/2026) */
 function inicioDaContagem(fim){
+  /* com o criado_em a barra mostra a validade inteira; sem ele (CRM antigo) o início é o
+     primeiro acesso do cliente neste aparelho, guardado no navegador */
+  if(VALIDADE_INICIO && VALIDADE_INICIO.getTime() < fim.getTime()) return Math.min(VALIDADE_INICIO.getTime(), fim.getTime() - 864e5);
   const chave = CHAVE+'_abriu';
   let t = 0;
   try{ t = parseInt(localStorage.getItem(chave)||'0', 10) || 0; }catch(e){}
@@ -8309,12 +8432,20 @@ async function vestirPropostaCRM(){
   if(!PROPOSTA_TOKEN || !API_CRM) return;
   let o, raiz;
   try{
-    const r = await fetch(`${API_CRM}/api/public/proposta/${PROPOSTA_TOKEN}`);
+    /* permitir_vencido=1: link vencido continua abrindo, com o convite de renovar (decisão
+       de 16/09; o CRM só manda a proposta vencida a quem pede, até 30 dias depois). CRM sem
+       essa opção ignora o parâmetro e segue respondendo 400 → aviso de indisponível. */
+    const r = await fetch(`${API_CRM}/api/public/proposta/${PROPOSTA_TOKEN}?permitir_vencido=1`);
     if(!r.ok) throw new Error('HTTP '+r.status);
     const j = await r.json();
     raiz = j.data || j;                    /* {orcamento, token, expires_at, ...} */
     o = raiz.orcamento || raiz;
-    if(!o || typeof o !== 'object') throw new Error('resposta vazia');
+    /* Contrato novo (VF2): o CRM responde {orcamento: null, modelo_contrato: 'novo',
+       documento_vf2_html} e o `|| raiz` acima vestia a página com o envelope vazio, o que
+       deixava a demo DIMY inteira na frente do cliente (teste de 14/10/2026). Sem orçamento
+       com itens, é proposta indisponível. */
+    if(raiz && 'orcamento' in raiz && !raiz.orcamento) throw new Error('resposta sem orçamento (contrato novo)');
+    if(!o || typeof o !== 'object' || !Array.isArray(o.itens)) throw new Error('resposta vazia');
   }catch(e){
     console.warn('[propostaCRM] não carregou:', e);
     propostaIndisponivel();   /* com token, nunca cai na demo DIMY */
@@ -8338,7 +8469,8 @@ async function vestirPropostaCRM(){
 
     /* convidados */
     const nConv = parseInt(o.num_convidados, 10);
-    if(Number.isFinite(nConv) && nConv>0) PADRAO.convidados = limita(nConv, 30, 500);
+    alargarFaixaConv(nConv);
+    if(Number.isFinite(nConv) && nConv>0) PADRAO.convidados = limitaConv(nConv);
 
     /* cardápios: casa os itens do orçamento com os pacotes por nome */
     const nomesItens = (Array.isArray(o.itens)?o.itens:[]).map(i=>norm(i && i.produto && i.produto.nome));
@@ -8355,6 +8487,13 @@ async function vestirPropostaCRM(){
     /* hora exata do vencimento do link, para a conta regressiva da faixa */
     const fimISO = String(raiz.expires_at||'');
     if(fimISO && !isNaN(Date.parse(fimISO))) VALIDADE_FIM = new Date(fimISO);
+    /* início da validade = criação do link (PEDIDOS-AO-CRM.md §3) */
+    const iniISO = String(raiz.criado_em||'');
+    if(iniISO && !isNaN(Date.parse(iniISO))) VALIDADE_INICIO = new Date(iniISO);
+    /* proposta vencida (CRM manda `vencido: true`): a data impressa é a do vencimento do
+       LINK — a validade do orçamento pode ser posterior e a faixa diria "venceu em" uma data
+       futura. A faixa e os botões de renovar acendem sozinhos pelo VALIDADE_FIM no passado. */
+    if(raiz.vencido){ const v = validarISO(fimISO.slice(0,10)); if(v) VALIDADE_ISO = v; }
 
     /* identidade: cliente e número no lugar da demo */
     const nomeCli = String(o.cliente_nome||'').trim();
@@ -8367,7 +8506,12 @@ async function vestirPropostaCRM(){
       document.title = `Proposta ${nomeCli} · Indaiá Eventos`;
       document.querySelector('meta[name="description"]')
         .setAttribute('content', `Proposta interativa corporativa · ${nomeCli} · ${DATA_EVENTO_BR} · ${AMB.nome}, ${AMB.cidadeLonga||''}`);
-      document.querySelectorAll('.brand__mono').forEach(el=>el.textContent = nomeCli);
+      document.querySelectorAll('.brand__mono').forEach(el=>{
+        el.textContent = nomeCli;
+        /* "DIMY" e nomes curtos cabem no tracking largo; nome de empresa longo não (ver CSS do topo) */
+        el.classList.toggle('brand__mono--longo', nomeCli.length > 10);
+        el.title = nomeCli;
+      });
       /* LOGO DO CLIENTE (v18.09-12) — a página aceita a logo por vários
          caminhos, porque o CRM ainda não tem um só: a empresa do orçamento
          (`companies.logo_url`), um campo no próprio orçamento ou algo que a
@@ -8379,7 +8523,7 @@ async function vestirPropostaCRM(){
       vestirMarcaCliente();
       /* CAPA COM O NOME DO EVENTO (v18.09-6) — quando o CRM manda o nome do
          evento, a capa fala dele ("Convenção Nacional 2026 · proposta para a
-         Algar"); sem o nome, segue como antes, com a empresa e a data. */
+         Empresa X"); sem o nome, segue como antes, com a empresa e a data. */
       EVENTO_NOME = String(o.nome_evento || o.evento_nome || '').trim();
       const chapeu = EVENTO_NOME
         ? `${EVENTO_NOME} · proposta para ${nomeCli}`
@@ -8450,14 +8594,14 @@ async function vestirPropostaCRM(){
       try{
         const meu = JSON.parse(localStorage.getItem(CHAVE+'_real')||'null');
         if(meu){
-          if(Number.isInteger(meu.convidados)) PROPOSTA.convidados = limita(meu.convidados, 30, 500);
+          if(Number.isInteger(meu.convidados)) PROPOSTA.convidados = limitaConv(meu.convidados);
           for(const t of TIPOS_CARD) if(t in meu) PROPOSTA[t] = meu[t];
           if(ORC_REAL.multiDia && meu.dias) for(const d of ORC_REAL.dias){
             const g = meu.dias[d.id]; if(!g) continue;
             for(const t of TIPOS_CARD) if(t in g) PROPOSTA.dias[d.id][t] = g[t];
             /* o convidado por dia que o cliente ajustou neste link */
             if(Number.isInteger(g.conv)){
-              PROPOSTA.dias[d.id].conv = limita(g.conv, 30, 500);
+              PROPOSTA.dias[d.id].conv = limitaConv(g.conv);
               d.conv = PROPOSTA.dias[d.id].conv;
             }
           }

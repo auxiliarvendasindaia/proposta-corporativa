@@ -98,8 +98,8 @@ let v = await p1.evaluate(LER);
 ok(cent(v.total) === Math.round(orc.valor_total * 100), `abre com o total do CRM (${v.total})`);
 conferirFechamento(v, 'abertura');
 conferirLinhas(v, 'abertura');
-ok(cent(v.tier) <= cent(v.total) + 100 && cent(v.tier) >= cent(v.total) - 100,
-  `a barra fixa mostra o mesmo total arredondado (${v.tier})`);
+/* desde 16/10/2026 a barra mostra os centavos: tem de ser IGUAL ao total do quadro */
+ok(v.tier.trim() === v.total.trim(), `a barra fixa mostra o mesmo total (${v.tier} = ${v.total})`);
 const ppMostrado = cent(v.pp), ppConta = Math.round(cent(v.gastro) / parseInt(v.conv, 10));
 ok(Math.abs(ppMostrado - ppConta) <= 2, `"por pessoa" = gastronomia ÷ convidados (${v.pp.trim()} vs ${brl(ppConta)})`);
 

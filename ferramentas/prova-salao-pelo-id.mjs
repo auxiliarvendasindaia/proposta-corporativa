@@ -1,6 +1,6 @@
 // O SALÃO PELO ID DO ESPAÇO (06/10/2026).
 //
-// Medido no link real da Sebrae: o orçamento diz "Mediterrâneo 242" e a maquete
+// Medido num link real: o orçamento diz "Mediterrâneo 242" e a maquete
 // se chama "Mediterrâneo Indaiá · Praia da Joaquina". Um nome não contém o
 // outro, o casamento por nome falhava, e o link SEM espaco= abria no Salão de
 // Eventos com o aviso de "em preparação" — com a casa inteira pronta na página.

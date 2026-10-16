@@ -8,7 +8,7 @@
 ## CRM de mentira (nenhum dado de cliente sai da máquina)
 
 - `crm-falso.mjs [--multi-dia] [--porta 8141]` — responde `GET /api/public/proposta/<token>`
-  com o orçamento ORC-2026-02412 transcrito do PDF. Com `--multi-dia`, o mesmo evento em
+  com um orçamento de teste (ORC-2026-90001, empresa fictícia; valores transcritos de um PDF real). Com `--multi-dia`, o mesmo evento em
   2 dias e 2 espaços (dia 1 no Mediterrâneo 242, dia 2 no Solar), com `dia_id` nos itens.
 - `crm-de-teste.mjs` — orçamento EXEMPLO-0000 na porta 8142, usado pela proposta fechada.
 

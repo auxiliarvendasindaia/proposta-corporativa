@@ -99,7 +99,12 @@ await espera(500);
 ok((await ler()).pecas.filter(x => x.t === 'bistro').length === 10, 'pôr de volta volta a 10');
 
 /* 5 · arrastar move de verdade e fica guardado */
-await p.evaluate(() => document.getElementById('planta').scrollIntoView({ block: 'center' }));
+/* rola até o PRÓPRIO palco, sem animação: centrar a seção da planta deixava o palco
+   abaixo da janela de 1000 px (centro em y≈1057) e o mouse "clicava" fora (16/10/2026) */
+await p.evaluate(() => {
+  document.documentElement.style.scrollBehavior = 'auto';
+  [...document.querySelectorAll('#pecasCamada .peca')].find(x => x.dataset.t === 'palco').scrollIntoView({ block: 'center' });
+});
 await espera(700);
 const antes = await p.evaluate(() => {
   const g = [...document.querySelectorAll('#pecasCamada .peca')].find(x => x.dataset.t === 'palco');

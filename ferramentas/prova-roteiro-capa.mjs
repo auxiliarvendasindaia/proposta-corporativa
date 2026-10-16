@@ -35,7 +35,7 @@ const lerRoteiro = p => p.evaluate(() => ({
     txt: l.querySelector('.roteiro__txt').textContent.trim() })),
 }));
 
-/* 1 · com o orçamento do SEBRAE (coquetel + open bar, sem jantar) */
+/* 1 · com o orçamento de teste (coquetel + open bar, sem jantar) */
 const p = await b.newPage();
 p.on('pageerror', e => erros.push(String(e).slice(0, 140)));
 await semFreio(p);
@@ -76,6 +76,9 @@ ok(depois.passos.length === antes + 1 && depois.passos.some(x => /Menu Premium/.
 const cliqueReal = await (async () => {
   const caixa = await p.evaluate(() => {
     const c = [...document.querySelectorAll('#cardsOpenbar .nivel')].find(x => x.getAttribute('aria-pressed') !== 'true');
+    /* sem animação: com a rolagem suave a página ainda andava (2557 → 2828) quando o mouse
+       clicava, e o clique caía fora do card (16/10/2026) */
+    document.documentElement.style.scrollBehavior = 'auto';
     c.scrollIntoView({ block: 'center' });
     const r = c.getBoundingClientRect();
     return { x: r.x + r.width / 2, y: r.y + 30 };
@@ -167,7 +170,10 @@ ok(!!indice && indice.itens.join() === indice.secs.join(),
   `o índice tem uma entrada por seção visível (${indice ? indice.itens.length : 0})`);
 ok(indice && !indice.noTopo, 'e fica escondido enquanto o cliente está na capa');
 for (const [alvo, escuro] of [['cardapios', true], ['investimento', false]]) {
-  await ix.evaluate(s => document.getElementById(s).scrollIntoView({ block: 'center' }), alvo);
+  /* sem animação: com a rolagem suave, 0,8 s depois a tela ainda passava por "Quem já fez
+     aqui" e o índice marcava "prova" (com a tela parada marca "investimento") — 16/10/2026 */
+  await ix.evaluate(s => { document.documentElement.style.scrollBehavior = 'auto';
+    document.getElementById(s).scrollIntoView({ block: 'center' }); }, alvo);
   await espera(800);
   const m = await ix.evaluate(() => { const n = document.getElementById('indice');
     const a = n.querySelector('a[aria-current="true"]');

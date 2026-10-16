@@ -37,10 +37,8 @@ for (const d of fs.readdirSync(path.join(RAIZ, 'assets', 'ambientes'))) {
   const v = path.join(RAIZ, 'assets', 'ambientes', d, 'video');
   if (fs.existsSync(path.join(v, 'passeio.mp4'))) pastas.push(v);
 }
-const props = path.join(RAIZ, 'assets', 'propostas');
-if (fs.existsSync(props)) for (const d of fs.readdirSync(props)) {
-  if (fs.existsSync(path.join(props, d, 'passeio.mp4'))) pastas.push(path.join(props, d));
-}
+/* assets/propostas/ (filmes de uma proposta específica) não é mais publicado desde
+   15/10/2026 (.github/workflows/pages.yml) — só confere o que vai para o site */
 for (const pasta of pastas) {
   const rot = path.relative(RAIZ, pasta);
   const capa = path.join(pasta, 'capa.mp4');
@@ -71,8 +69,12 @@ const peso = await p.evaluate(base => {
 ok(peso.tot < TETO_CAPA, `a capa baixa ${MB(peso.tot)} (teto ${MB(TETO_CAPA)}) · maior: ${peso.maior.u} ${(peso.maior.n / 1024).toFixed(0)} KB`);
 const capaTocando = await p.evaluate(() => { const v = document.querySelector('.hero__fundo video');
   return v ? { src: v.dataset.src, tocando: !v.paused } : null; });
-ok(capaTocando && /capa\.mp4$/.test(capaTocando.src) && capaTocando.tocando,
+/* vídeo desligado por decisão do dono em 09/10/2026 (VIDEO_NO_SITE): aí o certo é NADA tocar
+   no topo; se o vídeo voltar a ser ligado, volta a valer a conferência do filme da capa */
+const videoLigado = await p.evaluate(() => typeof VIDEO_NO_SITE !== 'undefined' && VIDEO_NO_SITE);
+if (videoLigado) ok(capaTocando && /capa\.mp4$/.test(capaTocando.src) && capaTocando.tocando,
   `e mesmo assim o filme roda no topo (${capaTocando && capaTocando.src.split('/').pop()})`);
+else ok(!capaTocando || !capaTocando.tocando, 'vídeo desligado: nada tocando no topo');
 
 /* 3 · nenhuma foto de casamento numa proposta corporativa */
 const SOCIAL = /bolo|noiv|casal|arco de flores|colunas de flores|cerejeira/i;

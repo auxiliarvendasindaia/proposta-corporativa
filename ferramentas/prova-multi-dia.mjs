@@ -228,13 +228,14 @@ const porDia = await p.evaluate(async () => {
 ok(porDia.stepperAberto, 'o passo a passo de convidados fica aberto no multi-dia');
 const soMudou = (antes, depois, idx, delta) => depois.every((v, k) =>
   k === idx ? v === antes[k] + delta : v === antes[k]);
-ok(soMudou(porDia.inicio.convs, porDia.subiu.convs, porDia.inicio.i, 10),
-  `+10 mexe só no dia aberto (${porDia.inicio.convs.join('/')} → ${porDia.subiu.convs.join('/')})`);
+/* passo de 1 em 1 desde 14/10/2026 (antes 10) */
+ok(soMudou(porDia.inicio.convs, porDia.subiu.convs, porDia.inicio.i, 1),
+  `+1 mexe só no dia aberto (${porDia.inicio.convs.join('/')} → ${porDia.subiu.convs.join('/')})`);
 ok(porDia.subiu.total !== porDia.inicio.total, `e o total acompanha (${porDia.inicio.total} → ${porDia.subiu.total})`);
 ok(porDia.dia2.campo === String(porDia.dia2.convs[porDia.dia2.i]),
   `trocar de dia leva o campo para o número daquele dia (${porDia.dia2.campo})`);
-ok(soMudou(porDia.dia2.convs, porDia.desceu.convs, porDia.dia2.i, -10),
-  `−10 no outro dia mexe só nele (${porDia.desceu.convs.join('/')})`);
+ok(soMudou(porDia.dia2.convs, porDia.desceu.convs, porDia.dia2.i, -1),
+  `−1 no outro dia mexe só nele (${porDia.desceu.convs.join('/')})`);
 
 ok(erros.length === 0, `sem erros de JS ${erros.slice(0, 3).join(' | ')}`);
 
